@@ -12,14 +12,15 @@
 const GPIO    = scripting.addModule("/ti/driverlib/GPIO", {}, false);
 const GPIO1   = GPIO.addInstance();
 const GPIO2   = GPIO.addInstance();
+const GPIO3   = GPIO.addInstance();
 const SYSCTL  = scripting.addModule("/ti/driverlib/SYSCTL");
 const SYSTICK = scripting.addModule("/ti/driverlib/SYSTICK");
 
 /**
  * Write custom configuration values to the imported modules.
  */
-GPIO1.$name                              = "LED1";
 GPIO1.port                               = "PORTB";
+GPIO1.$name                              = "LED";
 GPIO1.associatedPins[0].$name            = "PIN_22";
 GPIO1.associatedPins[0].internalResistor = "PULL_DOWN";
 GPIO1.associatedPins[0].assignedPin      = "22";
@@ -32,6 +33,14 @@ GPIO2.associatedPins[0].$name            = "PIN_21";
 GPIO2.associatedPins[0].internalResistor = "PULL_UP";
 GPIO2.associatedPins[0].direction        = "INPUT";
 GPIO2.associatedPins[0].assignedPin      = "21";
+GPIO2.associatedPins[0].interruptEn      = true;
+GPIO2.associatedPins[0].polarity         = "RISE";
+
+GPIO3.$name                              = "LED2";
+GPIO3.port                               = "PORTB";
+GPIO3.associatedPins[0].$name            = "PIN_3";
+GPIO3.associatedPins[0].internalResistor = "PULL_UP";
+GPIO3.associatedPins[0].assignedPin      = "3";
 
 SYSCTL.forceDefaultClkConfig = true;
 
@@ -50,4 +59,5 @@ Board.peripheral.$suggestSolution            = "DEBUGSS";
 Board.peripheral.swclkPin.$suggestSolution   = "PA20";
 Board.peripheral.swdioPin.$suggestSolution   = "PA19";
 GPIO2.associatedPins[0].pin.$suggestSolution = "PB21";
+GPIO3.associatedPins[0].pin.$suggestSolution = "PB3";
 SYSCTL.peripheral.$suggestSolution           = "SYSCTL";

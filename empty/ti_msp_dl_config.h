@@ -78,18 +78,28 @@ extern "C" {
 
 
 
-/* Port definition for Pin Group LED1 */
-#define LED1_PORT                                                        (GPIOB)
+/* Port definition for Pin Group LED */
+#define LED_PORT                                                         (GPIOB)
 
 /* Defines for PIN_22: GPIOB.22 with pinCMx 50 on package pin 21 */
-#define LED1_PIN_22_PIN                                         (DL_GPIO_PIN_22)
-#define LED1_PIN_22_IOMUX                                        (IOMUX_PINCM50)
+#define LED_PIN_22_PIN                                          (DL_GPIO_PIN_22)
+#define LED_PIN_22_IOMUX                                         (IOMUX_PINCM50)
 /* Port definition for Pin Group BTN */
 #define BTN_PORT                                                         (GPIOB)
 
 /* Defines for PIN_21: GPIOB.21 with pinCMx 49 on package pin 20 */
+// pins affected by this interrupt request:["PIN_21"]
+#define BTN_INT_IRQN                                            (GPIOB_INT_IRQn)
+#define BTN_INT_IIDX                            (DL_INTERRUPT_GROUP1_IIDX_GPIOB)
+#define BTN_PIN_21_IIDX                                     (DL_GPIO_IIDX_DIO21)
 #define BTN_PIN_21_PIN                                          (DL_GPIO_PIN_21)
 #define BTN_PIN_21_IOMUX                                         (IOMUX_PINCM49)
+/* Port definition for Pin Group LED2 */
+#define LED2_PORT                                                        (GPIOB)
+
+/* Defines for PIN_3: GPIOB.3 with pinCMx 16 on package pin 51 */
+#define LED2_PIN_3_PIN                                           (DL_GPIO_PIN_3)
+#define LED2_PIN_3_IOMUX                                         (IOMUX_PINCM16)
 
 
 
