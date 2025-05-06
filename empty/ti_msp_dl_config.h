@@ -73,7 +73,28 @@ extern "C" {
 #define POWER_STARTUP_DELAY                                                (16)
 
 
+
 #define CPUCLK_FREQ                                                     32000000
+
+
+
+/* Defines for UART_0 */
+#define UART_0_INST                                                        UART0
+#define UART_0_INST_FREQUENCY                                            4000000
+#define UART_0_INST_IRQHandler                                  UART0_IRQHandler
+#define UART_0_INST_INT_IRQN                                      UART0_INT_IRQn
+#define GPIO_UART_0_RX_PORT                                                GPIOA
+#define GPIO_UART_0_TX_PORT                                                GPIOA
+#define GPIO_UART_0_RX_PIN                                        DL_GPIO_PIN_11
+#define GPIO_UART_0_TX_PIN                                        DL_GPIO_PIN_10
+#define GPIO_UART_0_IOMUX_RX                                     (IOMUX_PINCM22)
+#define GPIO_UART_0_IOMUX_TX                                     (IOMUX_PINCM21)
+#define GPIO_UART_0_IOMUX_RX_FUNC                      IOMUX_PINCM22_PF_UART0_RX
+#define GPIO_UART_0_IOMUX_TX_FUNC                      IOMUX_PINCM21_PF_UART0_TX
+#define UART_0_BAUD_RATE                                                  (9600)
+#define UART_0_IBRD_4_MHZ_9600_BAUD                                         (26)
+#define UART_0_FBRD_4_MHZ_9600_BAUD                                          (3)
+
 
 
 
@@ -109,9 +130,12 @@ void SYSCFG_DL_init(void);
 void SYSCFG_DL_initPower(void);
 void SYSCFG_DL_GPIO_init(void);
 void SYSCFG_DL_SYSCTL_init(void);
+void SYSCFG_DL_UART_0_init(void);
 
 void SYSCFG_DL_SYSTICK_init(void);
 
+bool SYSCFG_DL_saveConfiguration(void);
+bool SYSCFG_DL_restoreConfiguration(void);
 
 #ifdef __cplusplus
 }

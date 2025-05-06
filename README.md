@@ -103,6 +103,31 @@ Cortex-Debug插件需要自己去设置一下，首先是在 `settings.json` 里
 
 然后就可以愉快的调试了！
 
+# 英文名词缩写的含义
+
+这个章节主要是因为库函数里面太多以前学51时完全没接触过的名词了，特地增加这个章节，方便查阅。
+
+## 串口通信的缩写
+
+1. **NVIC**是Nested Vectored Interrupt Controller的缩写，它**是一种中断控制器，用于管理微控制器的中断请求**
+
+2. **IRQ**是Interrupt Request的缩写，它**是一种硬件中断信号，用于通知处理器有外部设备需要处理**（就是中断位）。当外部设备需要处理器注意时，它会发送IRQ信号，处理器会暂停当前的任务，处理中断请求，然后再继续执行之前的任务。在计算机系统中，IRQ通常用于处理键盘、鼠标、硬盘等外部设备的输入和输出操作。
+
+3. **IRQN**是Interrupt Request Number的缩写，它**表示中断请求的编号**。在计算机系统中，每个外部设备都会分配一个唯一的IRQ编号，以便处理器能够区分和处理不同的中断请求。当外部设备需要处理器注意时，它会发送IRQ信号，并附带相应的IRQ编号，处理器根据IRQ编号确定需要处理的中断请求。
+
+4. **IIDX** 是 Interrupt Identifier Index 的缩写。在嵌入式系统和微控制器编程中，**IIDX 通常用于表示中断标识符的索引**（就是我们学51时学到的中断号 `interrupt 1`）。这个索引用于在**中断向量表**（概念和51相同，本质是一块内存区域，用于存储中断服务例程的地址和其他相关信息）**中查找和识别特定的中断服务例程**（ISR）。每个中断源都会分配一个唯一的 IIDX，以便系统可以正确地处理相应的中断请求。
+
+5. **中断向量表**（Interrupt Vector Table）是计算机系统中用于存储中断服务例程（Interrupt Service Routine, ISR）地址的表格。当处理器接收到一个中断请求时，它会查找中断向量表以确定应该执行哪个中断服务例程。
+ 
+**中断向量表通常包含以下信息**：
+**中断号**（Interrupt Number）：唯一标识每个中断源。
+**中断服务例程地址**（ISR Address）：指向处理该中断的中断服务例程的内存地址。
+当某个外部设备或内部事件触发中断时，处理器会根据中断号查找中断向量表，然后跳转到相应的中断服务例程地址执行中断处理代码。处理完成后，处理器会返回到之前被中断的程序继续执行。
+
+中断向量表在系统启动时被初始化，并且通常存储在内存的一个固定位置。不同的处理器架构和操作系统可能会有不同的中断向量表实现方式。
+
+6. 
+
 # 简单的延时函数
 
 延时函数是编程中常用的函数，用于让程序暂停执行一段时间。在嵌入式系统中，延时函数通常用于等待硬件设备完成某个操作，或者实现用户交互中的延迟效果。
@@ -778,6 +803,8 @@ void GROUP1_IRQHandler()
 }
 ```
 
+一些上面我们没见过的名词，如*NVIC*，*IIDX* 等，[转名词缩写的串口通信部分](#串口通信的缩写)
+
 这个比我们的用定时器的好太多了，按下必然点亮，不会莫名其妙的按下后又熄灭和按下好几次才触发了。
 
 # 串口通信
@@ -869,4 +896,79 @@ void GROUP1_IRQHandler()
 此外其实这里只是其中一部分引脚，还有些引脚也支持串口通信，更详细的还是需要去看[数据手册](./mspm0g3507.pdf)。
 
 ### 串口时钟的配置
+
+串口时钟来源有三个：
+
+1. BUSCLK：**由内部高频振荡器提供的CPU时钟**，通常芯片**默认设置为了`32MHz`**
+2. MFCLK：**只能使用固定的`4MHz`时钟**(参考用户手册132页)。**开启的话需要配置时钟树的`SYSOSC_4M`分支**，才能够正常开启
+3. LFCLK：**由内部的低频振荡器提供时钟**（`32KHz`）。**在运行、睡眠、停止和待机模式下有效，使用该时钟可以实现更低的功耗**。
+
+更详细的配置教程见[这里](https://wiki.lckfb.com/zh-hans/tmx-mspm0g3507/keil-beginner/uart.html#_7-8-3-%E4%B8%B2%E5%8F%A3%E6%97%B6%E9%92%9F%E7%9A%84%E9%85%8D%E7%BD%AE)
+
+然后我们的示例：
+
+```c
+#include "ti_msp_dl_config.h"
+
+// 使用dl库内置的 `delay_cycles` 函数来延时
+#define delay_ms(X) delay_cycles((CPUCLK_FREQ / 1000) * (X));
+
+// 需要注意使用 volatile
+volatile uint8_t uart_data    = 0; // uart数据
+
+void Uart0_Transmit_Char(char ch);      // 发送字符
+void Uart0_Transmit_String(char *data); // 发送字符串
+void Uart0_Receive_String(void);
+
+int main()
+{
+    SYSCFG_DL_init();
+    // 清除串口中断标志
+    NVIC_ClearPendingIRQ(UART_0_INST_INT_IRQN);
+    // 串口中断使能
+    NVIC_EnableIRQ(UART_0_INST_INT_IRQN);
+
+    while (1) {
+        // LED引脚高电平
+        DL_GPIO_setPins(LED_PORT, LED_PIN_22_PIN); // 点亮LED
+        delay_ms(500);
+        // LED引脚低电平
+        DL_GPIO_clearPins(LED_PORT, LED_PIN_22_PIN); // 点亮LED
+        delay_ms(500);
+    }
+}
+
+void Uart0_Transmit_Char(char ch)
+{
+    // 等待串口空闲
+    while (DL_UART_isBusy(UART_0_INST) == true);
+    DL_UART_Main_transmitData(UART_0_INST, ch); // 发送数据
+}
+
+void Uart0_Transmit_String(char *data)
+{
+    // 字符串为空时不发送
+    while (*data) {
+        Uart0_Transmit_Char(*data++); // 发送数据
+    }
+}
+
+void UART_0_INST_IRQHandler()
+{
+    switch (DL_UART_getPendingInterrupt(UART_0_INST)) {
+        case DL_UART_IIDX_RX: // 如果是接收中断
+            // 将发送过来的数据保存在变量中
+            uart_data = DL_UART_Main_receiveData(UART_0_INST);
+            // 然后再发出去
+            Uart0_Transmit_Char(uart_data);
+            break;
+        default: // 其他串口中断不管
+            break;
+    }
+}
+```
+
+
+
+对了，TI库的代码风格还是很好的，有兴趣的话可以看看，想研究下DL库是怎么写成的话就看看，顺带就当学习别人的分层架构思想了😁。
 

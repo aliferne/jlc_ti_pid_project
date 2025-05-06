@@ -1,60 +1,58 @@
 #include "ti_msp_dl_config.h"
 
-// X is the number you assigned for `delay_ms`
-volatile uint8_t time_10ms = 10; // 100ms
+// 使用dl库内置的 `delay_cycles` 函数来延时
+#define delay_ms(X) delay_cycles((CPUCLK_FREQ / 1000) * (X));
 
-void delay_ms(uint8_t ms)
-{
-    time_10ms = ms;
-}
+volatile uint32_t delay_times = 0; // 延时次数
+volatile uint8_t uart_data    = 0; // uart数据
+
+void Uart0_Transmit_Char(char ch);      // 发送字符
+void Uart0_Transmit_String(char *data); // 发送字符串
+void Uart0_Receive_String(void);
 
 int main()
 {
     SYSCFG_DL_init();
-    // 设置开启按键引脚的GPIOB端口中断
-    NVIC_EnableIRQ(BTN_INT_IRQN);
+    // 清除串口中断标志
+    NVIC_ClearPendingIRQ(UART_0_INST_INT_IRQN);
+    // 串口中断使能
+    NVIC_EnableIRQ(UART_0_INST_INT_IRQN);
 
     while (1) {
-        DL_GPIO_togglePins(LED2_PORT, LED2_PIN_3_PIN); // Set LED to ON
+        // LED引脚高电平
+        DL_GPIO_setPins(LED_PORT, LED_PIN_22_PIN); // 点亮LED
+        delay_ms(500);
+        // LED引脚低电平
+        DL_GPIO_clearPins(LED_PORT, LED_PIN_22_PIN); // 点亮LED
+        delay_ms(500);
     }
 }
 
-void GROUP1_IRQHandler()
+void Uart0_Transmit_Char(char ch)
 {
-    // 读取Group1的中断寄存器，并清除中断标志位
-    switch (DL_Interrupt_getPendingGroup(DL_INTERRUPT_GROUP_1)) {
-        // 检查是否为BTN的中断，注意是INT_IIDX
-        case BTN_INT_IIDX:
-            // 如果按键按下变为高电平
-            if (DL_GPIO_readPins(BTN_PORT, BTN_PIN_21_PIN) > 0) {
-                // 翻转板子上的LED
-                DL_GPIO_togglePins(LED_PORT, LED_PIN_22_PIN);
-            }
-            break;
-
-        default:
-            break;
-    }
+    // 等待串口空闲
+    while (DL_UART_isBusy(UART_0_INST) == true);
+    DL_UART_Main_transmitData(UART_0_INST, ch); // 发送数据
 }
 
-void Btn_Detector()
+void Uart0_Transmit_String(char *data)
 {
-    uint32_t onPressed = 0;
-    onPressed          = DL_GPIO_readPins(BTN_PORT, BTN_PIN_21_PIN);
-    if (onPressed == 0) {
-        onPressed = DL_GPIO_readPins(BTN_PORT, BTN_PIN_21_PIN);
-        if (onPressed == 0) {
-            DL_GPIO_togglePins(LED_PORT, LED_PIN_22_PIN);
-        }
+    // 字符串为空时不发送
+    while (*data) {
+        Uart0_Transmit_Char(*data++); // 发送数据
     }
 }
 
-// void SysTick_Handler()
-// {
-//     if (time_10ms > 0) {
-//         time_10ms--;
-//     } else {
-//         time_10ms = 0;
-//     }
-//     Btn_Detector();
-// }
+void UART_0_INST_IRQHandler()
+{
+    switch (DL_UART_getPendingInterrupt(UART_0_INST)) {
+        case DL_UART_IIDX_RX:
+            // 将发送过来的数据保存在变量中
+            uart_data = DL_UART_Main_receiveData(UART_0_INST);
+            // 然后再发出去
+            Uart0_Transmit_Char(uart_data);
+            break;
+        default: // 其他串口中断不管
+            break;
+    }
+}
