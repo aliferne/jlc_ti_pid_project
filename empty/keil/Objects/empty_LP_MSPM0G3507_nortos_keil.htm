@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\empty_LP_MSPM0G3507_nortos_keil.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\empty_LP_MSPM0G3507_nortos_keil.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6210000: Last Updated: Tue May  6 14:54:49 2025
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6210000: Last Updated: Sat May  3 23:52:11 2025
 <BR><P>
 <H3>Maximum Stack Usage =         16 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -15,6 +15,7 @@ Mutually Recursive functions
  <LI><a href="#[2]">HardFault_Handler</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[2]">HardFault_Handler</a><BR>
  <LI><a href="#[3]">SVC_Handler</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[3]">SVC_Handler</a><BR>
  <LI><a href="#[4]">PendSV_Handler</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[4]">PendSV_Handler</a><BR>
+ <LI><a href="#[5]">SysTick_Handler</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[5]">SysTick_Handler</a><BR>
 </UL>
 <P>
 <H3>
@@ -38,7 +39,7 @@ Function Pointers
  <LI><a href="#[e]">SPI0_IRQHandler</a> from startup_mspm0g350x_uvision.o(.text) referenced from startup_mspm0g350x_uvision.o(RESET)
  <LI><a href="#[f]">SPI1_IRQHandler</a> from startup_mspm0g350x_uvision.o(.text) referenced from startup_mspm0g350x_uvision.o(RESET)
  <LI><a href="#[3]">SVC_Handler</a> from startup_mspm0g350x_uvision.o(.text) referenced from startup_mspm0g350x_uvision.o(RESET)
- <LI><a href="#[5]">SysTick_Handler</a> from empty.o(.text.SysTick_Handler) referenced from startup_mspm0g350x_uvision.o(RESET)
+ <LI><a href="#[5]">SysTick_Handler</a> from startup_mspm0g350x_uvision.o(.text) referenced from startup_mspm0g350x_uvision.o(RESET)
  <LI><a href="#[15]">TIMA0_IRQHandler</a> from startup_mspm0g350x_uvision.o(.text) referenced from startup_mspm0g350x_uvision.o(RESET)
  <LI><a href="#[16]">TIMA1_IRQHandler</a> from startup_mspm0g350x_uvision.o(.text) referenced from startup_mspm0g350x_uvision.o(RESET)
  <LI><a href="#[13]">TIMG0_IRQHandler</a> from startup_mspm0g350x_uvision.o(.text) referenced from startup_mspm0g350x_uvision.o(RESET)
@@ -219,6 +220,13 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_mspm0g350x_uvision.o(RESET)
 </UL>
+<P><STRONG><a name="[5]"></a>SysTick_Handler</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, startup_mspm0g350x_uvision.o(.text))
+<BR><BR>[Calls]<UL><LI><a href="#[5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysTick_Handler
+</UL>
+<BR>[Called By]<UL><LI><a href="#[5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysTick_Handler
+</UL>
+<BR>[Address Reference Count : 1]<UL><LI> startup_mspm0g350x_uvision.o(RESET)
+</UL>
 <P><STRONG><a name="[a]"></a>ADC0_IRQHandler</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, startup_mspm0g350x_uvision.o(.text))
 <BR>[Address Reference Count : 1]<UL><LI> startup_mspm0g350x_uvision.o(RESET)
 </UL>
@@ -374,10 +382,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[32]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SYSCFG_DL_init
 </UL>
 
-<P><STRONG><a name="[5]"></a>SysTick_Handler</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, empty.o(.text.SysTick_Handler))
-<BR>[Address Reference Count : 1]<UL><LI> startup_mspm0g350x_uvision.o(RESET)
-</UL>
-<P><STRONG><a name="[27]"></a>main</STRONG> (Thumb, 44 bytes, Stack size 0 bytes, empty.o(.text.main))
+<P><STRONG><a name="[27]"></a>main</STRONG> (Thumb, 56 bytes, Stack size 0 bytes, empty.o(.text.main))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = main &rArr; SYSCFG_DL_init &rArr; SYSCFG_DL_initPower
 </UL>
 <BR>[Calls]<UL><LI><a href="#[32]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SYSCFG_DL_init

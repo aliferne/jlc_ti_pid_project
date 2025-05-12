@@ -72,7 +72,7 @@
           <BeforeMake>
             <RunUserProg1>1</RunUserProg1>
             <RunUserProg2>0</RunUserProg2>
-            <UserProg1Name>cmd.exe /C "$P../../syscfg.bat '$P' empty.syscfg"</UserProg1Name>
+            <UserProg1Name>cmd.exe /C "$P../../../../../../tools/keil/syscfg.bat '$P' empty.syscfg"</UserProg1Name>
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
@@ -179,16 +179,16 @@
             <mOS>0</mOS>
             <uocRom>0</uocRom>
             <uocRam>0</uocRam>
-            <hadIROM>1</hadIROM>
-            <hadIRAM>1</hadIRAM>
-            <hadXRAM>1</hadXRAM>
+            <hadIROM>0</hadIROM>
+            <hadIRAM>0</hadIRAM>
+            <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
             <RvdsMve>0</RvdsMve>
             <RvdsCdeCp>0</RvdsCdeCp>
             <nBranchProt>0</nBranchProt>
-            <hadIRAM2>1</hadIRAM2>
-            <hadIROM2>1</hadIROM2>
+            <hadIRAM2>0</hadIRAM2>
+            <hadIROM2>0</hadIROM2>
             <StupSel>0</StupSel>
             <useUlib>0</useUlib>
             <EndSel>0</EndSel>
@@ -246,18 +246,18 @@
               </Ocm6>
               <IRAM>
                 <Type>0</Type>
-                <StartAddress>0x20000000</StartAddress>
-                <Size>0x8000</Size>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
               </IRAM>
               <IROM>
-                <Type>1</Type>
+                <Type>0</Type>
                 <StartAddress>0x0</StartAddress>
-                <Size>0x20000</Size>
+                <Size>0x0</Size>
               </IROM>
               <XRAM>
-                <Type>1</Type>
-                <StartAddress>0x20200000</StartAddress>
-                <Size>0x8000</Size>
+                <Type>0</Type>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
               </XRAM>
               <OCR_RVCT1>
                 <Type>1</Type>
@@ -277,22 +277,22 @@
               <OCR_RVCT4>
                 <Type>1</Type>
                 <StartAddress>0x0</StartAddress>
-                <Size>0x20000</Size>
+                <Size>0x0</Size>
               </OCR_RVCT4>
               <OCR_RVCT5>
                 <Type>1</Type>
-                <StartAddress>0x400000</StartAddress>
-                <Size>0x20000</Size>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
               </OCR_RVCT5>
               <OCR_RVCT6>
                 <Type>0</Type>
-                <StartAddress>0x20200000</StartAddress>
-                <Size>0x8000</Size>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
               </OCR_RVCT6>
               <OCR_RVCT7>
                 <Type>0</Type>
-                <StartAddress>0x20300000</StartAddress>
-                <Size>0x8000</Size>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
               </OCR_RVCT7>
               <OCR_RVCT8>
                 <Type>0</Type>
@@ -301,13 +301,13 @@
               </OCR_RVCT8>
               <OCR_RVCT9>
                 <Type>0</Type>
-                <StartAddress>0x20000000</StartAddress>
-                <Size>0x8000</Size>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
               </OCR_RVCT9>
               <OCR_RVCT10>
                 <Type>0</Type>
-                <StartAddress>0x20100000</StartAddress>
-                <Size>0x8000</Size>
+                <StartAddress>0x0</StartAddress>
+                <Size>0x0</Size>
               </OCR_RVCT10>
             </OnChipMemories>
             <RvctStartVector></RvctStartVector>
@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>__MSPM0G3507__</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\source\third_party\CMSIS\Core\Include;..\..\source;..\..\</IncludePath>
+              <IncludePath>../../../../../../source/third_party/CMSIS/Core/Include,../../../../../../source</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -374,7 +374,7 @@
             <ScatterFile>./mspm0g3507.sct</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
-            <Misc>../../source/ti/driverlib/lib/keil/m0p/mspm0g1x0x_g3x0x/driverlib.a</Misc>
+            <Misc>../../../../../../source/ti/driverlib/lib/keil/m0p/mspm0g1x0x_g3x0x/driverlib.a</Misc>
             <LinkerInputFile></LinkerInputFile>
             <DisabledWarnings></DisabledWarnings>
           </LDads>

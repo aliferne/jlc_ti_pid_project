@@ -34,7 +34,7 @@
   "deviceName": null,
   "packDir": null,
   "miscInfo": {
-    "uid": "54d8b20de49d2ad7d9be8402cf3fd5b9"
+    "uid": "bf7e0676d6f4ef485d6c8a4c62f670f8"
   },
   "targets": {
     "empty_LP_MSPM0G3507_nortos_keil": {
@@ -51,8 +51,8 @@
               "tag": "RAM",
               "id": 1,
               "mem": {
-                "startAddr": "0x20200000",
-                "size": "0x8000"
+                "startAddr": "0x0",
+                "size": "0x0"
               },
               "isChecked": false,
               "noInit": false
@@ -61,8 +61,8 @@
               "tag": "RAM",
               "id": 2,
               "mem": {
-                "startAddr": "0x20300000",
-                "size": "0x8000"
+                "startAddr": "0x0",
+                "size": "0x0"
               },
               "isChecked": false,
               "noInit": false
@@ -81,8 +81,8 @@
               "tag": "IRAM",
               "id": 1,
               "mem": {
-                "startAddr": "0x20000000",
-                "size": "0x8000"
+                "startAddr": "0x0",
+                "size": "0x0"
               },
               "isChecked": false,
               "noInit": false
@@ -91,8 +91,8 @@
               "tag": "IRAM",
               "id": 2,
               "mem": {
-                "startAddr": "0x20100000",
-                "size": "0x8000"
+                "startAddr": "0x0",
+                "size": "0x0"
               },
               "isChecked": false,
               "noInit": false
@@ -134,7 +134,7 @@
               "id": 1,
               "mem": {
                 "startAddr": "0x0",
-                "size": "0x20000"
+                "size": "0x0"
               },
               "isChecked": false,
               "isStartup": false
@@ -143,8 +143,8 @@
               "tag": "IROM",
               "id": 2,
               "mem": {
-                "startAddr": "0x400000",
-                "size": "0x20000"
+                "startAddr": "0x0",
+                "size": "0x0"
               },
               "isChecked": false,
               "isStartup": false
@@ -169,9 +169,7 @@
       "custom_dep": {
         "name": "default",
         "incList": [
-          "source/third_party/CMSIS/Core/Include",
           "source",
-          ".",
           ".cmsis/include",
           "empty/keil/RTE/_empty_LP_MSPM0G3507_nortos_keil"
         ],
@@ -185,7 +183,7 @@
           "version": 3,
           "beforeBuildTasks": [
             {
-              "name": "Linking Syscfg",
+              "name": "Linking syscfg",
               "command": "cd \"${projectRoot}\" && cmd.exe /C \"${projectRoot}\\syscfg.bat '${projectRoot}\\empty' empty.syscfg\"",
               "disable": false,
               "abortAfterFailed": true,
