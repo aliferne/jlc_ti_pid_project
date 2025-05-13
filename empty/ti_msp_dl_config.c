@@ -40,8 +40,6 @@
 
 #include "ti_msp_dl_config.h"
 
-DL_TimerA_backupConfig gPWM_LEDBackup;
-
 /*
  *  ======== SYSCFG_DL_init ========
  *  Perform any initialization needed before using any board APIs
@@ -52,53 +50,25 @@ SYSCONFIG_WEAK void SYSCFG_DL_init(void)
     SYSCFG_DL_GPIO_init();
     /* Module-Specific Initializations*/
     SYSCFG_DL_SYSCTL_init();
-    SYSCFG_DL_PWM_LED_init();
-    SYSCFG_DL_TIMER_0_init();
     SYSCFG_DL_UART_0_init();
+    SYSCFG_DL_ADC_VOLTAGE_init();
     SYSCFG_DL_SYSTICK_init();
-    /* Ensure backup structures have no valid state */
-	gPWM_LEDBackup.backupRdy 	= false;
-
-
-
-}
-/*
- * User should take care to save and restore register configuration in application.
- * See Retention Configuration section for more details.
- */
-SYSCONFIG_WEAK bool SYSCFG_DL_saveConfiguration(void)
-{
-    bool retStatus = true;
-
-	retStatus &= DL_TimerA_saveConfiguration(PWM_LED_INST, &gPWM_LEDBackup);
-
-    return retStatus;
 }
 
 
-SYSCONFIG_WEAK bool SYSCFG_DL_restoreConfiguration(void)
-{
-    bool retStatus = true;
-
-	retStatus &= DL_TimerA_restoreConfiguration(PWM_LED_INST, &gPWM_LEDBackup, false);
-
-    return retStatus;
-}
 
 SYSCONFIG_WEAK void SYSCFG_DL_initPower(void)
 {
     DL_GPIO_reset(GPIOA);
     DL_GPIO_reset(GPIOB);
-    DL_TimerA_reset(PWM_LED_INST);
-    DL_TimerG_reset(TIMER_0_INST);
     DL_UART_Main_reset(UART_0_INST);
+    DL_ADC12_reset(ADC_VOLTAGE_INST);
 
 
     DL_GPIO_enablePower(GPIOA);
     DL_GPIO_enablePower(GPIOB);
-    DL_TimerA_enablePower(PWM_LED_INST);
-    DL_TimerG_enablePower(TIMER_0_INST);
     DL_UART_Main_enablePower(UART_0_INST);
+    DL_ADC12_enablePower(ADC_VOLTAGE_INST);
 
     delay_cycles(POWER_STARTUP_DELAY);
 }
@@ -106,36 +76,12 @@ SYSCONFIG_WEAK void SYSCFG_DL_initPower(void)
 SYSCONFIG_WEAK void SYSCFG_DL_GPIO_init(void)
 {
 
-    DL_GPIO_initPeripheralOutputFunction(GPIO_PWM_LED_C1_IOMUX,GPIO_PWM_LED_C1_IOMUX_FUNC);
-    DL_GPIO_enableOutput(GPIO_PWM_LED_C1_PORT, GPIO_PWM_LED_C1_PIN);
-
     DL_GPIO_initPeripheralOutputFunction(
         GPIO_UART_0_IOMUX_TX, GPIO_UART_0_IOMUX_TX_FUNC);
     DL_GPIO_initPeripheralInputFunction(
         GPIO_UART_0_IOMUX_RX, GPIO_UART_0_IOMUX_RX_FUNC);
 
-    DL_GPIO_initDigitalOutputFeatures(LED_PIN_22_IOMUX,
-		 DL_GPIO_INVERSION_DISABLE, DL_GPIO_RESISTOR_PULL_DOWN,
-		 DL_GPIO_DRIVE_STRENGTH_LOW, DL_GPIO_HIZ_DISABLE);
-
-    DL_GPIO_initDigitalInputFeatures(BTN_PIN_21_IOMUX,
-		 DL_GPIO_INVERSION_DISABLE, DL_GPIO_RESISTOR_PULL_UP,
-		 DL_GPIO_HYSTERESIS_DISABLE, DL_GPIO_WAKEUP_DISABLE);
-
-    DL_GPIO_initDigitalOutputFeatures(LED2_PIN_3_IOMUX,
-		 DL_GPIO_INVERSION_DISABLE, DL_GPIO_RESISTOR_PULL_UP,
-		 DL_GPIO_DRIVE_STRENGTH_LOW, DL_GPIO_HIZ_DISABLE);
-
-    DL_GPIO_clearPins(GPIOB, LED_PIN_22_PIN |
-		LED2_PIN_3_PIN);
-    DL_GPIO_enableOutput(GPIOB, LED_PIN_22_PIN |
-		LED2_PIN_3_PIN);
-    DL_GPIO_setUpperPinsPolarity(GPIOB, DL_GPIO_PIN_21_EDGE_RISE);
-    DL_GPIO_clearInterruptStatus(GPIOB, BTN_PIN_21_PIN);
-    DL_GPIO_enableInterrupt(GPIOB, BTN_PIN_21_PIN);
-
 }
-
 
 
 SYSCONFIG_WEAK void SYSCFG_DL_SYSCTL_init(void)
@@ -144,101 +90,19 @@ SYSCONFIG_WEAK void SYSCFG_DL_SYSCTL_init(void)
 	//Low Power Mode is configured to be SLEEP0
     DL_SYSCTL_setBORThreshold(DL_SYSCTL_BOR_THRESHOLD_LEVEL_0);
 
-    
-	DL_SYSCTL_setSYSOSCFreq(DL_SYSCTL_SYSOSC_FREQ_BASE);
-	/* Set default configuration */
-	DL_SYSCTL_disableHFXT();
-	DL_SYSCTL_disableSYSPLL();
-    DL_SYSCTL_enableMFCLK();
-
-}
-
-
-/*
- * Timer clock configuration to be sourced by  / 8 (4000000 Hz)
- * timerClkFreq = (timerClkSrc / (timerClkDivRatio * (timerClkPrescale + 1)))
- *   4000000 Hz = 4000000 Hz / (8 * (0 + 1))
- */
-static const DL_TimerA_ClockConfig gPWM_LEDClockConfig = {
-    .clockSel = DL_TIMER_CLOCK_BUSCLK,
-    .divideRatio = DL_TIMER_CLOCK_DIVIDE_8,
-    .prescale = 0U
-};
-
-static const DL_TimerA_PWMConfig gPWM_LEDConfig = {
-    .pwmMode = DL_TIMER_PWM_MODE_EDGE_ALIGN,
-    .period = 1000,
-    .isTimerWithFourCC = true,
-    .startTimer = DL_TIMER_START,
-};
-
-SYSCONFIG_WEAK void SYSCFG_DL_PWM_LED_init(void) {
-
-    DL_TimerA_setClockConfig(
-        PWM_LED_INST, (DL_TimerA_ClockConfig *) &gPWM_LEDClockConfig);
-
-    DL_TimerA_initPWMMode(
-        PWM_LED_INST, (DL_TimerA_PWMConfig *) &gPWM_LEDConfig);
-
-    DL_TimerA_setCaptureCompareOutCtl(PWM_LED_INST, DL_TIMER_CC_OCTL_INIT_VAL_LOW,
-		DL_TIMER_CC_OCTL_INV_OUT_DISABLED, DL_TIMER_CC_OCTL_SRC_FUNCVAL,
-		DL_TIMERA_CAPTURE_COMPARE_1_INDEX);
-
-    DL_TimerA_setCaptCompUpdateMethod(PWM_LED_INST, DL_TIMER_CC_UPDATE_METHOD_IMMEDIATE, DL_TIMERA_CAPTURE_COMPARE_1_INDEX);
-    DL_TimerA_setCaptureCompareValue(PWM_LED_INST, 1000, DL_TIMER_CC_1_INDEX);
-
-    DL_TimerA_enableClock(PWM_LED_INST);
-
-
-    
-    DL_TimerA_setCCPDirection(PWM_LED_INST , DL_TIMER_CC1_OUTPUT );
-
-
-}
-
-
-
-/*
- * Timer clock configuration to be sourced by BUSCLK /  (4000000 Hz)
- * timerClkFreq = (timerClkSrc / (timerClkDivRatio * (timerClkPrescale + 1)))
- *   40000 Hz = 4000000 Hz / (8 * (99 + 1))
- */
-static const DL_TimerG_ClockConfig gTIMER_0ClockConfig = {
-    .clockSel    = DL_TIMER_CLOCK_BUSCLK,
-    .divideRatio = DL_TIMER_CLOCK_DIVIDE_8,
-    .prescale    = 99U,
-};
-
-/*
- * Timer load value (where the counter starts from) is calculated as (timerPeriod * timerClockFreq) - 1
- * TIMER_0_INST_LOAD_VALUE = (1000 ms * 40000 Hz) - 1
- */
-static const DL_TimerG_TimerConfig gTIMER_0TimerConfig = {
-    .period     = TIMER_0_INST_LOAD_VALUE,
-    .timerMode  = DL_TIMER_TIMER_MODE_PERIODIC_UP,
-    .startTimer = DL_TIMER_START,
-};
-
-SYSCONFIG_WEAK void SYSCFG_DL_TIMER_0_init(void) {
-
-    DL_TimerG_setClockConfig(TIMER_0_INST,
-        (DL_TimerG_ClockConfig *) &gTIMER_0ClockConfig);
-
-    DL_TimerG_initTimerMode(TIMER_0_INST,
-        (DL_TimerG_TimerConfig *) &gTIMER_0TimerConfig);
-    DL_TimerG_enableInterrupt(TIMER_0_INST , DL_TIMERG_INTERRUPT_ZERO_EVENT);
-    DL_TimerG_enableClock(TIMER_0_INST);
-
-
-
-
+    DL_SYSCTL_setSYSOSCFreq(DL_SYSCTL_SYSOSC_FREQ_BASE);
+    /* Set default configuration */
+    DL_SYSCTL_disableHFXT();
+    DL_SYSCTL_disableSYSPLL();
+    DL_SYSCTL_setULPCLKDivider(DL_SYSCTL_ULPCLK_DIV_1);
+    DL_SYSCTL_setMCLKDivider(DL_SYSCTL_MCLK_DIVIDER_DISABLE);
 
 }
 
 
 
 static const DL_UART_Main_ClockConfig gUART_0ClockConfig = {
-    .clockSel    = DL_UART_MAIN_CLOCK_MFCLK,
+    .clockSel    = DL_UART_MAIN_CLOCK_BUSCLK,
     .divideRatio = DL_UART_MAIN_CLOCK_DIVIDE_RATIO_1
 };
 
@@ -259,26 +123,40 @@ SYSCONFIG_WEAK void SYSCFG_DL_UART_0_init(void)
     /*
      * Configure baud rate by setting oversampling and baud rate divisors.
      *  Target baud rate: 9600
-     *  Actual baud rate: 9598.08
+     *  Actual baud rate: 9600.24
      */
     DL_UART_Main_setOversampling(UART_0_INST, DL_UART_OVERSAMPLING_RATE_16X);
-    DL_UART_Main_setBaudRateDivisor(UART_0_INST, UART_0_IBRD_4_MHZ_9600_BAUD, UART_0_FBRD_4_MHZ_9600_BAUD);
+    DL_UART_Main_setBaudRateDivisor(UART_0_INST, UART_0_IBRD_32_MHZ_9600_BAUD, UART_0_FBRD_32_MHZ_9600_BAUD);
 
-
-    /* Configure Interrupts */
-    DL_UART_Main_enableInterrupt(UART_0_INST,
-                                 DL_UART_MAIN_INTERRUPT_RX);
 
 
     DL_UART_Main_enable(UART_0_INST);
 }
 
+/* ADC_VOLTAGE Initialization */
+static const DL_ADC12_ClockConfig gADC_VOLTAGEClockConfig = {
+    .clockSel       = DL_ADC12_CLOCK_SYSOSC,
+    .divideRatio    = DL_ADC12_CLOCK_DIVIDE_8,
+    .freqRange      = DL_ADC12_CLOCK_FREQ_RANGE_24_TO_32,
+};
+SYSCONFIG_WEAK void SYSCFG_DL_ADC_VOLTAGE_init(void)
+{
+    DL_ADC12_setClockConfig(ADC_VOLTAGE_INST, (DL_ADC12_ClockConfig *) &gADC_VOLTAGEClockConfig);
+    DL_ADC12_initSingleSample(ADC_VOLTAGE_INST,
+        DL_ADC12_REPEAT_MODE_ENABLED, DL_ADC12_SAMPLING_SOURCE_AUTO, DL_ADC12_TRIG_SRC_SOFTWARE,
+        DL_ADC12_SAMP_CONV_RES_12_BIT, DL_ADC12_SAMP_CONV_DATA_FORMAT_UNSIGNED);
+    DL_ADC12_configConversionMem(ADC_VOLTAGE_INST, ADC_VOLTAGE_ADCMEM_ADC_CH0,
+        DL_ADC12_INPUT_CHAN_0, DL_ADC12_REFERENCE_VOLTAGE_VDDA, DL_ADC12_SAMPLE_TIMER_SOURCE_SCOMP0, DL_ADC12_AVERAGING_MODE_DISABLED,
+        DL_ADC12_BURN_OUT_SOURCE_DISABLED, DL_ADC12_TRIGGER_MODE_AUTO_NEXT, DL_ADC12_WINDOWS_COMP_MODE_DISABLED);
+    DL_ADC12_setPowerDownMode(ADC_VOLTAGE_INST,DL_ADC12_POWER_DOWN_MODE_MANUAL);
+    DL_ADC12_setSampleTime0(ADC_VOLTAGE_INST,40000);
+    /* Enable ADC12 interrupt */
+    DL_ADC12_clearInterruptStatus(ADC_VOLTAGE_INST,(DL_ADC12_INTERRUPT_MEM0_RESULT_LOADED));
+    DL_ADC12_enableInterrupt(ADC_VOLTAGE_INST,(DL_ADC12_INTERRUPT_MEM0_RESULT_LOADED));
+    DL_ADC12_enableConversions(ADC_VOLTAGE_INST);
+}
+
 SYSCONFIG_WEAK void SYSCFG_DL_SYSTICK_init(void)
 {
-    /*
-     * Initializes the SysTick period to 1.00 ms,
-     * enables the interrupt, and starts the SysTick Timer
-     */
-    DL_SYSTICK_config(32000);
 }
 

@@ -73,36 +73,13 @@ extern "C" {
 #define POWER_STARTUP_DELAY                                                (16)
 
 
-
 #define CPUCLK_FREQ                                                     32000000
-
-
-
-/* Defines for PWM_LED */
-#define PWM_LED_INST                                                       TIMA0
-#define PWM_LED_INST_IRQHandler                                 TIMA0_IRQHandler
-#define PWM_LED_INST_INT_IRQN                                   (TIMA0_INT_IRQn)
-#define PWM_LED_INST_CLK_FREQ                                            4000000
-/* GPIO defines for channel 1 */
-#define GPIO_PWM_LED_C1_PORT                                               GPIOA
-#define GPIO_PWM_LED_C1_PIN                                        DL_GPIO_PIN_1
-#define GPIO_PWM_LED_C1_IOMUX                                     (IOMUX_PINCM2)
-#define GPIO_PWM_LED_C1_IOMUX_FUNC                    IOMUX_PINCM2_PF_TIMA0_CCP1
-#define GPIO_PWM_LED_C1_IDX                                  DL_TIMER_CC_1_INDEX
-
-
-
-/* Defines for TIMER_0 */
-#define TIMER_0_INST                                                     (TIMG0)
-#define TIMER_0_INST_IRQHandler                                 TIMG0_IRQHandler
-#define TIMER_0_INST_INT_IRQN                                   (TIMG0_INT_IRQn)
-#define TIMER_0_INST_LOAD_VALUE                                         (39999U)
 
 
 
 /* Defines for UART_0 */
 #define UART_0_INST                                                        UART0
-#define UART_0_INST_FREQUENCY                                            4000000
+#define UART_0_INST_FREQUENCY                                           32000000
 #define UART_0_INST_IRQHandler                                  UART0_IRQHandler
 #define UART_0_INST_INT_IRQN                                      UART0_INT_IRQn
 #define GPIO_UART_0_RX_PORT                                                GPIOA
@@ -114,35 +91,23 @@ extern "C" {
 #define GPIO_UART_0_IOMUX_RX_FUNC                      IOMUX_PINCM22_PF_UART0_RX
 #define GPIO_UART_0_IOMUX_TX_FUNC                      IOMUX_PINCM21_PF_UART0_TX
 #define UART_0_BAUD_RATE                                                  (9600)
-#define UART_0_IBRD_4_MHZ_9600_BAUD                                         (26)
-#define UART_0_FBRD_4_MHZ_9600_BAUD                                          (3)
+#define UART_0_IBRD_32_MHZ_9600_BAUD                                       (208)
+#define UART_0_FBRD_32_MHZ_9600_BAUD                                        (21)
 
 
 
 
 
-/* Port definition for Pin Group LED */
-#define LED_PORT                                                         (GPIOB)
+/* Defines for ADC_VOLTAGE */
+#define ADC_VOLTAGE_INST                                                    ADC0
+#define ADC_VOLTAGE_INST_IRQHandler                              ADC0_IRQHandler
+#define ADC_VOLTAGE_INST_INT_IRQN                                (ADC0_INT_IRQn)
+#define ADC_VOLTAGE_ADCMEM_ADC_CH0                            DL_ADC12_MEM_IDX_0
+#define ADC_VOLTAGE_ADCMEM_ADC_CH0_REF           DL_ADC12_REFERENCE_VOLTAGE_VDDA
+#define ADC_VOLTAGE_ADCMEM_ADC_CH0_REF_VOLTAGE_V                                     3.3
+#define GPIO_ADC_VOLTAGE_C0_PORT                                           GPIOA
+#define GPIO_ADC_VOLTAGE_C0_PIN                                   DL_GPIO_PIN_27
 
-/* Defines for PIN_22: GPIOB.22 with pinCMx 50 on package pin 21 */
-#define LED_PIN_22_PIN                                          (DL_GPIO_PIN_22)
-#define LED_PIN_22_IOMUX                                         (IOMUX_PINCM50)
-/* Port definition for Pin Group BTN */
-#define BTN_PORT                                                         (GPIOB)
-
-/* Defines for PIN_21: GPIOB.21 with pinCMx 49 on package pin 20 */
-// pins affected by this interrupt request:["PIN_21"]
-#define BTN_INT_IRQN                                            (GPIOB_INT_IRQn)
-#define BTN_INT_IIDX                            (DL_INTERRUPT_GROUP1_IIDX_GPIOB)
-#define BTN_PIN_21_IIDX                                     (DL_GPIO_IIDX_DIO21)
-#define BTN_PIN_21_PIN                                          (DL_GPIO_PIN_21)
-#define BTN_PIN_21_IOMUX                                         (IOMUX_PINCM49)
-/* Port definition for Pin Group LED2 */
-#define LED2_PORT                                                        (GPIOB)
-
-/* Defines for PIN_3: GPIOB.3 with pinCMx 16 on package pin 51 */
-#define LED2_PIN_3_PIN                                           (DL_GPIO_PIN_3)
-#define LED2_PIN_3_IOMUX                                         (IOMUX_PINCM16)
 
 
 
@@ -152,10 +117,8 @@ void SYSCFG_DL_init(void);
 void SYSCFG_DL_initPower(void);
 void SYSCFG_DL_GPIO_init(void);
 void SYSCFG_DL_SYSCTL_init(void);
-void SYSCFG_DL_PWM_LED_init(void);
-void SYSCFG_DL_TIMER_0_init(void);
 void SYSCFG_DL_UART_0_init(void);
-
+void SYSCFG_DL_ADC_VOLTAGE_init(void);
 void SYSCFG_DL_SYSTICK_init(void);
 
 bool SYSCFG_DL_saveConfiguration(void);
