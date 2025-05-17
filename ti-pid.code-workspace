@@ -5,6 +5,13 @@
         }
     ],
     "settings": {
+        "workbench.colorCustomizations": {
+            "editor.lineHighlightBackground": "#1073cf2d",
+            "editor.lineHighlightBorder": "#9fced11f",
+            "activityBar.background": "#023336",
+            "titleBar.activeBackground": "#02484B",
+            "titleBar.activeForeground": "#ECFDFE"
+        },
         "files.autoGuessEncoding": true,
         "C_Cpp.default.configurationProvider": "cl.eide",
         "C_Cpp.errorSquiggles": "disabled",

@@ -110,6 +110,29 @@ extern "C" {
 
 
 
+/* Defines for DMA_CH0 */
+#define DMA_CH0_CHAN_ID                                                      (0)
+#define ADC_VOLTAGE_INST_DMA_TRIGGER                  (DMA_ADC0_EVT_GEN_BD_TRIG)
+
+
+
+/* Port definition for Pin Group LED */
+#define LED_PORT                                                         (GPIOB)
+
+/* Defines for PIN_0: GPIOB.22 with pinCMx 50 on package pin 21 */
+#define LED_PIN_0_PIN                                           (DL_GPIO_PIN_22)
+#define LED_PIN_0_IOMUX                                          (IOMUX_PINCM50)
+/* Port definition for Pin Group I2C */
+#define I2C_PORT                                                         (GPIOA)
+
+/* Defines for SCL: GPIOA.1 with pinCMx 2 on package pin 34 */
+#define I2C_SCL_PIN                                              (DL_GPIO_PIN_1)
+#define I2C_SCL_IOMUX                                             (IOMUX_PINCM2)
+/* Defines for SDA: GPIOA.0 with pinCMx 1 on package pin 33 */
+#define I2C_SDA_PIN                                              (DL_GPIO_PIN_0)
+#define I2C_SDA_IOMUX                                             (IOMUX_PINCM1)
+
+
 
 /* clang-format on */
 
@@ -119,6 +142,8 @@ void SYSCFG_DL_GPIO_init(void);
 void SYSCFG_DL_SYSCTL_init(void);
 void SYSCFG_DL_UART_0_init(void);
 void SYSCFG_DL_ADC_VOLTAGE_init(void);
+void SYSCFG_DL_DMA_init(void);
+
 void SYSCFG_DL_SYSTICK_init(void);
 
 bool SYSCFG_DL_saveConfiguration(void);

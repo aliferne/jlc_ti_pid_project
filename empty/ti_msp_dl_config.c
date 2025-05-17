@@ -52,6 +52,7 @@ SYSCONFIG_WEAK void SYSCFG_DL_init(void)
     SYSCFG_DL_SYSCTL_init();
     SYSCFG_DL_UART_0_init();
     SYSCFG_DL_ADC_VOLTAGE_init();
+    SYSCFG_DL_DMA_init();
     SYSCFG_DL_SYSTICK_init();
 }
 
@@ -65,10 +66,12 @@ SYSCONFIG_WEAK void SYSCFG_DL_initPower(void)
     DL_ADC12_reset(ADC_VOLTAGE_INST);
 
 
+
     DL_GPIO_enablePower(GPIOA);
     DL_GPIO_enablePower(GPIOB);
     DL_UART_Main_enablePower(UART_0_INST);
     DL_ADC12_enablePower(ADC_VOLTAGE_INST);
+
 
     delay_cycles(POWER_STARTUP_DELAY);
 }
@@ -80,6 +83,19 @@ SYSCONFIG_WEAK void SYSCFG_DL_GPIO_init(void)
         GPIO_UART_0_IOMUX_TX, GPIO_UART_0_IOMUX_TX_FUNC);
     DL_GPIO_initPeripheralInputFunction(
         GPIO_UART_0_IOMUX_RX, GPIO_UART_0_IOMUX_RX_FUNC);
+
+    DL_GPIO_initDigitalOutput(LED_PIN_0_IOMUX);
+
+    DL_GPIO_initDigitalOutput(I2C_SCL_IOMUX);
+
+    DL_GPIO_initDigitalOutput(I2C_SDA_IOMUX);
+
+    DL_GPIO_setPins(I2C_PORT, I2C_SCL_PIN |
+		I2C_SDA_PIN);
+    DL_GPIO_enableOutput(I2C_PORT, I2C_SCL_PIN |
+		I2C_SDA_PIN);
+    DL_GPIO_clearPins(LED_PORT, LED_PIN_0_PIN);
+    DL_GPIO_enableOutput(LED_PORT, LED_PIN_0_PIN);
 
 }
 
@@ -150,11 +166,35 @@ SYSCONFIG_WEAK void SYSCFG_DL_ADC_VOLTAGE_init(void)
         DL_ADC12_BURN_OUT_SOURCE_DISABLED, DL_ADC12_TRIGGER_MODE_AUTO_NEXT, DL_ADC12_WINDOWS_COMP_MODE_DISABLED);
     DL_ADC12_setPowerDownMode(ADC_VOLTAGE_INST,DL_ADC12_POWER_DOWN_MODE_MANUAL);
     DL_ADC12_setSampleTime0(ADC_VOLTAGE_INST,40000);
+    DL_ADC12_enableDMA(ADC_VOLTAGE_INST);
+    DL_ADC12_setDMASamplesCnt(ADC_VOLTAGE_INST,1);
+    DL_ADC12_enableDMATrigger(ADC_VOLTAGE_INST,(DL_ADC12_DMA_MEM0_RESULT_LOADED));
     /* Enable ADC12 interrupt */
     DL_ADC12_clearInterruptStatus(ADC_VOLTAGE_INST,(DL_ADC12_INTERRUPT_MEM0_RESULT_LOADED));
     DL_ADC12_enableInterrupt(ADC_VOLTAGE_INST,(DL_ADC12_INTERRUPT_MEM0_RESULT_LOADED));
     DL_ADC12_enableConversions(ADC_VOLTAGE_INST);
 }
+
+static const DL_DMA_Config gDMA_CH0Config = {
+    .transferMode   = DL_DMA_FULL_CH_REPEAT_SINGLE_TRANSFER_MODE,
+    .extendedMode   = DL_DMA_NORMAL_MODE,
+    .destIncrement  = DL_DMA_ADDR_UNCHANGED,
+    .srcIncrement   = DL_DMA_ADDR_UNCHANGED,
+    .destWidth      = DL_DMA_WIDTH_HALF_WORD,
+    .srcWidth       = DL_DMA_WIDTH_HALF_WORD,
+    .trigger        = ADC_VOLTAGE_INST_DMA_TRIGGER,
+    .triggerType    = DL_DMA_TRIGGER_TYPE_EXTERNAL,
+};
+
+SYSCONFIG_WEAK void SYSCFG_DL_DMA_CH0_init(void)
+{
+    DL_DMA_setTransferSize(DMA, DMA_CH0_CHAN_ID, 10);
+    DL_DMA_initChannel(DMA, DMA_CH0_CHAN_ID , (DL_DMA_Config *) &gDMA_CH0Config);
+}
+SYSCONFIG_WEAK void SYSCFG_DL_DMA_init(void){
+    SYSCFG_DL_DMA_CH0_init();
+}
+
 
 SYSCONFIG_WEAK void SYSCFG_DL_SYSTICK_init(void)
 {

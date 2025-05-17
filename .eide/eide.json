@@ -2,7 +2,9 @@
   "name": "ti-pid",
   "type": "ARM",
   "dependenceList": [],
-  "srcDirs": [],
+  "srcDirs": [
+    "empty/link"
+  ],
   "virtualFolder": {
     "name": "<virtual_root>",
     "files": [],
@@ -34,7 +36,7 @@
   "deviceName": null,
   "packDir": null,
   "miscInfo": {
-    "uid": "bf7e0676d6f4ef485d6c8a4c62f670f8"
+    "uid": "062603eef56947738146668e3cad6151"
   },
   "targets": {
     "empty_LP_MSPM0G3507_nortos_keil": {
@@ -51,8 +53,8 @@
               "tag": "RAM",
               "id": 1,
               "mem": {
-                "startAddr": "0x0",
-                "size": "0x0"
+                "startAddr": "0x20200000",
+                "size": "0x8000"
               },
               "isChecked": false,
               "noInit": false
@@ -61,8 +63,8 @@
               "tag": "RAM",
               "id": 2,
               "mem": {
-                "startAddr": "0x0",
-                "size": "0x0"
+                "startAddr": "0x20300000",
+                "size": "0x8000"
               },
               "isChecked": false,
               "noInit": false
@@ -81,8 +83,8 @@
               "tag": "IRAM",
               "id": 1,
               "mem": {
-                "startAddr": "0x0",
-                "size": "0x0"
+                "startAddr": "0x20000000",
+                "size": "0x8000"
               },
               "isChecked": false,
               "noInit": false
@@ -91,8 +93,8 @@
               "tag": "IRAM",
               "id": 2,
               "mem": {
-                "startAddr": "0x0",
-                "size": "0x0"
+                "startAddr": "0x20100000",
+                "size": "0x8000"
               },
               "isChecked": false,
               "noInit": false
@@ -134,7 +136,7 @@
               "id": 1,
               "mem": {
                 "startAddr": "0x0",
-                "size": "0x0"
+                "size": "0x20000"
               },
               "isChecked": false,
               "isStartup": false
@@ -143,8 +145,8 @@
               "tag": "IROM",
               "id": 2,
               "mem": {
-                "startAddr": "0x0",
-                "size": "0x0"
+                "startAddr": "0x400000",
+                "size": "0x20000"
               },
               "isChecked": false,
               "isStartup": false
