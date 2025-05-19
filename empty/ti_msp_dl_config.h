@@ -77,6 +77,32 @@ extern "C" {
 
 
 
+/* Defines for SG90 */
+#define SG90_INST                                                          TIMG0
+#define SG90_INST_IRQHandler                                    TIMG0_IRQHandler
+#define SG90_INST_INT_IRQN                                      (TIMG0_INT_IRQn)
+#define SG90_INST_CLK_FREQ                                                 20000
+/* GPIO defines for channel 0 */
+#define GPIO_SG90_C0_PORT                                                  GPIOA
+#define GPIO_SG90_C0_PIN                                          DL_GPIO_PIN_12
+#define GPIO_SG90_C0_IOMUX                                       (IOMUX_PINCM34)
+#define GPIO_SG90_C0_IOMUX_FUNC                      IOMUX_PINCM34_PF_TIMG0_CCP0
+#define GPIO_SG90_C0_IDX                                     DL_TIMER_CC_0_INDEX
+
+/* Defines for SG90S */
+#define SG90S_INST                                                         TIMA0
+#define SG90S_INST_IRQHandler                                   TIMA0_IRQHandler
+#define SG90S_INST_INT_IRQN                                     (TIMA0_INT_IRQn)
+#define SG90S_INST_CLK_FREQ                                                20000
+/* GPIO defines for channel 0 */
+#define GPIO_SG90S_C0_PORT                                                 GPIOB
+#define GPIO_SG90S_C0_PIN                                          DL_GPIO_PIN_8
+#define GPIO_SG90S_C0_IOMUX                                      (IOMUX_PINCM25)
+#define GPIO_SG90S_C0_IOMUX_FUNC                     IOMUX_PINCM25_PF_TIMA0_CCP0
+#define GPIO_SG90S_C0_IDX                                    DL_TIMER_CC_0_INDEX
+
+
+
 /* Defines for UART_0 */
 #define UART_0_INST                                                        UART0
 #define UART_0_INST_FREQUENCY                                           32000000
@@ -98,39 +124,40 @@ extern "C" {
 
 
 
-/* Defines for ADC_VOLTAGE */
-#define ADC_VOLTAGE_INST                                                    ADC0
-#define ADC_VOLTAGE_INST_IRQHandler                              ADC0_IRQHandler
-#define ADC_VOLTAGE_INST_INT_IRQN                                (ADC0_INT_IRQn)
-#define ADC_VOLTAGE_ADCMEM_ADC_CH0                            DL_ADC12_MEM_IDX_0
-#define ADC_VOLTAGE_ADCMEM_ADC_CH0_REF           DL_ADC12_REFERENCE_VOLTAGE_VDDA
-#define ADC_VOLTAGE_ADCMEM_ADC_CH0_REF_VOLTAGE_V                                     3.3
-#define GPIO_ADC_VOLTAGE_C0_PORT                                           GPIOA
-#define GPIO_ADC_VOLTAGE_C0_PIN                                   DL_GPIO_PIN_27
-
-
-
-/* Defines for DMA_CH0 */
-#define DMA_CH0_CHAN_ID                                                      (0)
-#define ADC_VOLTAGE_INST_DMA_TRIGGER                  (DMA_ADC0_EVT_GEN_BD_TRIG)
-
-
-
 /* Port definition for Pin Group LED */
 #define LED_PORT                                                         (GPIOB)
 
-/* Defines for PIN_0: GPIOB.22 with pinCMx 50 on package pin 21 */
-#define LED_PIN_0_PIN                                           (DL_GPIO_PIN_22)
-#define LED_PIN_0_IOMUX                                          (IOMUX_PINCM50)
-/* Port definition for Pin Group I2C */
-#define I2C_PORT                                                         (GPIOA)
-
-/* Defines for SCL: GPIOA.1 with pinCMx 2 on package pin 34 */
-#define I2C_SCL_PIN                                              (DL_GPIO_PIN_1)
-#define I2C_SCL_IOMUX                                             (IOMUX_PINCM2)
-/* Defines for SDA: GPIOA.0 with pinCMx 1 on package pin 33 */
-#define I2C_SDA_PIN                                              (DL_GPIO_PIN_0)
-#define I2C_SDA_IOMUX                                             (IOMUX_PINCM1)
+/* Defines for GREEN: GPIOB.22 with pinCMx 50 on package pin 21 */
+#define LED_GREEN_PIN                                           (DL_GPIO_PIN_22)
+#define LED_GREEN_IOMUX                                          (IOMUX_PINCM50)
+/* Defines for DOWN: GPIOA.28 with pinCMx 3 on package pin 35 */
+#define KEY_DOWN_PORT                                                    (GPIOA)
+// pins affected by this interrupt request:["DOWN"]
+#define KEY_GPIOA_INT_IRQN                                      (GPIOA_INT_IRQn)
+#define KEY_GPIOA_INT_IIDX                      (DL_INTERRUPT_GROUP1_IIDX_GPIOA)
+#define KEY_DOWN_IIDX                                       (DL_GPIO_IIDX_DIO28)
+#define KEY_DOWN_PIN                                            (DL_GPIO_PIN_28)
+#define KEY_DOWN_IOMUX                                            (IOMUX_PINCM3)
+/* Defines for UP: GPIOA.9 with pinCMx 20 on package pin 55 */
+#define KEY_UP_PORT                                                      (GPIOA)
+#define KEY_UP_PIN                                               (DL_GPIO_PIN_9)
+#define KEY_UP_IOMUX                                             (IOMUX_PINCM20)
+/* Defines for LEFT: GPIOA.8 with pinCMx 19 on package pin 54 */
+#define KEY_LEFT_PORT                                                    (GPIOA)
+#define KEY_LEFT_PIN                                             (DL_GPIO_PIN_8)
+#define KEY_LEFT_IOMUX                                           (IOMUX_PINCM19)
+/* Defines for RIGHT: GPIOA.31 with pinCMx 6 on package pin 39 */
+#define KEY_RIGHT_PORT                                                   (GPIOA)
+#define KEY_RIGHT_PIN                                           (DL_GPIO_PIN_31)
+#define KEY_RIGHT_IOMUX                                           (IOMUX_PINCM6)
+/* Defines for MID: GPIOB.4 with pinCMx 17 on package pin 52 */
+#define KEY_MID_PORT                                                     (GPIOB)
+// pins affected by this interrupt request:["MID"]
+#define KEY_GPIOB_INT_IRQN                                      (GPIOB_INT_IRQn)
+#define KEY_GPIOB_INT_IIDX                      (DL_INTERRUPT_GROUP1_IIDX_GPIOB)
+#define KEY_MID_IIDX                                         (DL_GPIO_IIDX_DIO4)
+#define KEY_MID_PIN                                              (DL_GPIO_PIN_4)
+#define KEY_MID_IOMUX                                            (IOMUX_PINCM17)
 
 
 
@@ -140,9 +167,9 @@ void SYSCFG_DL_init(void);
 void SYSCFG_DL_initPower(void);
 void SYSCFG_DL_GPIO_init(void);
 void SYSCFG_DL_SYSCTL_init(void);
+void SYSCFG_DL_SG90_init(void);
+void SYSCFG_DL_SG90S_init(void);
 void SYSCFG_DL_UART_0_init(void);
-void SYSCFG_DL_ADC_VOLTAGE_init(void);
-void SYSCFG_DL_DMA_init(void);
 
 void SYSCFG_DL_SYSTICK_init(void);
 

@@ -3,7 +3,7 @@
   "type": "ARM",
   "dependenceList": [],
   "srcDirs": [
-    "empty/link"
+    "empty/link/pwm"
   ],
   "virtualFolder": {
     "name": "<virtual_root>",
@@ -40,7 +40,9 @@
   },
   "targets": {
     "empty_LP_MSPM0G3507_nortos_keil": {
-      "excludeList": [],
+      "excludeList": [
+        "<virtual_root>/Source/linker"
+      ],
       "toolchain": "AC6",
       "compileConfig": {
         "cpuType": "Cortex-M0+",
@@ -159,13 +161,13 @@
       "uploadConfig": {
         "bin": "",
         "baseAddr": "",
+        "proType": 1,
+        "speed": 8000,
+        "otherCmds": "",
         "cpuInfo": {
           "vendor": "TI",
           "cpuName": "MSPM0G3507"
-        },
-        "proType": 1,
-        "speed": 8000,
-        "otherCmds": ""
+        }
       },
       "uploadConfigMap": {},
       "custom_dep": {

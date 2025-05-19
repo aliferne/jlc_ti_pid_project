@@ -14,6 +14,8 @@
 // AHT10 READ MODE
 #define READMODE (AHT10_ADDR | READ)
 
+// 指示初始化
+#define INIT_CMD 0xE1 // 初始化命令
 // 指示读取温度
 #define READ_TEMP 0xAC // 首先发送以指示读取温度
 #define PARA0     0x33 // 再发送以指示读取温度
@@ -26,27 +28,8 @@
 // 2^20 的值为 1,048,576(1024 * 1024)
 #define BASE 0x100000
 
-/// @brief Start I2C
-void I2C_Start();
-
-/// @brief Stop I2C
-void I2C_Stop();
-
-/// @brief Send a bit signal(ACK/NACK) to I2C
-/// @param ack the signal to Slaver, 1: NACK; 0: ACK
-void I2C_Send_Ack(uint8_t ack);
-
-/// @brief Wait for an ACK signal from I2C
-/// @return ack the signal from Slaver, 1: NACK; 0: ACK
-char I2C_Wait_Ack();
-
-/// @brief Send a byte to I2C
-/// @param byte the byte to send
-void I2C_Send_Byte(uint8_t byte);
-
-/// @brief Read a byte from I2C
-/// @return the byte from I2C Slaver
-uint8_t I2C_Read_Byte();
+/// @brief Initialize AHT10
+static void AHT10_Init();
 
 /// @brief Initialize AHT10 for reading temperature and humidity
 static void AHT10_Init_Read_Mode();
