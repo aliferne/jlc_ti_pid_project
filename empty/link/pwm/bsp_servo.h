@@ -27,35 +27,44 @@
 #define RANGE     (MAX_COUNT - MIN_COUNT) // 计数范围
 
 /**
- * @brief Set the angle of SG90 servo motor.
- * @param angle The desired angle in degrees (0° to 180°).
- * @return uint32_t The actual angle set.
- * @warning You should define PORT SG90 first
+ * @brief 设置SG90舵机的角度
+ *
+ * @param angle 要设置的角度值，范围在0°到180°之间
+ * @param gptimer 指向GPTIMER_Regs结构体的指针，用于访问定时器寄存器
+ * @param ccIndex 定时器捕获比较通道索引
+ * @return 实际设置的角度值，如果输入角度超出范围，则返回限制后的角度值
  */
-int32_t Set_SG90_Angle(int32_t angle);
+int32_t Set_SG90_Angle(int32_t angle, GPTIMER_Regs *gptimer, DL_TIMER_CC_INDEX ccIndex);
 
 /**
- * @brief Set the angle of SG90S servo motor.
- * @param angle The desired angle in degrees (0° to 360°).
- * @return uint32_t The actual angle set.
- * @warning You should define PORT SG90S first
+ * @brief 设置SG90S舵机的角度
+ *
+ * @param angle 要设置的角度值，范围在0°到360°之间
+ * @param gptimer 指向GPTIMER_Regs结构体的指针，用于访问定时器寄存器
+ * @param ccIndex 定时器捕获比较通道索引
+ * @return 实际设置的角度值，如果输入角度超出范围，则返回限制后的角度值
  */
-int32_t Set_SG90S_Angle(int32_t angle);
+int32_t Set_SG90S_Angle(int32_t angle, GPTIMER_Regs *gptimer, DL_TIMER_CC_INDEX ccIndex);
 
 /**
- * @brief Set the angle of MG90 servo motor.
- * @param angle The desired angle in degrees (0° to 360°).
- * @return uint32_t The actual angle set.
- * @warning You should define PORT MG90 first
+ * @brief 设置MG90舵机的角度
+ *
+ * @param angle 要设置的角度值，范围在0°到360°之间
+ * @param gptimer 指向GPTIMER_Regs结构体的指针，用于访问定时器寄存器
+ * @param ccIndex 定时器捕获比较通道索引
+ * @return 实际设置的角度值，如果输入角度超出范围，则返回限制后的角度值
  */
-// int32_t Set_MG90_Angle(int32_t angle);
+// int32_t Set_MG90_Angle(int32_t angle, GPTIMER_Regs *gptimer, DL_TIMER_CC_INDEX ccIndex);
+
 
 /**
- * @brief Set the servo angle.
- * @param ServoAngle The calculated servo angle in timer ticks.
- * @param gptimer The GPTIMER instance.
- * @param ccIndex The capture/compare index.
+ * @brief 设置舵机的角度（静态函数）
+ *
+ * @param ServoAngle 舵机角度的内部表示值
+ * @param gptimer 指向GPTIMER_Regs结构体的指针，用于访问定时器寄存器
+ * @param ccIndex 定时器捕获比较通道索引
  */
 static void Set_Servo_Angle(uint32_t ServoAngle, GPTIMER_Regs *gptimer, DL_TIMER_CC_INDEX ccIndex);
+
 
 #endif

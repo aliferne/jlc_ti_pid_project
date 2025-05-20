@@ -2,9 +2,7 @@
   "name": "ti-pid",
   "type": "ARM",
   "dependenceList": [],
-  "srcDirs": [
-    "empty/link/pwm"
-  ],
+  "srcDirs": [],
   "virtualFolder": {
     "name": "<virtual_root>",
     "files": [],
