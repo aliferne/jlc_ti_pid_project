@@ -1,0 +1,23 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "workbench.colorCustomizations": {
+            "editor.lineHighlightBackground": "#1073cf2d",
+            "editor.lineHighlightBorder": "#9fced11f",
+            "activityBar.background": "#023336",
+            "titleBar.activeBackground": "#02484B",
+            "titleBar.activeForeground": "#ECFDFE"
+        },
+        "files.associations": {
+            "*.dbclient-js": "javascript",
+            "mid_debug_uart.h": "c",
+            "hw_lcd.h": "c",
+            "ti_msp_dl_config.h": "c"
+        }
+    },
+    "extensions": {}
+}

@@ -40,7 +40,7 @@
 
 #include "ti_msp_dl_config.h"
 
-DL_TimerA_backupConfig gSG90SBackup;
+DL_SPI_backupConfig gSPI_LCDBackup;
 
 /*
  *  ======== SYSCFG_DL_init ========
@@ -52,13 +52,11 @@ SYSCONFIG_WEAK void SYSCFG_DL_init(void)
     SYSCFG_DL_GPIO_init();
     /* Module-Specific Initializations*/
     SYSCFG_DL_SYSCTL_init();
-    SYSCFG_DL_SG90_init();
-    SYSCFG_DL_SG90S_init();
-    SYSCFG_DL_UART_0_init();
-    SYSCFG_DL_SYSTICK_init();
+    SYSCFG_DL_UART_DEBUG_init();
+    SYSCFG_DL_SPI_LCD_init();
     /* Ensure backup structures have no valid state */
-	gSG90SBackup.backupRdy 	= false;
 
+	gSPI_LCDBackup.backupRdy 	= false;
 
 }
 /*
@@ -69,7 +67,7 @@ SYSCONFIG_WEAK bool SYSCFG_DL_saveConfiguration(void)
 {
     bool retStatus = true;
 
-	retStatus &= DL_TimerA_saveConfiguration(SG90S_INST, &gSG90SBackup);
+	retStatus &= DL_SPI_saveConfiguration(SPI_LCD_INST, &gSPI_LCDBackup);
 
     return retStatus;
 }
@@ -79,7 +77,7 @@ SYSCONFIG_WEAK bool SYSCFG_DL_restoreConfiguration(void)
 {
     bool retStatus = true;
 
-	retStatus &= DL_TimerA_restoreConfiguration(SG90S_INST, &gSG90SBackup, false);
+	retStatus &= DL_SPI_restoreConfiguration(SPI_LCD_INST, &gSPI_LCDBackup);
 
     return retStatus;
 }
@@ -88,34 +86,35 @@ SYSCONFIG_WEAK void SYSCFG_DL_initPower(void)
 {
     DL_GPIO_reset(GPIOA);
     DL_GPIO_reset(GPIOB);
-    DL_TimerG_reset(SG90_INST);
-    DL_TimerA_reset(SG90S_INST);
-    DL_UART_Main_reset(UART_0_INST);
-
+    DL_UART_Main_reset(UART_DEBUG_INST);
+    DL_SPI_reset(SPI_LCD_INST);
 
     DL_GPIO_enablePower(GPIOA);
     DL_GPIO_enablePower(GPIOB);
-    DL_TimerG_enablePower(SG90_INST);
-    DL_TimerA_enablePower(SG90S_INST);
-    DL_UART_Main_enablePower(UART_0_INST);
-
+    DL_UART_Main_enablePower(UART_DEBUG_INST);
+    DL_SPI_enablePower(SPI_LCD_INST);
     delay_cycles(POWER_STARTUP_DELAY);
 }
 
 SYSCONFIG_WEAK void SYSCFG_DL_GPIO_init(void)
 {
 
-    DL_GPIO_initPeripheralOutputFunction(GPIO_SG90_C0_IOMUX,GPIO_SG90_C0_IOMUX_FUNC);
-    DL_GPIO_enableOutput(GPIO_SG90_C0_PORT, GPIO_SG90_C0_PIN);
-    DL_GPIO_initPeripheralOutputFunction(GPIO_SG90S_C0_IOMUX,GPIO_SG90S_C0_IOMUX_FUNC);
-    DL_GPIO_enableOutput(GPIO_SG90S_C0_PORT, GPIO_SG90S_C0_PIN);
+    DL_GPIO_initPeripheralAnalogFunction(GPIO_HFXIN_IOMUX);
+    DL_GPIO_initPeripheralAnalogFunction(GPIO_HFXOUT_IOMUX);
 
     DL_GPIO_initPeripheralOutputFunction(
-        GPIO_UART_0_IOMUX_TX, GPIO_UART_0_IOMUX_TX_FUNC);
+        GPIO_UART_DEBUG_IOMUX_TX, GPIO_UART_DEBUG_IOMUX_TX_FUNC);
     DL_GPIO_initPeripheralInputFunction(
-        GPIO_UART_0_IOMUX_RX, GPIO_UART_0_IOMUX_RX_FUNC);
+        GPIO_UART_DEBUG_IOMUX_RX, GPIO_UART_DEBUG_IOMUX_RX_FUNC);
 
-    DL_GPIO_initDigitalOutput(LED_GREEN_IOMUX);
+    DL_GPIO_initPeripheralOutputFunction(
+        GPIO_SPI_LCD_IOMUX_SCLK, GPIO_SPI_LCD_IOMUX_SCLK_FUNC);
+    DL_GPIO_initPeripheralOutputFunction(
+        GPIO_SPI_LCD_IOMUX_PICO, GPIO_SPI_LCD_IOMUX_PICO_FUNC);
+
+    DL_GPIO_initDigitalOutputFeatures(DEBUG_LED_PIN_22_IOMUX,
+		 DL_GPIO_INVERSION_DISABLE, DL_GPIO_RESISTOR_PULL_DOWN,
+		 DL_GPIO_DRIVE_STRENGTH_LOW, DL_GPIO_HIZ_DISABLE);
 
     DL_GPIO_initDigitalInputFeatures(KEY_DOWN_IOMUX,
 		 DL_GPIO_INVERSION_DISABLE, DL_GPIO_RESISTOR_PULL_UP,
@@ -137,14 +136,30 @@ SYSCONFIG_WEAK void SYSCFG_DL_GPIO_init(void)
 		 DL_GPIO_INVERSION_DISABLE, DL_GPIO_RESISTOR_PULL_UP,
 		 DL_GPIO_HYSTERESIS_DISABLE, DL_GPIO_WAKEUP_DISABLE);
 
+    DL_GPIO_initDigitalOutput(GPIO_LCD_PIN_RES_IOMUX);
+
+    DL_GPIO_initDigitalOutput(GPIO_LCD_PIN_DC_IOMUX);
+
+    DL_GPIO_initDigitalOutput(GPIO_LCD_PIN_CS_IOMUX);
+
+    DL_GPIO_initDigitalOutput(GPIO_LCD_PIN_BLK_IOMUX);
+
     DL_GPIO_setLowerPinsPolarity(GPIOA, DL_GPIO_PIN_9_EDGE_RISE |
 		DL_GPIO_PIN_8_EDGE_RISE);
     DL_GPIO_setUpperPinsPolarity(GPIOA, DL_GPIO_PIN_28_EDGE_RISE |
 		DL_GPIO_PIN_31_EDGE_RISE);
     DL_GPIO_clearInterruptStatus(GPIOA, KEY_DOWN_PIN);
     DL_GPIO_enableInterrupt(GPIOA, KEY_DOWN_PIN);
-    DL_GPIO_clearPins(GPIOB, LED_GREEN_PIN);
-    DL_GPIO_enableOutput(GPIOB, LED_GREEN_PIN);
+    DL_GPIO_clearPins(GPIOB, DEBUG_LED_PIN_22_PIN |
+		GPIO_LCD_PIN_RES_PIN |
+		GPIO_LCD_PIN_DC_PIN |
+		GPIO_LCD_PIN_CS_PIN |
+		GPIO_LCD_PIN_BLK_PIN);
+    DL_GPIO_enableOutput(GPIOB, DEBUG_LED_PIN_22_PIN |
+		GPIO_LCD_PIN_RES_PIN |
+		GPIO_LCD_PIN_DC_PIN |
+		GPIO_LCD_PIN_CS_PIN |
+		GPIO_LCD_PIN_BLK_PIN);
     DL_GPIO_setLowerPinsPolarity(GPIOB, DL_GPIO_PIN_4_EDGE_RISE);
     DL_GPIO_clearInterruptStatus(GPIOB, KEY_MID_PIN);
     DL_GPIO_enableInterrupt(GPIOB, KEY_MID_PIN);
@@ -152,113 +167,46 @@ SYSCONFIG_WEAK void SYSCFG_DL_GPIO_init(void)
 }
 
 
+static const DL_SYSCTL_SYSPLLConfig gSYSPLLConfig = {
+    .inputFreq              = DL_SYSCTL_SYSPLL_INPUT_FREQ_32_48_MHZ,
+	.rDivClk2x              = 1,
+	.rDivClk1               = 0,
+	.rDivClk0               = 0,
+	.enableCLK2x            = DL_SYSCTL_SYSPLL_CLK2X_DISABLE,
+	.enableCLK1             = DL_SYSCTL_SYSPLL_CLK1_DISABLE,
+	.enableCLK0             = DL_SYSCTL_SYSPLL_CLK0_ENABLE,
+	.sysPLLMCLK             = DL_SYSCTL_SYSPLL_MCLK_CLK0,
+	.sysPLLRef              = DL_SYSCTL_SYSPLL_REF_HFCLK,
+	.qDiv                   = 3,
+	.pDiv                   = DL_SYSCTL_SYSPLL_PDIV_1
+};
 SYSCONFIG_WEAK void SYSCFG_DL_SYSCTL_init(void)
 {
 
 	//Low Power Mode is configured to be SLEEP0
     DL_SYSCTL_setBORThreshold(DL_SYSCTL_BOR_THRESHOLD_LEVEL_0);
-
-    DL_SYSCTL_setSYSOSCFreq(DL_SYSCTL_SYSOSC_FREQ_BASE);
-    /* Set default configuration */
-    DL_SYSCTL_disableHFXT();
-    DL_SYSCTL_disableSYSPLL();
-    DL_SYSCTL_setULPCLKDivider(DL_SYSCTL_ULPCLK_DIV_1);
-    DL_SYSCTL_setMCLKDivider(DL_SYSCTL_MCLK_DIVIDER_DISABLE);
-
-}
-
-
-/*
- * Timer clock configuration to be sourced by  / 8 (4000000 Hz)
- * timerClkFreq = (timerClkSrc / (timerClkDivRatio * (timerClkPrescale + 1)))
- *   20000 Hz = 4000000 Hz / (8 * (199 + 1))
- */
-static const DL_TimerG_ClockConfig gSG90ClockConfig = {
-    .clockSel = DL_TIMER_CLOCK_BUSCLK,
-    .divideRatio = DL_TIMER_CLOCK_DIVIDE_8,
-    .prescale = 199U
-};
-
-static const DL_TimerG_PWMConfig gSG90Config = {
-    .pwmMode = DL_TIMER_PWM_MODE_EDGE_ALIGN,
-    .period = 40,
-    .isTimerWithFourCC = true,
-    .startTimer = DL_TIMER_START,
-};
-
-SYSCONFIG_WEAK void SYSCFG_DL_SG90_init(void) {
-
-    DL_TimerG_setClockConfig(
-        SG90_INST, (DL_TimerG_ClockConfig *) &gSG90ClockConfig);
-
-    DL_TimerG_initPWMMode(
-        SG90_INST, (DL_TimerG_PWMConfig *) &gSG90Config);
-
-    DL_TimerG_setCaptureCompareOutCtl(SG90_INST, DL_TIMER_CC_OCTL_INIT_VAL_LOW,
-		DL_TIMER_CC_OCTL_INV_OUT_ENABLED, DL_TIMER_CC_OCTL_SRC_FUNCVAL,
-		DL_TIMERG_CAPTURE_COMPARE_0_INDEX);
-
-    DL_TimerG_setCaptCompUpdateMethod(SG90_INST, DL_TIMER_CC_UPDATE_METHOD_IMMEDIATE, DL_TIMERG_CAPTURE_COMPARE_0_INDEX);
-    DL_TimerG_setCaptureCompareValue(SG90_INST, 40, DL_TIMER_CC_0_INDEX);
-
-    DL_TimerG_enableClock(SG90_INST);
-
+    DL_SYSCTL_setFlashWaitState(DL_SYSCTL_FLASH_WAIT_STATE_2);
 
     
-    DL_TimerG_setCCPDirection(SG90_INST , DL_TIMER_CC0_OUTPUT );
-
-
-}
-/*
- * Timer clock configuration to be sourced by  / 8 (4000000 Hz)
- * timerClkFreq = (timerClkSrc / (timerClkDivRatio * (timerClkPrescale + 1)))
- *   20000 Hz = 4000000 Hz / (8 * (199 + 1))
- */
-static const DL_TimerA_ClockConfig gSG90SClockConfig = {
-    .clockSel = DL_TIMER_CLOCK_BUSCLK,
-    .divideRatio = DL_TIMER_CLOCK_DIVIDE_8,
-    .prescale = 199U
-};
-
-static const DL_TimerA_PWMConfig gSG90SConfig = {
-    .pwmMode = DL_TIMER_PWM_MODE_EDGE_ALIGN,
-    .period = 400,
-    .isTimerWithFourCC = true,
-    .startTimer = DL_TIMER_START,
-};
-
-SYSCONFIG_WEAK void SYSCFG_DL_SG90S_init(void) {
-
-    DL_TimerA_setClockConfig(
-        SG90S_INST, (DL_TimerA_ClockConfig *) &gSG90SClockConfig);
-
-    DL_TimerA_initPWMMode(
-        SG90S_INST, (DL_TimerA_PWMConfig *) &gSG90SConfig);
-
-    DL_TimerA_setCaptureCompareOutCtl(SG90S_INST, DL_TIMER_CC_OCTL_INIT_VAL_LOW,
-		DL_TIMER_CC_OCTL_INV_OUT_ENABLED, DL_TIMER_CC_OCTL_SRC_FUNCVAL,
-		DL_TIMERA_CAPTURE_COMPARE_0_INDEX);
-
-    DL_TimerA_setCaptCompUpdateMethod(SG90S_INST, DL_TIMER_CC_UPDATE_METHOD_IMMEDIATE, DL_TIMERA_CAPTURE_COMPARE_0_INDEX);
-    DL_TimerA_setCaptureCompareValue(SG90S_INST, 400, DL_TIMER_CC_0_INDEX);
-
-    DL_TimerA_enableClock(SG90S_INST);
-
-
-    
-    DL_TimerA_setCCPDirection(SG90S_INST , DL_TIMER_CC0_OUTPUT );
-
+	DL_SYSCTL_setSYSOSCFreq(DL_SYSCTL_SYSOSC_FREQ_BASE);
+	/* Set default configuration */
+	DL_SYSCTL_disableHFXT();
+	DL_SYSCTL_disableSYSPLL();
+    DL_SYSCTL_setHFCLKSourceHFXTParams(DL_SYSCTL_HFXT_RANGE_32_48_MHZ,10, true);
+    DL_SYSCTL_configSYSPLL((DL_SYSCTL_SYSPLLConfig *) &gSYSPLLConfig);
+    DL_SYSCTL_setULPCLKDivider(DL_SYSCTL_ULPCLK_DIV_2);
+    DL_SYSCTL_setMCLKSource(SYSOSC, HSCLK, DL_SYSCTL_HSCLK_SOURCE_SYSPLL);
 
 }
 
 
 
-static const DL_UART_Main_ClockConfig gUART_0ClockConfig = {
+static const DL_UART_Main_ClockConfig gUART_DEBUGClockConfig = {
     .clockSel    = DL_UART_MAIN_CLOCK_BUSCLK,
     .divideRatio = DL_UART_MAIN_CLOCK_DIVIDE_RATIO_1
 };
 
-static const DL_UART_Main_Config gUART_0Config = {
+static const DL_UART_Main_Config gUART_DEBUGConfig = {
     .mode        = DL_UART_MAIN_MODE_NORMAL,
     .direction   = DL_UART_MAIN_DIRECTION_TX_RX,
     .flowControl = DL_UART_MAIN_FLOW_CONTROL_NONE,
@@ -267,25 +215,59 @@ static const DL_UART_Main_Config gUART_0Config = {
     .stopBits    = DL_UART_MAIN_STOP_BITS_ONE
 };
 
-SYSCONFIG_WEAK void SYSCFG_DL_UART_0_init(void)
+SYSCONFIG_WEAK void SYSCFG_DL_UART_DEBUG_init(void)
 {
-    DL_UART_Main_setClockConfig(UART_0_INST, (DL_UART_Main_ClockConfig *) &gUART_0ClockConfig);
+    DL_UART_Main_setClockConfig(UART_DEBUG_INST, (DL_UART_Main_ClockConfig *) &gUART_DEBUGClockConfig);
 
-    DL_UART_Main_init(UART_0_INST, (DL_UART_Main_Config *) &gUART_0Config);
+    DL_UART_Main_init(UART_DEBUG_INST, (DL_UART_Main_Config *) &gUART_DEBUGConfig);
     /*
      * Configure baud rate by setting oversampling and baud rate divisors.
      *  Target baud rate: 9600
-     *  Actual baud rate: 9600.24
+     *  Actual baud rate: 9599.81
      */
-    DL_UART_Main_setOversampling(UART_0_INST, DL_UART_OVERSAMPLING_RATE_16X);
-    DL_UART_Main_setBaudRateDivisor(UART_0_INST, UART_0_IBRD_32_MHZ_9600_BAUD, UART_0_FBRD_32_MHZ_9600_BAUD);
+    DL_UART_Main_setOversampling(UART_DEBUG_INST, DL_UART_OVERSAMPLING_RATE_16X);
+    DL_UART_Main_setBaudRateDivisor(UART_DEBUG_INST, UART_DEBUG_IBRD_40_MHZ_9600_BAUD, UART_DEBUG_FBRD_40_MHZ_9600_BAUD);
 
 
+    /* Configure Interrupts */
+    DL_UART_Main_enableInterrupt(UART_DEBUG_INST,
+                                 DL_UART_MAIN_INTERRUPT_RX);
+    /* Setting the Interrupt Priority */
+    NVIC_SetPriority(UART_DEBUG_INST_INT_IRQN, 3);
 
-    DL_UART_Main_enable(UART_0_INST);
+
+    DL_UART_Main_enable(UART_DEBUG_INST);
 }
 
-SYSCONFIG_WEAK void SYSCFG_DL_SYSTICK_init(void)
-{
+static const DL_SPI_Config gSPI_LCD_config = {
+    .mode        = DL_SPI_MODE_CONTROLLER,
+    .frameFormat = DL_SPI_FRAME_FORMAT_MOTO3_POL0_PHA0,
+    .parity      = DL_SPI_PARITY_NONE,
+    .dataSize    = DL_SPI_DATA_SIZE_8,
+    .bitOrder    = DL_SPI_BIT_ORDER_MSB_FIRST,
+};
+
+static const DL_SPI_ClockConfig gSPI_LCD_clockConfig = {
+    .clockSel    = DL_SPI_CLOCK_BUSCLK,
+    .divideRatio = DL_SPI_CLOCK_DIVIDE_RATIO_1
+};
+
+SYSCONFIG_WEAK void SYSCFG_DL_SPI_LCD_init(void) {
+    DL_SPI_setClockConfig(SPI_LCD_INST, (DL_SPI_ClockConfig *) &gSPI_LCD_clockConfig);
+
+    DL_SPI_init(SPI_LCD_INST, (DL_SPI_Config *) &gSPI_LCD_config);
+
+    /* Configure Controller mode */
+    /*
+     * Set the bit rate clock divider to generate the serial output clock
+     *     outputBitRate = (spiInputClock) / ((1 + SCR) * 2)
+     *     40000000 = (80000000)/((1 + 0) * 2)
+     */
+    DL_SPI_setBitRateSerialClockDivider(SPI_LCD_INST, 0);
+    /* Set RX and TX FIFO threshold levels */
+    DL_SPI_setFIFOThreshold(SPI_LCD_INST, DL_SPI_RX_FIFO_LEVEL_1_2_FULL, DL_SPI_TX_FIFO_LEVEL_1_2_EMPTY);
+
+    /* Enable module */
+    DL_SPI_enable(SPI_LCD_INST);
 }
 

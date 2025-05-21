@@ -2,7 +2,11 @@
   "name": "ti-pid",
   "type": "ARM",
   "dependenceList": [],
-  "srcDirs": [],
+  "srcDirs": [
+    "empty/app",
+    "empty/hardware",
+    "empty/middle"
+  ],
   "virtualFolder": {
     "name": "<virtual_root>",
     "files": [],

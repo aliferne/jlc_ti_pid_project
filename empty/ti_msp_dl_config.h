@@ -73,63 +73,57 @@ extern "C" {
 #define POWER_STARTUP_DELAY                                                (16)
 
 
-#define CPUCLK_FREQ                                                     32000000
+#define GPIO_HFXT_PORT                                                     GPIOA
+#define GPIO_HFXIN_PIN                                             DL_GPIO_PIN_5
+#define GPIO_HFXIN_IOMUX                                         (IOMUX_PINCM10)
+#define GPIO_HFXOUT_PIN                                            DL_GPIO_PIN_6
+#define GPIO_HFXOUT_IOMUX                                        (IOMUX_PINCM11)
+#define CPUCLK_FREQ                                                     80000000
 
 
 
-/* Defines for SG90 */
-#define SG90_INST                                                          TIMG0
-#define SG90_INST_IRQHandler                                    TIMG0_IRQHandler
-#define SG90_INST_INT_IRQN                                      (TIMG0_INT_IRQn)
-#define SG90_INST_CLK_FREQ                                                 20000
-/* GPIO defines for channel 0 */
-#define GPIO_SG90_C0_PORT                                                  GPIOA
-#define GPIO_SG90_C0_PIN                                          DL_GPIO_PIN_12
-#define GPIO_SG90_C0_IOMUX                                       (IOMUX_PINCM34)
-#define GPIO_SG90_C0_IOMUX_FUNC                      IOMUX_PINCM34_PF_TIMG0_CCP0
-#define GPIO_SG90_C0_IDX                                     DL_TIMER_CC_0_INDEX
-
-/* Defines for SG90S */
-#define SG90S_INST                                                         TIMA0
-#define SG90S_INST_IRQHandler                                   TIMA0_IRQHandler
-#define SG90S_INST_INT_IRQN                                     (TIMA0_INT_IRQn)
-#define SG90S_INST_CLK_FREQ                                                20000
-/* GPIO defines for channel 0 */
-#define GPIO_SG90S_C0_PORT                                                 GPIOB
-#define GPIO_SG90S_C0_PIN                                          DL_GPIO_PIN_8
-#define GPIO_SG90S_C0_IOMUX                                      (IOMUX_PINCM25)
-#define GPIO_SG90S_C0_IOMUX_FUNC                     IOMUX_PINCM25_PF_TIMA0_CCP0
-#define GPIO_SG90S_C0_IDX                                    DL_TIMER_CC_0_INDEX
-
-
-
-/* Defines for UART_0 */
-#define UART_0_INST                                                        UART0
-#define UART_0_INST_FREQUENCY                                           32000000
-#define UART_0_INST_IRQHandler                                  UART0_IRQHandler
-#define UART_0_INST_INT_IRQN                                      UART0_INT_IRQn
-#define GPIO_UART_0_RX_PORT                                                GPIOA
-#define GPIO_UART_0_TX_PORT                                                GPIOA
-#define GPIO_UART_0_RX_PIN                                        DL_GPIO_PIN_11
-#define GPIO_UART_0_TX_PIN                                        DL_GPIO_PIN_10
-#define GPIO_UART_0_IOMUX_RX                                     (IOMUX_PINCM22)
-#define GPIO_UART_0_IOMUX_TX                                     (IOMUX_PINCM21)
-#define GPIO_UART_0_IOMUX_RX_FUNC                      IOMUX_PINCM22_PF_UART0_RX
-#define GPIO_UART_0_IOMUX_TX_FUNC                      IOMUX_PINCM21_PF_UART0_TX
-#define UART_0_BAUD_RATE                                                  (9600)
-#define UART_0_IBRD_32_MHZ_9600_BAUD                                       (208)
-#define UART_0_FBRD_32_MHZ_9600_BAUD                                        (21)
+/* Defines for UART_DEBUG */
+#define UART_DEBUG_INST                                                    UART0
+#define UART_DEBUG_INST_FREQUENCY                                       40000000
+#define UART_DEBUG_INST_IRQHandler                              UART0_IRQHandler
+#define UART_DEBUG_INST_INT_IRQN                                  UART0_INT_IRQn
+#define GPIO_UART_DEBUG_RX_PORT                                            GPIOA
+#define GPIO_UART_DEBUG_TX_PORT                                            GPIOA
+#define GPIO_UART_DEBUG_RX_PIN                                    DL_GPIO_PIN_11
+#define GPIO_UART_DEBUG_TX_PIN                                    DL_GPIO_PIN_10
+#define GPIO_UART_DEBUG_IOMUX_RX                                 (IOMUX_PINCM22)
+#define GPIO_UART_DEBUG_IOMUX_TX                                 (IOMUX_PINCM21)
+#define GPIO_UART_DEBUG_IOMUX_RX_FUNC                  IOMUX_PINCM22_PF_UART0_RX
+#define GPIO_UART_DEBUG_IOMUX_TX_FUNC                  IOMUX_PINCM21_PF_UART0_TX
+#define UART_DEBUG_BAUD_RATE                                              (9600)
+#define UART_DEBUG_IBRD_40_MHZ_9600_BAUD                                   (260)
+#define UART_DEBUG_FBRD_40_MHZ_9600_BAUD                                    (27)
 
 
 
 
+/* Defines for SPI_LCD */
+#define SPI_LCD_INST                                                       SPI1
+#define SPI_LCD_INST_IRQHandler                                 SPI1_IRQHandler
+#define SPI_LCD_INST_INT_IRQN                                     SPI1_INT_IRQn
+#define GPIO_SPI_LCD_PICO_PORT                                            GPIOB
+#define GPIO_SPI_LCD_PICO_PIN                                     DL_GPIO_PIN_8
+#define GPIO_SPI_LCD_IOMUX_PICO                                 (IOMUX_PINCM25)
+#define GPIO_SPI_LCD_IOMUX_PICO_FUNC                 IOMUX_PINCM25_PF_SPI1_PICO
+/* GPIO configuration for SPI_LCD */
+#define GPIO_SPI_LCD_SCLK_PORT                                            GPIOB
+#define GPIO_SPI_LCD_SCLK_PIN                                     DL_GPIO_PIN_9
+#define GPIO_SPI_LCD_IOMUX_SCLK                                 (IOMUX_PINCM26)
+#define GPIO_SPI_LCD_IOMUX_SCLK_FUNC                 IOMUX_PINCM26_PF_SPI1_SCLK
 
-/* Port definition for Pin Group LED */
-#define LED_PORT                                                         (GPIOB)
 
-/* Defines for GREEN: GPIOB.22 with pinCMx 50 on package pin 21 */
-#define LED_GREEN_PIN                                           (DL_GPIO_PIN_22)
-#define LED_GREEN_IOMUX                                          (IOMUX_PINCM50)
+
+/* Port definition for Pin Group DEBUG_LED */
+#define DEBUG_LED_PORT                                                   (GPIOB)
+
+/* Defines for PIN_22: GPIOB.22 with pinCMx 50 on package pin 21 */
+#define DEBUG_LED_PIN_22_PIN                                    (DL_GPIO_PIN_22)
+#define DEBUG_LED_PIN_22_IOMUX                                   (IOMUX_PINCM50)
 /* Defines for DOWN: GPIOA.28 with pinCMx 3 on package pin 35 */
 #define KEY_DOWN_PORT                                                    (GPIOA)
 // pins affected by this interrupt request:["DOWN"]
@@ -158,8 +152,21 @@ extern "C" {
 #define KEY_MID_IIDX                                         (DL_GPIO_IIDX_DIO4)
 #define KEY_MID_PIN                                              (DL_GPIO_PIN_4)
 #define KEY_MID_IOMUX                                            (IOMUX_PINCM17)
+/* Port definition for Pin Group GPIO_LCD */
+#define GPIO_LCD_PORT                                                    (GPIOB)
 
-
+/* Defines for PIN_RES: GPIOB.10 with pinCMx 27 on package pin 62 */
+#define GPIO_LCD_PIN_RES_PIN                                    (DL_GPIO_PIN_10)
+#define GPIO_LCD_PIN_RES_IOMUX                                   (IOMUX_PINCM27)
+/* Defines for PIN_DC: GPIOB.11 with pinCMx 28 on package pin 63 */
+#define GPIO_LCD_PIN_DC_PIN                                     (DL_GPIO_PIN_11)
+#define GPIO_LCD_PIN_DC_IOMUX                                    (IOMUX_PINCM28)
+/* Defines for PIN_CS: GPIOB.14 with pinCMx 31 on package pin 2 */
+#define GPIO_LCD_PIN_CS_PIN                                     (DL_GPIO_PIN_14)
+#define GPIO_LCD_PIN_CS_IOMUX                                    (IOMUX_PINCM31)
+/* Defines for PIN_BLK: GPIOB.26 with pinCMx 57 on package pin 28 */
+#define GPIO_LCD_PIN_BLK_PIN                                    (DL_GPIO_PIN_26)
+#define GPIO_LCD_PIN_BLK_IOMUX                                   (IOMUX_PINCM57)
 
 /* clang-format on */
 
@@ -167,11 +174,9 @@ void SYSCFG_DL_init(void);
 void SYSCFG_DL_initPower(void);
 void SYSCFG_DL_GPIO_init(void);
 void SYSCFG_DL_SYSCTL_init(void);
-void SYSCFG_DL_SG90_init(void);
-void SYSCFG_DL_SG90S_init(void);
-void SYSCFG_DL_UART_0_init(void);
+void SYSCFG_DL_UART_DEBUG_init(void);
+void SYSCFG_DL_SPI_LCD_init(void);
 
-void SYSCFG_DL_SYSTICK_init(void);
 
 bool SYSCFG_DL_saveConfiguration(void);
 bool SYSCFG_DL_restoreConfiguration(void);
