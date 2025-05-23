@@ -5,10 +5,10 @@
 <h2>Tool Versions:</h2>
 IDE-Version: μVision V5.39.0.0
 Copyright (C) 2023 ARM Ltd and ARM Germany GmbH. All rights reserved.
-License Information: a a32a, a, LIC=76F5U-SGZGE-PC4J8-3C9BG-EWBZY-172VL
+License Information: a a32a, a, LIC=----
  
 Tool Versions:
-Toolchain:       MDK-ARM Plus  Version: 5.39.0.0
+Toolchain:       MDK-Lite  Version: 5.39.0.0
 Toolchain Path:  E:\keil_v5\keil_core\ARM\ARMCLANG\Bin
 C Compiler:      ArmClang.exe V6.21
 Assembler:       Armasm.exe V6.21
@@ -21,27 +21,120 @@ Target DLL:      Segger\JL2CM3.dll V2.99.43.0
 Dialog DLL:      TARMCM1.DLL V1.14.6.0
  
 <h2>Project:</h2>
-E:\Interests\Code\MCU\jlc_training_course\course_1_pid_pcb_ti_project\ti-pid\empty\keil\empty_LP_MSPM0G3507_nortos_keil.uvprojx
-Project File Date:  05/15/2025
+C:\Users\a3230\Desktop\GithubProject\easy-pid-beginner-kit\examples\Keil\04_motor_driver\keil\empty_LP_MSPM0G3507_nortos_keil.uvprojx
+Project File Date:  05/18/2025
 
 <h2>Output:</h2>
 *** Using Compiler 'V6.21', folder: 'E:\keil_v5\keil_core\ARM\ARMCLANG\Bin'
 Build target 'empty_LP_MSPM0G3507_nortos_keil'
-Before Build - User command #1: cmd.exe /C "E:\Interests\Code\MCU\jlc_training_course\course_1_pid_pcb_ti_project\ti-pid\empty\keil\../../../../../../tools/keil/syscfg.bat 'E:\Interests\Code\MCU\jlc_training_course\course_1_pid_pcb_ti_project\ti-pid\empty\keil\' empty.syscfg"
-系统找不到指定的路径。
-../ti_msp_dl_config.c(41): warning: In file included from...
-../ti_msp_dl_config.h(54): error: 'ti/devices/msp/msp.h' file not found
-   54 | #include <ti/devices/msp/msp.h>
-      |          ^~~~~~~~~~~~~~~~~~~~~~
-1 error generated.
+Before Build - User command #1: cmd.exe /C "C:\Users\a3230\Desktop\GithubProject\easy-pid-beginner-kit\examples\Keil\04_motor_driver\keil\../../syscfg.bat 'C:\Users\a3230\Desktop\GithubProject\easy-pid-beginner-kit\examples\Keil\04_motor_driver\keil\' empty.syscfg"
+Using Sysconfig Tool from "E:\TI\sysconfig\sysconfig_cli.bat"
+"Update the file located at <sdk path>/tools/keil/syscfg.bat to use a different version"
+Running script...
+Validating...
+info: PWM_MOTOR(/ti/driverlib/PWM): Peripheral does not retain register contents in STOP or STANDBY modes. User should take care to save and restore register configuration in application. See Retention Configuration section for more details.
+info: SPI_LCD(/ti/driverlib/SPI): Peripheral does not retain register contents in STOP or STANDBY modes. User should take care to save and restore register configuration in application. See Retention Configuration section for more details.
+Generating Code (empty.syscfg)...
+Unchanged C:\Users\a3230\Desktop\GithubProject\easy-pid-beginner-kit\examples\Keil\04_motor_driver\ti_msp_dl_config.c...
+Unchanged C:\Users\a3230\Desktop\GithubProject\easy-pid-beginner-kit\examples\Keil\04_motor_driver\ti_msp_dl_config.h...
+Unchanged C:\Users\a3230\Desktop\GithubProject\easy-pid-beginner-kit\examples\Keil\04_motor_driver\Event.dot...
+compiling hw_motor.c...
+compiling mid_debug_uart.c...
 compiling ti_msp_dl_config.c...
-../empty.c(1): warning: In file included from...
-../ti_msp_dl_config.h(54): error: 'ti/devices/msp/msp.h' file not found
-   54 | #include <ti/devices/msp/msp.h>
-      |          ^~~~~~~~~~~~~~~~~~~~~~
-1 error generated.
+compiling mid_button.c...
+compiling hw_key.c...
+compiling mid_debug_led.c...
+../empty.c(139): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  139 |     disp_x_center(3,5,BLUE,16,(unsigned char *)"<C1><A2><B4><B4><BF><AA><B7><A2><B0><E5>");
+      |                                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../empty.c(141): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  141 |     disp_x_center(3+16+3,8,BLUE,16,(unsigned char *)"<BC><F2><D2><D7>PID<C8><EB><C3><C5><CC><U+05FC><FE>");
+      |                                                      ^~~~~~~~~~~~~~~~   ~~~~~~~~~~~~~~~~~~~~        ~~~~
+../empty.c(148): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  148 |     disp_string_rect(x, x_offset, y, y_offset, 2, 24, "<B6><A8><CB><D9>", BLUE);
+      |                                                        ^~~~~~~~~~~~~~~~
+../empty.c(148): warning: passing 'char[5]' to parameter of type 'unsigned char *' converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  148 |     disp_string_rect(x, x_offset, y, y_offset, 2, 24, "<B6><A8><CB><D9>", BLUE);
+      |                                                       ^~~~~~~~~~~~~~~~~~
+../empty.c(87): note: passing argument to parameter 'str' here
+   87 | void disp_string_rect(int x, int w, int y, int h, int str_len, int sizey, unsigned char* str, int color)
+      |                                                                                          ^
+../empty.c(154): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  154 |                 disp_string_rect(x2, x2_offset, y2, y2_offset, 2, 24, "<B6><A8><BE><E0>", BLUE);
+      |                                                                        ^~~~~~~~~~~~~~~~
+../empty.c(154): warning: passing 'char[5]' to parameter of type 'unsigned char *' converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  154 |                 disp_string_rect(x2, x2_offset, y2, y2_offset, 2, 24, "<B6><A8><BE><E0>", BLUE);
+      |                                                                       ^~~~~~~~~~~~~~~~~~
+../empty.c(87): note: passing argument to parameter 'str' here
+   87 | void disp_string_rect(int x, int w, int y, int h, int str_len, int sizey, unsigned char* str, int color)
+      |                                                                                          ^
+6 warnings generated.
 compiling empty.c...
-".\Objects\empty_LP_MSPM0G3507_nortos_keil.axf" - 2 Error(s), 0 Warning(s).
+compiling app_key_task.c...
+../hardware/hw_lcd.c(2): warning: In file included from...
+../hardware/lcdfont.h(405): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  405 | "<D6><D0>",0x20,0x00,0x20,0x00,0x20,0x00,0xFE,0x03,0x22,0x02,0x22,0x02,0x22,0x02,0xFE,0x03,
+      |  ^~~~~~~~
+../hardware/lcdfont.h(407): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  407 | "<BE><B0>",0xFC,0x01,0x04,0x01,0xFC,0x01,0x04,0x01,0xFC,0x01,0x20,0x00,0xFF,0x07,0x04,0x01,
+      |  ^~~~~~~~
+../hardware/lcdfont.h(411): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  411 | "<B5><E7>",0x10,0x00,0x10,0x00,0xFF,0x01,0x11,0x01,0x11,0x01,0xFF,0x01,0x11,0x01,0x11,0x01,
+      |  ^~~~~~~~
+../hardware/lcdfont.h(413): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  413 | "<D7><D3>",0x00,0x00,0xFC,0x01,0x80,0x00,0x40,0x00,0x20,0x00,0x20,0x00,0xFF,0x07,0x20,0x00,
+      |  ^~~~~~~~
+../hardware/lcdfont.h(430): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  430 | "<C1><A2>",0x40,0x00,0x80,0x00,0x80,0x00,0x00,0x00,0xFE,0x3F,0x00,0x00,0x00,0x08,0x08,0x08,
+      |  ^~~~~~~~
+../hardware/lcdfont.h(433): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  433 | "<B4><B4>",0x10,0x20,0x10,0x20,0x28,0x20,0x48,0x24,0x84,0x24,0x02,0x25,0x7D,0x24,0x44,0x24,
+      |  ^~~~~~~~
+../hardware/lcdfont.h(436): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  436 | "<BF><AA>",0x00,0x00,0xFE,0x3F,0x10,0x04,0x10,0x04,0x10,0x04,0x10,0x04,0x10,0x04,0xFF,0x7F,
+      |  ^~~~~~~~
+../hardware/lcdfont.h(439): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  439 | "<B7><A2>",0x80,0x00,0x88,0x08,0x88,0x10,0x44,0x00,0xFC,0x3F,0x40,0x00,0x20,0x00,0xE0,0x1F,
+      |  ^~~~~~~~
+../hardware/lcdfont.h(442): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  442 | "<B0><E5>",0x08,0x10,0x08,0x38,0x88,0x07,0x88,0x00,0xBF,0x00,0x88,0x3F,0x8C,0x22,0x9C,0x22,
+      |  ^~~~~~~~
+../hardware/lcdfont.h(445): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  445 | "<BC><F2>",0x04,0x02,0xFC,0x7E,0x12,0x09,0xA1,0x10,0x08,0x00,0xD0,0x1F,0x04,0x10,0xE4,0x13,
+      |  ^~~~~~~~
+../hardware/lcdfont.h(448): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  448 | "<D2><D7>",0xF0,0x0F,0x10,0x08,0x10,0x08,0xF0,0x0F,0x10,0x08,0x10,0x08,0xF0,0x0F,0x20,0x00,
+      |  ^~~~~~~~
+../hardware/lcdfont.h(451): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  451 | "<C8><EB>",0x20,0x00,0x40,0x00,0x80,0x00,0x80,0x00,0x80,0x00,0x40,0x01,0x40,0x01,0x40,0x01,
+      |  ^~~~~~~~
+../hardware/lcdfont.h(454): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  454 | "<C3><C5>",0x04,0x00,0xC8,0x3F,0x08,0x20,0x02,0x20,0x02,0x20,0x02,0x20,0x02,0x20,0x02,0x20,
+      |  ^~~~~~~~
+../hardware/lcdfont.h(457): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  457 | "<CC><D7>",0x80,0x00,0x80,0x00,0xFE,0x3F,0x40,0x01,0x20,0x02,0xF0,0x0F,0x2C,0x18,0xE3,0x67,
+      |  ^~~~~~~~
+../hardware/lcdfont.h(460): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  460 | "<BC><FE>",0x10,0x04,0x10,0x04,0x90,0x04,0x88,0x04,0x88,0x3F,0x4C,0x04,0x4C,0x04,0x2A,0x04,
+      |  ^~~~~~~~
+../hardware/lcdfont.h(477): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  477 | "<B6><A8>",0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x18,0x00,0x00,0x18,0x00,0xFC,0xFF,0x3F,0xFC,
+      |  ^~~~~~~~
+../hardware/lcdfont.h(484): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  484 | "<CB><D9>",0x00,0x00,0x00,0x00,0xC0,0x00,0x00,0xC0,0x00,0x18,0xC0,0x00,0x38,0xFF,0x3F,0x70,
+      |  ^~~~~~~~
+../hardware/lcdfont.h(491): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  491 | "<BE><E0>",0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xF8,0xF3,0x3F,0xF8,0xF3,0x3F,0x18,
+      |  ^~~~~~~~
+../hardware/lcdfont.h(510): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  510 | "<D6><D0>",0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x80,0x00,0x00,0x00,0x80,0x01,0x00,
+      |  ^~~~~~~~
+19 warnings generated.
+compiling hw_lcd.c...
+linking...
+Program Size: Code=11356 RO-data=14496 RW-data=8 ZI-data=1488  
+FromELF: creating hex file...
+".\Objects\empty_LP_MSPM0G3507_nortos_keil.axf" - 0 Error(s), 25 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -53,8 +146,7 @@ Package Vendor: TexasInstruments
 <h2>Collection of Component include folders:</h2>
 
 <h2>Collection of Component Files used:</h2>
-Target not created.
-Build Time Elapsed:  00:00:01
+Build Time Elapsed:  00:00:07
 </pre>
 </body>
 </html>

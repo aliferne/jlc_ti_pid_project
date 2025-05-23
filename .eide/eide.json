@@ -198,14 +198,12 @@
           ],
           "afterBuildTasks": [],
           "global": {
-            "use-microLIB": false,
             "output-debug-info": "enable"
           },
           "c/cpp-compiler": {
-            "optimization": "level-2",
+            "optimization": "level-0",
             "language-c": "c99",
             "language-cpp": "c++11",
-            "link-time-optimization": false,
             "one-elf-section-per-function": true,
             "short-enums#wchar": true,
             "warnings": "misra-compatible"
@@ -215,10 +213,7 @@
           },
           "linker": {
             "output-format": "elf",
-            "misc-controls": "source/ti/driverlib/lib/keil/m0p/mspm0g1x0x_g3x0x/driverlib.a",
-            "xo-base": "",
-            "ro-base": "",
-            "rw-base": ""
+            "misc-controls": "source/ti/driverlib/lib/keil/m0p/mspm0g1x0x_g3x0x/driverlib.a"
           }
         }
       }

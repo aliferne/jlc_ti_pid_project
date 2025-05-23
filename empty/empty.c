@@ -3,133 +3,176 @@
 #include "./middle/mid_debug_uart.h"
 #include "string.h"
 #include "./hardware/hw_lcd.h"
+#include "./middle/mid_button.h"
+#include "./app/app_key_task.h"
 
-void ui_home_page(void); // é¦–é¡µé¡µé¢åˆå§‹åŒ–
+void ui_home_page(void);// Ê×Ò³Ò³Ãæ³õÊ¼»¯
+void ui_home_page_select(int mode);//»æÖÆÑ¡Ôñ¿ò
 
 int main(void)
 {
+		int sys_time = 0;
+	
     SYSCFG_DL_init();
+		
+		//DEBUG´®¿Ú³õÊ¼»¯
+		debug_uart_init();
+		
+		//°´¼üÈÎÎñ³õÊ¼»¯
+    user_button_init();
+		
+		//LCD³õÊ¼»¯
+		lcd_init();
+		
+		//LCDÏÔÊ¾UI
+		ui_home_page();
+	
+    while (1) 
+		{
+			sys_time++;
 
-    debug_uart_init();
-
-    lcd_init();
-
-    ui_home_page();
-
-    while (1) {
-
-        delay_cycles(CPUCLK_FREQ / 1000 * 200);
+			if( sys_time % 10 == 0 )//2*10=20ms½øĞĞÒ»´Î°´¼üÉ¨Ãè
+			{
+					//°´¼üÉ¨Ãè
+					flex_button_scan();
+			}
+			
+			if( sys_time % 50 == 0 )//2*50=100msË¢ĞÂÒ»´ÎÆÁÄ»
+			{
+					//ÆÁÄ»Ë¢ĞÂ
+					ui_home_page_select( get_app_key_current_mode() );
+			}
+			
+			delay_cycles(CPUCLK_FREQ / 1000 * 2);//Ê±¼ä»ù×¼2ms
     }
 }
 
-/*
-åŠŸèƒ½è¯´æ˜ï¼šæ˜¾ç¤ºå±…ä¸­å­—ç¬¦ä¸²å‡½æ•°ç”¨äºæ˜¾ç¤ºå±…ä¸­çš„æ–‡å­—ï¼Œè®¡ç®—æ–‡å­—çš„å±…ä¸­åæ ‡
-å‚æ•°è¯´æ˜ï¼š  x=å±å¹•ä¸­å¿ƒxåæ ‡
-        w=å±å¹•å®½åº¦
-        y=å±å¹•ä¸­å¿ƒyåæ ‡
-        h=å±å¹•é«˜åº¦
-        str_len=å­—ç¬¦ä¸²é•¿åº¦
-        sizey=å­—ä½“å¤§å°
-        *str=éœ€è¦æ˜¾ç¤ºçš„å­—ç¬¦ä¸²
-        colorèƒŒæ™¯é¢œè‰²
-å¤‡æ³¨ï¼šGRAYBLUE æµ…è“è‰²
-      DARKBLUE æ·±è“è‰²
-*/
-void disp_x_center(int y, int str_len, uint16_t bc, unsigned char sizey, unsigned char *str)
-{
-    int str_center_x = (sizey * str_len) / 2; // å­—ç¬¦ä¸²x=å­—ä½“å¤§å°*å­—ç¬¦ä¸²é•¿åº¦/2
-    int str_center_y = sizey / 2;             // å­—ç¬¦ä¸²y=å­—ä½“å¤§å°/2
 
-    // æ˜¾ç¤ºå±…ä¸­åæ ‡çš„æ–‡å­—
-    LCD_ArcRect(screen_center_x - str_center_x - 10, y, screen_center_x + str_center_x + 10, sizey + y, bc);
-    LCD_ShowChinese(screen_center_x - str_center_x, y, str, WHITE, bc, sizey, 1);
+/*
+¹¦ÄÜËµÃ÷£ºÏÔÊ¾¾ÓÖĞ×Ö·û´®º¯ÊıÓÃÓÚÏÔÊ¾¾ÓÖĞµÄÎÄ×Ö£¬¼ÆËãÎÄ×ÖµÄ¾ÓÖĞ×ø±ê
+²ÎÊıËµÃ÷£º  x=ÆÁÄ»ÖĞĞÄx×ø±ê
+        w=ÆÁÄ»¿í¶È
+        y=ÆÁÄ»ÖĞĞÄy×ø±ê
+        h=ÆÁÄ»¸ß¶È
+        str_len=×Ö·û´®³¤¶È
+        sizey=×ÖÌå´óĞ¡
+        *str=ĞèÒªÏÔÊ¾µÄ×Ö·û´®
+        color±³¾°ÑÕÉ«        
+±¸×¢£ºGRAYBLUE Ç³À¶É«
+      DARKBLUE ÉîÀ¶É«
+*/
+void disp_x_center(int y, int str_len, uint16_t bc, unsigned char sizey, unsigned char* str)
+{
+    int str_center_x = (sizey * str_len) / 2;//×Ö·û´®x=×ÖÌå´óĞ¡*×Ö·û´®³¤¶È/2
+    int str_center_y = sizey / 2;//×Ö·û´®y=×ÖÌå´óĞ¡/2
+
+    //ÏÔÊ¾¾ÓÖĞ×ø±êµÄÎÄ×Ö    
+	  LCD_ArcRect(screen_center_x - str_center_x - 10, y, screen_center_x + str_center_x + 10, sizey+y, bc);
+    LCD_ShowChinese(screen_center_x - str_center_x,y,str,WHITE,bc,sizey,1);
 }
 
 /*
-åŠŸèƒ½è¯´æ˜ï¼šæ˜¾ç¤ºå­—ç¬¦ä¸²çŸ©å½¢å‡½æ•°ç”¨äºæ˜¾ç¤ºçŸ©å½¢çš„æ–‡å­—ï¼Œè®¡ç®—æ–‡å­—çš„å±…ä¸­åæ ‡
-å‚æ•°è¯´æ˜ï¼š  x=çŸ©å½¢èµ·å§‹xåæ ‡
-        w=çŸ©å½¢å®½åº¦
-        y=çŸ©å½¢èµ·å§‹yåæ ‡
-        h=çŸ©å½¢é«˜åº¦
-        str_len=å­—ç¬¦ä¸²é•¿åº¦
-        sizey=å­—ä½“å¤§å°
-        *str=éœ€è¦æ˜¾ç¤ºçš„å­—ç¬¦ä¸²
-        colorèƒŒæ™¯é¢œè‰²
-å¤‡æ³¨ï¼šGRAYBLUE æµ…è“è‰²
-      DARKBLUE æ·±è“è‰²
+¹¦ÄÜËµÃ÷£ºÏÔÊ¾×Ö·û´®¾ØĞÎº¯ÊıÓÃÓÚÏÔÊ¾¾ØĞÎµÄÎÄ×Ö£¬¼ÆËãÎÄ×ÖµÄ¾ÓÖĞ×ø±ê
+²ÎÊıËµÃ÷£º  x=¾ØĞÎÆğÊ¼x×ø±ê
+        w=¾ØĞÎ¿í¶È
+        y=¾ØĞÎÆğÊ¼y×ø±ê
+        h=¾ØĞÎ¸ß¶È
+        str_len=×Ö·û´®³¤¶È
+        sizey=×ÖÌå´óĞ¡
+        *str=ĞèÒªÏÔÊ¾µÄ×Ö·û´®
+        color±³¾°ÑÕÉ«        
+±¸×¢£ºGRAYBLUE Ç³À¶É«
+      DARKBLUE ÉîÀ¶É«
 */
-void disp_string_rect(int x, int w, int y, int h, int str_len, int sizey, unsigned char *str, int color)
+void disp_string_rect(int x, int w, int y, int h, int str_len, int sizey, unsigned char* str, int color)
 {
-    int str_center_x  = (sizey * str_len) / 2; // å­—ç¬¦ä¸²x = å­—ä½“å¤§å°*å­—ç¬¦ä¸²é•¿åº¦/2
-    int rect_center_x = x + (w / 2);           // çŸ©å½¢ä¸­å¿ƒx
-    int str_center_y  = sizey / 2;             // å­—ç¬¦ä¸²y=å­—ä½“å¤§å°/2
-    int rect_center_y = y + (h / 2);           // çŸ©å½¢ä¸­å¿ƒy
+    int str_center_x = (sizey * str_len) / 2; //×Ö·û´®x = ×ÖÌå´óĞ¡*×Ö·û´®³¤¶È/2
+    int rect_center_x = x + (w / 2); //¾ØĞÎÖĞĞÄx
+    int str_center_y = sizey  / 2; //×Ö·û´®y=×ÖÌå´óĞ¡/2
+    int rect_center_y = y + (h / 2); //¾ØĞÎÖĞĞÄy
 
-    // æ˜¾ç¤ºèƒŒæ™¯çŸ©å½¢
-    LCD_ArcRect(x, y, x + w, y + h, color);
-    // æ˜¾ç¤ºå­—ç¬¦ä¸²
-    LCD_ShowChinese(rect_center_x - str_center_x, rect_center_y - str_center_y, str, WHITE, color, sizey, 1);
+    //ÏÔÊ¾±³¾°¾ØĞÎ    
+	  LCD_ArcRect(x, y, x + w, y + h, color);
+    //ÏÔÊ¾×Ö·û´®
+    LCD_ShowChinese(rect_center_x - str_center_x, rect_center_y - str_center_y,str,WHITE,color,sizey,1);
 }
 
 /*
-åŠŸèƒ½è¯´æ˜ï¼šæ˜¾ç¤ºé€‰æ‹©æ¡†å‡½æ•°ç”¨äºæ˜¾ç¤ºé€‰æ‹©æ¡†ï¼š  x=æŒ‰é’®èµ·å§‹Xåæ ‡
-        w=æ˜¾ç¤ºçš„æŒ‰é’®é€‰æ‹©æ¡†å®½åº¦
-        y=æŒ‰é’®èµ·å§‹Yåæ ‡
-        h=æ˜¾ç¤ºçš„æŒ‰é’®é€‰æ‹©æ¡†é«˜åº¦
-        line_length=é€‰æ‹©æ¡†è¾¹çº¿é•¿åº¦
-        interval=é€‰æ‹©æ¡†è¾¹çº¿é—´éš” æŒ‰é’®é€‰æ‹©æ¡†è¾¹æ¡†ä¹‹é—´çš„è·ç¦»
-        color=é€‰æ‹©æ¡†è¾¹çº¿é¢œè‰²
+¹¦ÄÜËµÃ÷£ºÏÔÊ¾Ñ¡Ôñ¿òº¯ÊıÓÃÓÚÏÔÊ¾Ñ¡Ôñ¿ò£º  x=°´Å¥ÆğÊ¼X×ø±ê
+        w=ÏÔÊ¾µÄ°´Å¥Ñ¡Ôñ¿ò¿í¶È
+        y=°´Å¥ÆğÊ¼Y×ø±ê
+        h=ÏÔÊ¾µÄ°´Å¥Ñ¡Ôñ¿ò¸ß¶È
+        line_length=Ñ¡Ôñ¿ò±ßÏß³¤¶È
+        interval=Ñ¡Ôñ¿ò±ßÏß¼ä¸ô °´Å¥Ñ¡Ôñ¿ò±ß¿òÖ®¼äµÄ¾àÀë
+        color=Ñ¡Ôñ¿ò±ßÏßÑÕÉ«
 */
 void disp_select_box(int x, int w, int y, int h, int line_length, int interval, int color)
 {
-    // è®¡ç®—æŒ‰é’®é€‰æ‹©æ¡†è¾¹æ¡†ä¹‹é—´çš„è·ç¦»+è¾¹çº¿
+    //¼ÆËã°´Å¥Ñ¡Ôñ¿ò±ß¿òÖ®¼äµÄ¾àÀë+±ßÏß
     x = x - interval;
     w = w + (interval + interval);
     y = y - interval;
     h = h + (interval + interval);
-    // å·¦ä¸Šè§’
-    LCD_DrawLine(x, y, x + line_length, y, color);
+    //×óÉÏ½Ç    
+	  LCD_DrawLine(x, y, x + line_length, y, color);
     LCD_DrawLine(x, y, x, y + line_length, color);
-    // å³ä¸Šè§’
-    LCD_DrawLine(x + w, y, x + w - line_length, y, color);
+    //ÓÒÉÏ½Ç    
+	  LCD_DrawLine(x + w, y, x + w - line_length, y, color);
     LCD_DrawLine(x + w, y, x + w, y + line_length, color);
-    // å·¦ä¸‹è§’
-    LCD_DrawLine(x, y + h, x + line_length, y + h, color);
+    //×óÏÂ½Ç    
+	  LCD_DrawLine(x, y + h, x + line_length, y + h, color);
     LCD_DrawLine(x, y + h, x, y + h - line_length, color);
-    // å³ä¸‹è§’
-    LCD_DrawLine(x + w, y + h, x + w - line_length, y + h, color);
+    //ÓÒÏÂ½Ç    
+	  LCD_DrawLine(x + w, y + h, x + w - line_length, y + h, color);
     LCD_DrawLine(x + w, y + h, x + w, y + h - line_length, color);
 }
 
-// å®¶å±…é¡µé¢åˆå§‹åŒ–
+//¼Ò¾ÓÒ³Ãæ³õÊ¼»¯
 void ui_home_page(void)
 {
-    // å…³é—­èƒŒå…‰
-    LCD_BLK_Clr();
+    //¹Ø±Õ±³¹â    
+	  LCD_BLK_Clr();
 
-    // æ˜¾ç¤ºå…¨å±èƒŒæ™¯é¢œè‰²
-    LCD_Fill(0, 0, LCD_W, LCD_H, BLACK);
-    // æ˜¾ç¤ºæ ‡é¢˜
-    disp_x_center(3, 5, BLUE, 16, (unsigned char *)"ç«‹åˆ›å¼€å‘æ¿");
-    // æ˜¾ç¤ºå‰¯æ ‡é¢˜
-    disp_x_center(3 + 16 + 3, 9, BLUE, 16, (unsigned char *)"ç®€æ˜“PIDå…¥é—¨å¥—ä»¶");
+    //ÏÔÊ¾È«ÆÁ±³¾°ÑÕÉ«
+    LCD_Fill(0,0,LCD_W,LCD_H,BLACK);
+    //ÏÔÊ¾±êÌâ
+    disp_x_center(3,5,BLUE,16,(unsigned char *)"Á¢´´¿ª·¢°å");
+    //ÏÔÊ¾¸±±êÌâ
+    disp_x_center(3+16+3,8,BLUE,16,(unsigned char *)"¼òÒ×PIDÈëÃÅÌ×¼ş");
 
-    int x        = 40;
+    int x = 40;
     int x_offset = 80;
-    int y        = 65;
+    int y = 65;
     int y_offset = 80;
-    // æ˜¾ç¤ºç¬¬ä¸€ä¸ªæŒ‰é’®ï¼šå®šé€Ÿ
-    disp_string_rect(x, x_offset, y, y_offset, 2, 24, (unsigned char *)"å®šé€Ÿ", BLUE);
-    int x2        = 200;
+    //ÏÔÊ¾µÚÒ»¸ö°´Å¥£º¶¨ËÙ
+    disp_string_rect(x, x_offset, y, y_offset, 2, 24, "¶¨ËÙ", BLUE);
+    int x2 = 200;
     int x2_offset = 80;
-    int y2        = 65;
+    int y2 = 65;
     int y2_offset = 80;
-    // æ˜¾ç¤ºç¬¬äºŒä¸ªæŒ‰é’®ï¼šå®šè·
-    disp_string_rect(x2, x2_offset, y2, y2_offset, 2, 24, (unsigned char *)"å®šè·", BLUE);
+    //ÏÔÊ¾µÚ¶ş¸ö°´Å¥£º¶¨¾à  
+		disp_string_rect(x2, x2_offset, y2, y2_offset, 2, 24, "¶¨¾à", BLUE);
+    
+    //ÏÔÊ¾Ñ¡Ôñ¿ò  
+		disp_select_box(40,80,65,80,10,5,WHITE);  
+	
+    //´ò¿ª±³¹â   
+		LCD_BLK_Set();
+}
 
-    // æ˜¾ç¤ºé€‰æ‹©æ¡†
-    disp_select_box(40, 80, 65, 80, 10, 5, WHITE);
-
-    // æ‰“å¼€èƒŒå…‰
-    LCD_BLK_Set();
+//¸ù¾İ°´¼üÑ¡Ôñ»æÖÆÊ×Ò³Á½¸öÑ¡ÏîµÄÑ¡Ôñ¿ò
+void ui_home_page_select(int mode)
+{
+    char select_box_seze = 5;
+    switch(mode)
+    {
+        case 0: //Ñ¡ÔñPID¶¨ËÙÄ£Ê½
+            disp_select_box(40,80,65,80,10,select_box_seze,WHITE);
+            disp_select_box(200,80,65,80,10,select_box_seze,BLACK); 
+            break;
+        case 1: //Ñ¡ÔñPID¶¨¾àÄ£Ê½
+            disp_select_box(40,80,65,80,10,select_box_seze,BLACK);
+            disp_select_box(200,80,65,80,10,select_box_seze,WHITE);
+            break;
+    }
 }

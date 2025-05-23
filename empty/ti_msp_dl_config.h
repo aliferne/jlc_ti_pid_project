@@ -82,6 +82,26 @@ extern "C" {
 
 
 
+/* Defines for PWM_MOTOR */
+#define PWM_MOTOR_INST                                                     TIMG7
+#define PWM_MOTOR_INST_IRQHandler                               TIMG7_IRQHandler
+#define PWM_MOTOR_INST_INT_IRQN                                 (TIMG7_INT_IRQn)
+#define PWM_MOTOR_INST_CLK_FREQ                                         80000000
+/* GPIO defines for channel 0 */
+#define GPIO_PWM_MOTOR_C0_PORT                                             GPIOA
+#define GPIO_PWM_MOTOR_C0_PIN                                     DL_GPIO_PIN_26
+#define GPIO_PWM_MOTOR_C0_IOMUX                                  (IOMUX_PINCM59)
+#define GPIO_PWM_MOTOR_C0_IOMUX_FUNC                 IOMUX_PINCM59_PF_TIMG7_CCP0
+#define GPIO_PWM_MOTOR_C0_IDX                                DL_TIMER_CC_0_INDEX
+/* GPIO defines for channel 1 */
+#define GPIO_PWM_MOTOR_C1_PORT                                             GPIOA
+#define GPIO_PWM_MOTOR_C1_PIN                                     DL_GPIO_PIN_27
+#define GPIO_PWM_MOTOR_C1_IOMUX                                  (IOMUX_PINCM60)
+#define GPIO_PWM_MOTOR_C1_IOMUX_FUNC                 IOMUX_PINCM60_PF_TIMG7_CCP1
+#define GPIO_PWM_MOTOR_C1_IDX                                DL_TIMER_CC_1_INDEX
+
+
+
 /* Defines for UART_DEBUG */
 #define UART_DEBUG_INST                                                    UART0
 #define UART_DEBUG_INST_FREQUENCY                                       40000000
@@ -124,34 +144,6 @@ extern "C" {
 /* Defines for PIN_22: GPIOB.22 with pinCMx 50 on package pin 21 */
 #define DEBUG_LED_PIN_22_PIN                                    (DL_GPIO_PIN_22)
 #define DEBUG_LED_PIN_22_IOMUX                                   (IOMUX_PINCM50)
-/* Defines for DOWN: GPIOA.28 with pinCMx 3 on package pin 35 */
-#define KEY_DOWN_PORT                                                    (GPIOA)
-// pins affected by this interrupt request:["DOWN"]
-#define KEY_GPIOA_INT_IRQN                                      (GPIOA_INT_IRQn)
-#define KEY_GPIOA_INT_IIDX                      (DL_INTERRUPT_GROUP1_IIDX_GPIOA)
-#define KEY_DOWN_IIDX                                       (DL_GPIO_IIDX_DIO28)
-#define KEY_DOWN_PIN                                            (DL_GPIO_PIN_28)
-#define KEY_DOWN_IOMUX                                            (IOMUX_PINCM3)
-/* Defines for UP: GPIOA.9 with pinCMx 20 on package pin 55 */
-#define KEY_UP_PORT                                                      (GPIOA)
-#define KEY_UP_PIN                                               (DL_GPIO_PIN_9)
-#define KEY_UP_IOMUX                                             (IOMUX_PINCM20)
-/* Defines for LEFT: GPIOA.8 with pinCMx 19 on package pin 54 */
-#define KEY_LEFT_PORT                                                    (GPIOA)
-#define KEY_LEFT_PIN                                             (DL_GPIO_PIN_8)
-#define KEY_LEFT_IOMUX                                           (IOMUX_PINCM19)
-/* Defines for RIGHT: GPIOA.31 with pinCMx 6 on package pin 39 */
-#define KEY_RIGHT_PORT                                                   (GPIOA)
-#define KEY_RIGHT_PIN                                           (DL_GPIO_PIN_31)
-#define KEY_RIGHT_IOMUX                                           (IOMUX_PINCM6)
-/* Defines for MID: GPIOB.4 with pinCMx 17 on package pin 52 */
-#define KEY_MID_PORT                                                     (GPIOB)
-// pins affected by this interrupt request:["MID"]
-#define KEY_GPIOB_INT_IRQN                                      (GPIOB_INT_IRQn)
-#define KEY_GPIOB_INT_IIDX                      (DL_INTERRUPT_GROUP1_IIDX_GPIOB)
-#define KEY_MID_IIDX                                         (DL_GPIO_IIDX_DIO4)
-#define KEY_MID_PIN                                              (DL_GPIO_PIN_4)
-#define KEY_MID_IOMUX                                            (IOMUX_PINCM17)
 /* Port definition for Pin Group GPIO_LCD */
 #define GPIO_LCD_PORT                                                    (GPIOB)
 
@@ -167,6 +159,21 @@ extern "C" {
 /* Defines for PIN_BLK: GPIOB.26 with pinCMx 57 on package pin 28 */
 #define GPIO_LCD_PIN_BLK_PIN                                    (DL_GPIO_PIN_26)
 #define GPIO_LCD_PIN_BLK_IOMUX                                   (IOMUX_PINCM57)
+/* Port definition for Pin Group GPIO_KEY */
+#define GPIO_KEY_PORT                                                    (GPIOA)
+
+/* Defines for PIN_UP: GPIOA.9 with pinCMx 20 on package pin 55 */
+#define GPIO_KEY_PIN_UP_PIN                                      (DL_GPIO_PIN_9)
+#define GPIO_KEY_PIN_UP_IOMUX                                    (IOMUX_PINCM20)
+/* Defines for PIN_LEFT: GPIOA.8 with pinCMx 19 on package pin 54 */
+#define GPIO_KEY_PIN_LEFT_PIN                                    (DL_GPIO_PIN_8)
+#define GPIO_KEY_PIN_LEFT_IOMUX                                  (IOMUX_PINCM19)
+/* Defines for PIN_RIGHT: GPIOA.31 with pinCMx 6 on package pin 39 */
+#define GPIO_KEY_PIN_RIGHT_PIN                                  (DL_GPIO_PIN_31)
+#define GPIO_KEY_PIN_RIGHT_IOMUX                                  (IOMUX_PINCM6)
+/* Defines for PIN_DOWN: GPIOA.28 with pinCMx 3 on package pin 35 */
+#define GPIO_KEY_PIN_DOWN_PIN                                   (DL_GPIO_PIN_28)
+#define GPIO_KEY_PIN_DOWN_IOMUX                                   (IOMUX_PINCM3)
 
 /* clang-format on */
 
@@ -174,6 +181,7 @@ void SYSCFG_DL_init(void);
 void SYSCFG_DL_initPower(void);
 void SYSCFG_DL_GPIO_init(void);
 void SYSCFG_DL_SYSCTL_init(void);
+void SYSCFG_DL_PWM_MOTOR_init(void);
 void SYSCFG_DL_UART_DEBUG_init(void);
 void SYSCFG_DL_SPI_LCD_init(void);
 
