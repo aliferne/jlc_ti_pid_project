@@ -35,13 +35,28 @@ int main(void)
     }
 }
 
-void display_ui_home()
+void display_string_rect(int x, int w, int y, int h, int str_len,
+                         int sizey, unsigned char *str, int color)
 {
-    LCD_BLK_Set();
-    LCD_Fill(0, 0, LCD_W, LCD_H, BLACK);
-    LCD_ShowChinese(0, 0, "Hello World", WHITE, BLACK, 16, 1);
+    int str_center_x  = ((sizey / 2) * str_len) / 2; // 字符串x = 字体大小*字符串长度/2
+    int rect_center_x = x + (w / 2);                 // 矩形中心x
+    int str_center_y  = sizey / 2;                   // 字符串y=字体大小/2
+    int rect_center_y = y + (h / 2);                 // 矩形中心y
+
+    // 显示背景矩形
+    LCD_ArcRect(x, y, x + w, y + h, color);
+    // 显示字符串
+    LCD_ShowChinese(rect_center_x - str_center_x,
+                    rect_center_y - str_center_y,
+                    str, WHITE, color, sizey, 1);
 }
 
-void display_rectbox()
+void display_ui_home()
 {
+    LCD_BLK_Clr(); // 清除背光
+
+    LCD_Fill(0, 0, LCD_W, LCD_H, BLACK);
+    display_string_rect(10, 20, 10, 20, 1, 16, "", GRAYBLUE);
+
+    LCD_BLK_Set(); // 打开背光
 }
