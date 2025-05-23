@@ -41,6 +41,7 @@
 #include "ti_msp_dl_config.h"
 
 DL_TimerG_backupConfig gPWM_MOTORBackup;
+DL_TimerA_backupConfig gTIMER_TICKBackup;
 DL_SPI_backupConfig gSPI_LCDBackup;
 
 /*
@@ -54,10 +55,12 @@ SYSCONFIG_WEAK void SYSCFG_DL_init(void)
     /* Module-Specific Initializations*/
     SYSCFG_DL_SYSCTL_init();
     SYSCFG_DL_PWM_MOTOR_init();
+    SYSCFG_DL_TIMER_TICK_init();
     SYSCFG_DL_UART_DEBUG_init();
     SYSCFG_DL_SPI_LCD_init();
     /* Ensure backup structures have no valid state */
 	gPWM_MOTORBackup.backupRdy 	= false;
+	gTIMER_TICKBackup.backupRdy 	= false;
 
 	gSPI_LCDBackup.backupRdy 	= false;
 
@@ -71,6 +74,7 @@ SYSCONFIG_WEAK bool SYSCFG_DL_saveConfiguration(void)
     bool retStatus = true;
 
 	retStatus &= DL_TimerG_saveConfiguration(PWM_MOTOR_INST, &gPWM_MOTORBackup);
+	retStatus &= DL_TimerA_saveConfiguration(TIMER_TICK_INST, &gTIMER_TICKBackup);
 	retStatus &= DL_SPI_saveConfiguration(SPI_LCD_INST, &gSPI_LCDBackup);
 
     return retStatus;
@@ -82,6 +86,7 @@ SYSCONFIG_WEAK bool SYSCFG_DL_restoreConfiguration(void)
     bool retStatus = true;
 
 	retStatus &= DL_TimerG_restoreConfiguration(PWM_MOTOR_INST, &gPWM_MOTORBackup, false);
+	retStatus &= DL_TimerA_restoreConfiguration(TIMER_TICK_INST, &gTIMER_TICKBackup, false);
 	retStatus &= DL_SPI_restoreConfiguration(SPI_LCD_INST, &gSPI_LCDBackup);
 
     return retStatus;
@@ -92,12 +97,14 @@ SYSCONFIG_WEAK void SYSCFG_DL_initPower(void)
     DL_GPIO_reset(GPIOA);
     DL_GPIO_reset(GPIOB);
     DL_TimerG_reset(PWM_MOTOR_INST);
+    DL_TimerA_reset(TIMER_TICK_INST);
     DL_UART_Main_reset(UART_DEBUG_INST);
     DL_SPI_reset(SPI_LCD_INST);
 
     DL_GPIO_enablePower(GPIOA);
     DL_GPIO_enablePower(GPIOB);
     DL_TimerG_enablePower(PWM_MOTOR_INST);
+    DL_TimerA_enablePower(TIMER_TICK_INST);
     DL_UART_Main_enablePower(UART_DEBUG_INST);
     DL_SPI_enablePower(SPI_LCD_INST);
     delay_cycles(POWER_STARTUP_DELAY);
@@ -152,6 +159,14 @@ SYSCONFIG_WEAK void SYSCFG_DL_GPIO_init(void)
 		 DL_GPIO_INVERSION_DISABLE, DL_GPIO_RESISTOR_PULL_UP,
 		 DL_GPIO_HYSTERESIS_DISABLE, DL_GPIO_WAKEUP_DISABLE);
 
+    DL_GPIO_initDigitalInputFeatures(GPIO_ENCODER_PIN_A_IOMUX,
+		 DL_GPIO_INVERSION_DISABLE, DL_GPIO_RESISTOR_NONE,
+		 DL_GPIO_HYSTERESIS_DISABLE, DL_GPIO_WAKEUP_DISABLE);
+
+    DL_GPIO_initDigitalInputFeatures(GPIO_ENCODER_PIN_B_IOMUX,
+		 DL_GPIO_INVERSION_DISABLE, DL_GPIO_RESISTOR_NONE,
+		 DL_GPIO_HYSTERESIS_DISABLE, DL_GPIO_WAKEUP_DISABLE);
+
     DL_GPIO_clearPins(GPIOB, DEBUG_LED_PIN_22_PIN |
 		GPIO_LCD_PIN_RES_PIN |
 		GPIO_LCD_PIN_DC_PIN |
@@ -162,6 +177,12 @@ SYSCONFIG_WEAK void SYSCFG_DL_GPIO_init(void)
 		GPIO_LCD_PIN_DC_PIN |
 		GPIO_LCD_PIN_CS_PIN |
 		GPIO_LCD_PIN_BLK_PIN);
+    DL_GPIO_setLowerPinsPolarity(GPIOB, DL_GPIO_PIN_0_EDGE_RISE |
+		DL_GPIO_PIN_1_EDGE_RISE);
+    DL_GPIO_clearInterruptStatus(GPIOB, GPIO_ENCODER_PIN_A_PIN |
+		GPIO_ENCODER_PIN_B_PIN);
+    DL_GPIO_enableInterrupt(GPIOB, GPIO_ENCODER_PIN_A_PIN |
+		GPIO_ENCODER_PIN_B_PIN);
 
 }
 
@@ -195,6 +216,8 @@ SYSCONFIG_WEAK void SYSCFG_DL_SYSCTL_init(void)
     DL_SYSCTL_configSYSPLL((DL_SYSCTL_SYSPLLConfig *) &gSYSPLLConfig);
     DL_SYSCTL_setULPCLKDivider(DL_SYSCTL_ULPCLK_DIV_2);
     DL_SYSCTL_setMCLKSource(SYSOSC, HSCLK, DL_SYSCTL_HSCLK_SOURCE_SYSPLL);
+    /* INT_GROUP1 Priority */
+    NVIC_SetPriority(GPIOB_INT_IRQn, 0);
 
 }
 
@@ -244,6 +267,46 @@ SYSCONFIG_WEAK void SYSCFG_DL_PWM_MOTOR_init(void) {
 
     
     DL_TimerG_setCCPDirection(PWM_MOTOR_INST , DL_TIMER_CC0_OUTPUT | DL_TIMER_CC1_OUTPUT );
+
+
+}
+
+
+
+/*
+ * Timer clock configuration to be sourced by BUSCLK /  (10000000 Hz)
+ * timerClkFreq = (timerClkSrc / (timerClkDivRatio * (timerClkPrescale + 1)))
+ *   1000000 Hz = 10000000 Hz / (8 * (9 + 1))
+ */
+static const DL_TimerA_ClockConfig gTIMER_TICKClockConfig = {
+    .clockSel    = DL_TIMER_CLOCK_BUSCLK,
+    .divideRatio = DL_TIMER_CLOCK_DIVIDE_8,
+    .prescale    = 9U,
+};
+
+/*
+ * Timer load value (where the counter starts from) is calculated as (timerPeriod * timerClockFreq) - 1
+ * TIMER_TICK_INST_LOAD_VALUE = (20 ms * 1000000 Hz) - 1
+ */
+static const DL_TimerA_TimerConfig gTIMER_TICKTimerConfig = {
+    .period     = TIMER_TICK_INST_LOAD_VALUE,
+    .timerMode  = DL_TIMER_TIMER_MODE_PERIODIC,
+    .startTimer = DL_TIMER_START,
+};
+
+SYSCONFIG_WEAK void SYSCFG_DL_TIMER_TICK_init(void) {
+
+    DL_TimerA_setClockConfig(TIMER_TICK_INST,
+        (DL_TimerA_ClockConfig *) &gTIMER_TICKClockConfig);
+
+    DL_TimerA_initTimerMode(TIMER_TICK_INST,
+        (DL_TimerA_TimerConfig *) &gTIMER_TICKTimerConfig);
+    DL_TimerA_enableInterrupt(TIMER_TICK_INST , DL_TIMERA_INTERRUPT_ZERO_EVENT);
+	NVIC_SetPriority(TIMER_TICK_INST_INT_IRQN, 3);
+    DL_TimerA_enableClock(TIMER_TICK_INST);
+
+
+
 
 
 }

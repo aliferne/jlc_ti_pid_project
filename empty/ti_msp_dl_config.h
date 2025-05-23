@@ -102,6 +102,14 @@ extern "C" {
 
 
 
+/* Defines for TIMER_TICK */
+#define TIMER_TICK_INST                                                  (TIMA0)
+#define TIMER_TICK_INST_IRQHandler                              TIMA0_IRQHandler
+#define TIMER_TICK_INST_INT_IRQN                                (TIMA0_INT_IRQn)
+#define TIMER_TICK_INST_LOAD_VALUE                                      (19999U)
+
+
+
 /* Defines for UART_DEBUG */
 #define UART_DEBUG_INST                                                    UART0
 #define UART_DEBUG_INST_FREQUENCY                                       40000000
@@ -174,6 +182,20 @@ extern "C" {
 /* Defines for PIN_DOWN: GPIOA.28 with pinCMx 3 on package pin 35 */
 #define GPIO_KEY_PIN_DOWN_PIN                                   (DL_GPIO_PIN_28)
 #define GPIO_KEY_PIN_DOWN_IOMUX                                   (IOMUX_PINCM3)
+/* Port definition for Pin Group GPIO_ENCODER */
+#define GPIO_ENCODER_PORT                                                (GPIOB)
+
+/* Defines for PIN_A: GPIOB.0 with pinCMx 12 on package pin 47 */
+// pins affected by this interrupt request:["PIN_A","PIN_B"]
+#define GPIO_ENCODER_INT_IRQN                                   (GPIOB_INT_IRQn)
+#define GPIO_ENCODER_INT_IIDX                   (DL_INTERRUPT_GROUP1_IIDX_GPIOB)
+#define GPIO_ENCODER_PIN_A_IIDX                              (DL_GPIO_IIDX_DIO0)
+#define GPIO_ENCODER_PIN_A_PIN                                   (DL_GPIO_PIN_0)
+#define GPIO_ENCODER_PIN_A_IOMUX                                 (IOMUX_PINCM12)
+/* Defines for PIN_B: GPIOB.1 with pinCMx 13 on package pin 48 */
+#define GPIO_ENCODER_PIN_B_IIDX                              (DL_GPIO_IIDX_DIO1)
+#define GPIO_ENCODER_PIN_B_PIN                                   (DL_GPIO_PIN_1)
+#define GPIO_ENCODER_PIN_B_IOMUX                                 (IOMUX_PINCM13)
 
 /* clang-format on */
 
@@ -182,6 +204,7 @@ void SYSCFG_DL_initPower(void);
 void SYSCFG_DL_GPIO_init(void);
 void SYSCFG_DL_SYSCTL_init(void);
 void SYSCFG_DL_PWM_MOTOR_init(void);
+void SYSCFG_DL_TIMER_TICK_init(void);
 void SYSCFG_DL_UART_DEBUG_init(void);
 void SYSCFG_DL_SPI_LCD_init(void);
 

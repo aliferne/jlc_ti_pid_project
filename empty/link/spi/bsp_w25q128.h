@@ -1,7 +1,7 @@
 #ifndef __BSP_W25Q128_H__
 #define __BSP_W25Q128_H__
 
-#include "../../ti_msp_dl_config.h"
+#include "../ti_msp_dl_config.h"
 
 // CS引脚的输出控制
 // x=0时输出低电平

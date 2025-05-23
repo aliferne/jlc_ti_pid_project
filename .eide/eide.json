@@ -177,7 +177,11 @@
         "incList": [
           "source",
           ".cmsis/include",
-          "empty/keil/RTE/_empty_LP_MSPM0G3507_nortos_keil"
+          "empty/keil/RTE/_empty_LP_MSPM0G3507_nortos_keil",
+          "empty/app",
+          "empty/hardware",
+          "empty/middle",
+          "empty"
         ],
         "libList": [],
         "defineList": [
