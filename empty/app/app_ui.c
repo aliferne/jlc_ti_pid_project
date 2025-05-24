@@ -1,118 +1,544 @@
-// #include "app_ui.h"
-// #include "string.h"
-// #include "stdio.h"
-// #include "hw_lcd.h"
+#include "app_ui.h"
+#include "string.h"
+#include "stdio.h"
+#include "hw_lcd.h"
 
-// /**
-//  * @brief 在屏幕中心绘制带圆角背景的字符串
-//  *
-//  * 该函数用于在屏幕中心绘制一个带圆角背景的字符串。字符串的位置会根据其长度和字体大小自动调整，以确保它在屏幕中心。
-//  *
-//  * @param y 字符串起始Y轴坐标
-//  * @param str_len 字符串长度
-//  * @param bc 圆角矩形背景色
-//  * @param fontSize 字符像素大小
-//  * @param str 要显示的字符串
-//  *
-//  * @note 该函数假设屏幕中心坐标 `screen_center_x` 已经被正确定义。
-//  * @note 字符串的长度不应超过屏幕的宽度，以避免绘制超出屏幕边界。
-//  * @note 字符串的字体大小应与屏幕的尺寸相匹配，以确保字符串能够完全显示在屏幕内。
-//  * @note 背景颜色可以是预定义的颜色常量，如 GRAYBLUE 或 DARKBLUE。
-//  */
-// void disp_x_center(int y, int str_len, uint16_t bc, unsigned char fontSize, unsigned char *str)
-// {
-//     // 计算文字的中心
-//     int str_center_x = (fontSize * str_len) / 2;
-//     int str_center_y = fontSize / 2;
+/**
+ * @brief 在屏幕中心绘制带圆角背景的字符串
+ *
+ * 该函数用于在屏幕中心绘制一个带圆角背景的字符串。字符串的位置会根据其长度和字体大小自动调整，以确保它在屏幕中心。
+ *
+ * @param y 字符串起始Y轴坐标
+ * @param str_len 字符串长度
+ * @param bc 圆角矩形背景色
+ * @param fontSize 字符像素大小
+ * @param str 要显示的字符串
+ *
+ * @note 该函数假设屏幕中心坐标 `screen_center_x` 已经被正确定义。
+ * @note 字符串的长度不应超过屏幕的宽度，以避免绘制超出屏幕边界。
+ * @note 字符串的字体大小应与屏幕的尺寸相匹配，以确保字符串能够完全显示在屏幕内。
+ * @note 背景颜色可以是预定义的颜色常量，如 GRAYBLUE 或 DARKBLUE。
+ */
+void disp_x_center(int y, int str_len, uint16_t bc, unsigned char fontSize, unsigned char *str)
+{
+    // 计算文字的中心
+    int str_center_x = (fontSize * str_len) / 2;
+    int str_center_y = fontSize / 2;
 
-//     // 绘制圆角矩形
-//     LCD_ArcRect(screen_center_x - str_center_x - 10,
-//                 screen_center_x + str_center_x + 10,
-//                 fontSize + y,
-//                 bc);
-//     LCD_ShowChinese(screen_center_x - str_center_x,
-//                     y, str, WHITE, bc, fontSize, 1);
-// }
+    // 绘制圆角矩形
+    LCD_Draw_ArcRect(screen_center_x - str_center_x - 10,
+                     y,
+                     screen_center_x + str_center_x + 10,
+                     fontSize + y,
+                     bc);
+    LCD_Show_Chinese(screen_center_x - str_center_x,
+                     y, str, WHITE, bc, fontSize, 1);
+}
 
-// /**
-//  * @brief 绘制彩色填充矩形，带居中的字符串
-//  *
-//  * 该函数用于在指定的位置绘制一个彩色填充的矩形，并在矩形内部居中显示一个字符串。
-//  *
-//  * @param x 矩形起始X轴坐标
-//  * @param w 矩形宽度
-//  * @param y 矩形起始Y轴坐标
-//  * @param h 矩形高度
-//  * @param str_len 字符串长度
-//  * @param fontSize 字符像素大小
-//  * @param str 要显示的字符串
-//  * @param color 矩形背景色
-//  *
-//  * @note 该函数假设输入的坐标、宽度和高度都是有效的，且不会导致绘制超出屏幕边界。
-//  * @note 字符串的长度不应超过矩形的宽度。
-//  * @note 字符串的字体大小应与矩形的尺寸相匹配，以确保字符串能够完全显示在矩形内。
-//  * @note 背景颜色可以是预定义的颜色常量，如 GRAYBLUE 或 DARKBLUE。
-//  */
-// void disp_string_rect(int x, int w, int y, int h, int str_len, int fontSize, unsigned char *str, int color)
-// {
-//     int str_center_x  = (fontSize * str_len) / 2;
-//     int rect_center_x = x + (w / 2);
-//     int str_center_y  = fontSize / 2;
-//     int rect_center_y = y + (h / 2);
+/**
+ * @brief 绘制彩色填充矩形，带居中的字符串
+ *
+ * 该函数用于在指定的位置绘制一个彩色填充的矩形，并在矩形内部居中显示一个字符串。
+ *
+ * @param x 矩形起始X轴坐标
+ * @param w 矩形宽度
+ * @param y 矩形起始Y轴坐标
+ * @param h 矩形高度
+ * @param str_len 字符串长度
+ * @param fontSize 字符像素大小
+ * @param str 要显示的字符串
+ * @param color 矩形背景色
+ *
+ * @note 该函数假设输入的坐标、宽度和高度都是有效的，且不会导致绘制超出屏幕边界。
+ * @note 字符串的长度不应超过矩形的宽度。
+ * @note 字符串的字体大小应与矩形的尺寸相匹配，以确保字符串能够完全显示在矩形内。
+ * @note 背景颜色可以是预定义的颜色常量，如 GRAYBLUE 或 DARKBLUE。
+ */
+void disp_string_rect(int x, int w, int y, int h, int str_len, int fontSize, unsigned char *str, int color)
+{
+    int str_center_x  = (fontSize * str_len) / 2;
+    int rect_center_x = x + (w / 2);
+    int str_center_y  = fontSize / 2;
+    int rect_center_y = y + (h / 2);
 
-//     LCD_ArcRect(x, y, x + w, y + h, color);
-//     LCD_ShowChinese(rect_center_x - str_center_x,
-//                     rect_center_y - str_center_y,
-//                     str, WHITE,
-//                     color, fontSize, 1)
-// }
+    LCD_Draw_ArcRect(x, y, x + w, y + h, color);
+    LCD_Show_Chinese(rect_center_x - str_center_x,
+                     rect_center_y - str_center_y,
+                     str, WHITE,
+                     color, fontSize, 1);
+}
 
-// void disp_select_box(int x, int w, int y, int h, int line_length, int interval, int color)
-// {
-//     // interval: 间距
-//     x -= interval;     // 向左偏移interval的距离
-//     w += interval * 2; // 宽度增加interval*2的距离（矩形框两边对称）
-//     y -= interval;     // 向上偏移interval的距离
-//     h += interval * 2; // 高度增加interval*2的距离
+void disp_select_box(int x, int w, int y, int h, int line_length, int interval, int color)
+{
+    // interval: 间距
+    x -= interval;     // 向左偏移interval的距离
+    w += interval * 2; // 宽度增加interval*2的距离（矩形框两边对称）
+    y -= interval;     // 向上偏移interval的距离
+    h += interval * 2; // 高度增加interval*2的距离
 
-//     // 左上
-//     LCD_DrawLine(x, y, x + line_length, y, color);
-//     LCD_DrawLine(x, y, x, y + line_length, color);
-//     // 右上
-//     LCD_DrawLine(x + w, y, x + w - line_length, y, color);
-//     LCD_DrawLine(x + w, y, x + w, y + line_length, color);
-//     // 左下
-//     LCD_DrawLine(x, y + h, x + line_length, y + h, color);
-//     LCD_DrawLine(x, y + h, x, y + h - line_length, color);
-//     // 右下
-//     LCD_DrawLine(x + w, y + h, x + w - line_length, y + h, color);
-//     LCD_DrawLine(x + w, y + h, x + w, y + h - line_length, color);
-// }
+    // 左上
+    LCD_Draw_Line(x, y, x + line_length, y, color);
+    LCD_Draw_Line(x, y, x, y + line_length, color);
+    // 右上
+    LCD_Draw_Line(x + w, y, x + w - line_length, y, color);
+    LCD_Draw_Line(x + w, y, x + w, y + line_length, color);
+    // 左下
+    LCD_Draw_Line(x, y + h, x + line_length, y + h, color);
+    LCD_Draw_Line(x, y + h, x, y + h - line_length, color);
+    // 右下
+    LCD_Draw_Line(x + w, y + h, x + w - line_length, y + h, color);
+    LCD_Draw_Line(x + w, y + h, x + w, y + h - line_length, color);
+}
 
-// void ui_home_page(void)
-// {
-//     // 关闭背光
-//     LCD_BLK_Clr();
-//     // 绘制纯黑色背景
-//     LCD_Fill(0, 0, LCD_W, LCD_H, BLACK);
-//     // 绘制一些其他的文字
-//     disp_x_center(3, 5, BLUE, 16, (uint8_t *)"立创开发板");
-//     disp_x_center(23, 5, BLUE, 16, (uint8_t *)"简易PID入门套件");
+void ui_home_page(void)
+{
+    // 关闭背光
+    LCD_BLK_Clear();
+    // 绘制纯黑色背景
+    LCD_Fill(0, 0, LCD_W, LCD_H, BLACK);
+    // 绘制一些其他的文字
+    disp_x_center(3, 5, BLUE, FONTSIZE, (uint8_t *)"立创开发板");
+    disp_x_center(23, 8, BLUE, FONTSIZE, (uint8_t *)"简易PID入门套件");
 
-//     int x        = 40;
-//     int x_offset = 80;
-//     int y        = 65;
-//     int y_offset = 80;
-//     // 任务一：PID定速
-//     disp_string_rect(x, x_offset, y, y_offset, 2, 24, (uint8_t *)"定速", BLUE);
-//     int x        = 40;
-//     int x_offset = 80;
-//     int y        = 65;
-//     int y_offset = 80;
-//     // 任务一：PID定距
-//     disp_string_rect(x, x_offset, y, y_offset, 2, 24, (uint8_t *)"定距", BLUE);
+    int x1        = 40;
+    int x1_offset = 80;
+    int y1        = 65;
+    int y1_offset = 80;
+    // 绘制任务一：PID定速
+    disp_string_rect(x1, x1_offset, y1, y1_offset, 2, 24, (uint8_t *)"定速", BLUE);
+    int x2        = 200;
+    int x2_offset = 80;
+    int y2        = 65;
+    int y2_offset = 80;
+    // 绘制任务二：PID定距
+    disp_string_rect(x2, x2_offset, y2, y2_offset, 2, 24, (uint8_t *)"定距", BLUE);
 
-//     // TODO: 接着往下写
-//     // switch (get_default_page)
+    // TODO: 该函数尚未完成
+    switch (0) {
+        case 0:
+            disp_select_box(40, 80, 65, 80, 10, 5, BLUE);
+            break;
+        case 1:
+            disp_select_box(200, 80, 65, 80, 10, 5, BLUE);
+            break;
+    }
 
-// }
+    LCD_BLK_Set(); // 打开背光
+
+    // 先关背光再打开是为了刷新时更好的视觉体验
+}
+
+// 绘制首页选择框
+void ui_home_page_select(int mode)
+{
+    char select_box_size = 5;
+    switch (mode) {
+        case 0: // 选择PID定速模式
+            disp_select_box(40, 80, 65, 80, 10, select_box_size, WHITE);
+            disp_select_box(200, 80, 65, 80, 10, select_box_size, BLACK);
+            break;
+        case 1: // 选择PID定距模式
+            disp_select_box(40, 80, 65, 80, 10, select_box_size, BLACK);
+            disp_select_box(200, 80, 65, 80, 10, select_box_size, WHITE);
+            break;
+    }
+}
+
+/* *********************** 以下是定速页面 *********************** */
+
+typedef struct {
+    unsigned int start_x;
+    unsigned int start_y;
+    unsigned int end_x;
+    unsigned int end_y;
+    unsigned int center;
+} TXT_OBJECT;
+
+// 绘制定速页静态UI
+void ui_speed_page(void)
+{
+    TXT_OBJECT p = {0}, i = {0}, d = {0};
+
+    // 关闭背光
+    LCD_BLK_Clear();
+    // 绘制纯黑色背景
+    LCD_Fill(0, 0, LCD_W, LCD_H, BLACK);
+    int str_center_x = (24 * 1) / 2;
+
+    // 显示静态的PID标题
+    LCD_Show_Char(screen_center_x - str_center_x - DEFAULT_CENTER_X_OFFSET,
+                  DEFAULT_PID_TITLE_Y_POSITION, 'P', WHITE, BLUE, FONTSIZE, 1);
+    LCD_Show_Char(screen_center_x - str_center_x,
+                  DEFAULT_PID_TITLE_Y_POSITION, 'I', WHITE, BLUE, FONTSIZE, 1);
+    LCD_Show_Char(screen_center_x - str_center_x + DEFAULT_CENTER_X_OFFSET,
+                  DEFAULT_PID_TITLE_Y_POSITION, 'D', WHITE, BLUE, FONTSIZE, 1);
+
+    // 显示P参数的圆角矩形背景
+    p.start_x = screen_center_x - str_center_x - DEFAULT_CENTER_X_OFFSET - 30;
+    p.start_y = PID_NEXT_Y_START_POSITION;
+    p.end_x   = screen_center_x - str_center_x - DEFAULT_CENTER_X_OFFSET + 40;
+    p.end_y   = PID_NEXT_Y_START_POSITION + 24;
+    LCD_Draw_ArcRect(p.start_x, p.start_y, p.end_x, p.end_y, BLUE);
+
+    // 显示I参数的圆角矩形背景
+    i.start_x = screen_center_x - str_center_x - 30;
+    i.start_y = PID_NEXT_Y_START_POSITION;
+    i.end_x   = screen_center_x - str_center_x + 40;
+    i.end_y   = PID_NEXT_Y_START_POSITION + 24;
+    LCD_Draw_ArcRect(i.start_x, i.start_y, i.end_x, i.end_y, BLUE);
+
+    // 显示D参数的圆角矩形背景
+    d.start_x = screen_center_x - str_center_x + DEFAULT_CENTER_X_OFFSET - 30;
+    d.start_y = PID_NEXT_Y_START_POSITION;
+    d.end_x   = screen_center_x - str_center_x + DEFAULT_CENTER_X_OFFSET + 40;
+    d.end_y   = PID_NEXT_Y_START_POSITION + 24;
+    LCD_Draw_ArcRect(d.start_x, d.start_y, d.end_x, d.end_y, BLUE);
+
+    // 显示静态的Speed Target 标题
+    LCD_Show_String(20, 170 - 34, (uint8_t *)"Speed: ", WHITE, BLUE, 24, 1);
+    LCD_Show_String(320 - 150, 170 - 34, (uint8_t *)"Target: ", WHITE, BLUE, 24, 1);
+
+    LCD_BLK_Set(); // 打开背光
+}
+
+void ui_speed_page_value_set(float p, float i, float d, int speed,
+                             int target, int quick_update) // 绘制定速页参数值的变化
+{
+    static float last_p, last_i, last_d;
+    static int last_speed, last_target;
+
+    char show_buff[50] = {0};
+    TXT_OBJECT txt_p = {0}, txt_i = {0}, txt_d = {0};
+    int txt_size         = 0;  // 一整个字符串的像素
+    int char_width_pixel = 8;  // 16x16大小的英文字符实际大小是8x16
+    int rect_w           = 70; // 矩形的宽度
+    int rect_h           = 24; // 矩形的高度
+    int rect_start_x     = 34; // 第一个矩形的起始X轴位置
+    int rect_apart_x     = 84; // 矩形与矩形间的间隔
+
+    if (quick_update != 1) {   // 未开启快速更新
+        last_p      = 65535.0; // 设置一个不可能的值
+        last_i      = 65535.0;
+        last_d      = 65535.0;
+        last_speed  = 65535;
+        last_target = 65535;
+    }
+
+    if (last_p != p) { // 不同了，此时该刷新了
+        last_p = p;
+        sprintf(show_buff, "%.2f", p);
+        txt_size      = strlen(show_buff) * char_width_pixel; // 计算字符串的长度
+        txt_p.start_x = rect_start_x + ((rect_w - txt_size) / 2);
+        txt_p.start_y = 104 + ((rect_h - FONTSIZE) / 2);
+        LCD_Show_String(txt_p.start_x, txt_p.start_y, (uint8_t *)show_buff,
+                        WHITE, BLUE, FONTSIZE, 0);
+    }
+
+    if (last_i != i) {
+        last_i = i;
+        sprintf(show_buff, " %.2f ", i);
+        txt_size      = strlen(show_buff) * char_width_pixel;
+        txt_i.start_x = (rect_start_x + rect_apart_x) + ((rect_w - txt_size) / 2);
+        txt_i.start_y = 104 + ((rect_h - FONTSIZE) / 2);
+        LCD_Show_String(txt_i.start_x, txt_i.start_y, (uint8_t *)show_buff,
+                        WHITE, BLUE, FONTSIZE, 0);
+    }
+    if (last_d != d) {
+        last_d = d;
+        sprintf(show_buff, " %.2f ", d);
+        txt_size      = strlen(show_buff) * char_width_pixel;
+        txt_d.start_x = (rect_start_x + rect_apart_x + rect_apart_x) + ((rect_w - txt_size) / 2);
+        txt_d.start_y = 104 + ((rect_h - FONTSIZE) / 2);
+        LCD_Show_String(txt_d.start_x, txt_d.start_y, (uint8_t *)show_buff,
+                        WHITE, BLUE, FONTSIZE, 0);
+    }
+    if (last_speed != speed) {
+        last_speed = speed;
+        sprintf(show_buff, "%d ", speed);
+        LCD_Show_String(12 * 6 + 20, 170 - 34, (uint8_t *)show_buff,
+                        WHITE, BLACK, 24, 0);
+    }
+    if (last_target != target) {
+        last_target = target;
+        sprintf(show_buff, "%d ", target);
+        LCD_Show_String(320 - 150 + 12 * 7, 170 - 34, (uint8_t *)show_buff,
+                        WHITE, BLACK, 24, 0);
+    }
+}
+
+// 绘制定速页选择框
+// 参数选择框
+void ui_speed_page_select_box(int mode)
+{
+    char select_box_interval = 3;
+
+    switch (mode) {
+        case 0: // P
+            disp_select_box(34, 104 - 34, 104, 128 - 104, 10, select_box_interval, WHITE);
+            disp_select_box(118, 188 - 118, 104, 128 - 104, 10, select_box_interval, BLACK);
+            disp_select_box(320 - 150, 316 - (320 - 150), 170 - 34, 166 - (170 - 34), 10, select_box_interval, BLACK);
+            break;
+        case 1: // I
+            disp_select_box(118, 188 - 118, 104, 128 - 104, 10, select_box_interval, WHITE);
+            disp_select_box(202, 272 - 202, 104, 128 - 104, 10, select_box_interval, BLACK);
+            disp_select_box(34, 104 - 34, 104, 128 - 104, 10, select_box_interval, BLACK);
+            break;
+        case 2: // D
+            disp_select_box(202, 272 - 202, 104, 128 - 104, 10, select_box_interval, WHITE);
+            disp_select_box(320 - 150, 316 - (320 - 150), 170 - 34, 166 - (170 - 34), 10, select_box_interval, BLACK);
+            disp_select_box(118, 188 - 118, 104, 128 - 104, 10, select_box_interval, BLACK);
+            break;
+        case 3: // target
+            disp_select_box(320 - 150, 316 - (320 - 150), 170 - 34, 166 - (170 - 34), 10, select_box_interval, WHITE);
+            disp_select_box(34, 104 - 34, 104, 128 - 104, 10, select_box_interval, BLACK);
+            disp_select_box(202, 272 - 202, 104, 128 - 104, 10, select_box_interval, BLACK);
+            break;
+        case 4: // all clean
+            disp_select_box(34, 104 - 34, 104, 128 - 104, 10, select_box_interval, BLACK);
+            disp_select_box(118, 188 - 118, 104, 128 - 104, 10, select_box_interval, BLACK);
+            disp_select_box(202, 272 - 202, 104, 128 - 104, 10, select_box_interval, BLACK);
+            disp_select_box(320 - 150, 316 - (320 - 150), 170 - 34, 166 - (170 - 34), 10, select_box_interval, BLACK);
+            break;
+    }
+}
+
+void ui_distance_page(void) // 绘制定距页静态UI
+{
+    TXT_OBJECT p = {0}, i = {0}, d = {0};
+
+    // 关闭背光
+    LCD_BLK_Clear();
+    LCD_Fill(0, 0, LCD_W, LCD_H, BLACK);
+
+    int str_center_x = (24 * 1) / 2;
+
+    // 显示静态的PID标题
+    LCD_Show_Char(screen_center_x - str_center_x - DEFAULT_CENTER_X_OFFSET,
+                  DEFAULT_PID_TITLE_Y_POSITION, 'P', WHITE, BLUE, FONTSIZE, 1);
+    LCD_Show_Char(screen_center_x - str_center_x,
+                  DEFAULT_PID_TITLE_Y_POSITION, 'I', WHITE, BLUE, FONTSIZE, 1);
+    LCD_Show_Char(screen_center_x - str_center_x + DEFAULT_CENTER_X_OFFSET,
+                  DEFAULT_PID_TITLE_Y_POSITION, 'D', WHITE, BLUE, FONTSIZE, 1);
+
+    // 显示P参数的圆角矩形背景
+    p.start_x = screen_center_x - str_center_x - DEFAULT_CENTER_X_OFFSET - 30;
+    p.start_y = PID_NEXT_Y_START_POSITION;
+    p.end_x   = screen_center_x - str_center_x - DEFAULT_CENTER_X_OFFSET + 40;
+    p.end_y   = PID_NEXT_Y_START_POSITION + 24;
+    LCD_Draw_ArcRect(p.start_x, p.start_y, p.end_x, p.end_y, BLUE);
+
+    // 显示I参数的圆角矩形背景
+    i.start_x = screen_center_x - str_center_x - 30;
+    i.start_y = PID_NEXT_Y_START_POSITION;
+    i.end_x   = screen_center_x - str_center_x + 40;
+    i.end_y   = PID_NEXT_Y_START_POSITION + 24;
+    LCD_Draw_ArcRect(i.start_x, i.start_y, i.end_x, i.end_y, BLUE);
+
+    // 显示D参数的圆角矩形背景
+    d.start_x = screen_center_x - str_center_x + DEFAULT_CENTER_X_OFFSET - 30;
+    d.start_y = PID_NEXT_Y_START_POSITION;
+    d.end_x   = screen_center_x - str_center_x + DEFAULT_CENTER_X_OFFSET + 40;
+    d.end_y   = PID_NEXT_Y_START_POSITION + 24;
+    LCD_Draw_ArcRect(d.start_x, d.start_y, d.end_x, d.end_y, BLUE);
+
+    // 显示静态的Angle Target 标题
+    LCD_Show_String(20, 170 - 34, (uint8_t *)"Angle: ", WHITE, BLUE, 24, 1);
+    LCD_Show_String(320 - 150, 170 - 34, (uint8_t *)"Target: ", WHITE, BLUE, 24, 1);
+
+    // 开启背光
+    LCD_BLK_Set();
+}
+
+void ui_distance_page_value_set(float p, float i, float d, int distance, int target, int quick_update) // 绘制定距页参数值的变化
+{
+    static float last_p, last_i, last_d;
+    static int last_distance, last_target;
+
+    char show_buff[50] = {0};
+    TXT_OBJECT txt_p = {0}, txt_i = {0}, txt_d = {0};
+    int txt_size         = 0;  // 一整个字符串的像素
+    int char_width_pixel = 8;  // 16x16大小的英文字符实际大小是8x16
+    int rect_w           = 70; // 矩形的宽度
+    int rect_h           = 24; // 矩形的高度
+    int rect_start_x     = 34; // 第一个矩形的起始X轴位置
+    int rect_apart_x     = 84; // 矩形与矩形间的间隔
+
+    if (quick_update != 1) // 没有开启快速更新
+    {
+        last_p        = 65535.0; // 设置一个不可能的值
+        last_i        = 65535.0; // 设置一个不可能的值
+        last_d        = 65535.0; // 设置一个不可能的值
+        last_distance = 65535;   // 设置一个不可能的值
+        last_target   = 65535;   // 设置一个不可能的值
+    }
+
+    if (last_p != p) {
+        last_p = p;
+        sprintf(show_buff, " %.2f ", p);
+        txt_size      = strlen(show_buff) * char_width_pixel;
+        txt_p.start_x = rect_start_x + ((rect_w - txt_size) / 2);
+        txt_p.start_y = 104 + ((rect_h - FONTSIZE) / 2);
+        LCD_Show_String(txt_p.start_x, txt_p.start_y, (uint8_t *)show_buff, WHITE, BLUE, FONTSIZE, 0);
+    }
+    if (last_i != i) {
+        last_i = i;
+        sprintf(show_buff, " %.2f ", i);
+        txt_size      = strlen(show_buff) * char_width_pixel;
+        txt_i.start_x = (rect_start_x + rect_apart_x) + ((rect_w - txt_size) / 2);
+        txt_i.start_y = 104 + ((rect_h - FONTSIZE) / 2);
+        LCD_Show_String(txt_i.start_x, txt_i.start_y, (uint8_t *)show_buff, WHITE, BLUE, FONTSIZE, 0);
+    }
+    if (last_d != d) {
+        last_d = d;
+        sprintf(show_buff, " %.2f ", d);
+        txt_size      = strlen(show_buff) * char_width_pixel;
+        txt_d.start_x = (rect_start_x + rect_apart_x + rect_apart_x) + ((rect_w - txt_size) / 2);
+        txt_d.start_y = 104 + ((rect_h - FONTSIZE) / 2);
+        LCD_Show_String(txt_d.start_x, txt_d.start_y, (uint8_t *)show_buff, WHITE, BLUE, FONTSIZE, 0);
+    }
+    if (last_distance != distance) {
+        last_distance = distance;
+        sprintf(show_buff, "%d ", distance);
+        LCD_Show_String(12 * 6 + 20, 170 - 34, (uint8_t *)show_buff, WHITE, BLACK, 24, 0);
+    }
+    if (last_target != target) {
+        last_target = target;
+        sprintf(show_buff, "%d ", target);
+        LCD_Show_String(320 - 150 + 12 * 7, 170 - 34, (uint8_t *)show_buff, WHITE, BLACK, 24, 0);
+    }
+}
+
+void ui_select_page_show(unsigned char page) // 根据选择确定显示哪一个页面
+{
+    if (page == 0) {
+        ui_speed_page();
+    }
+    if (page == 1) {
+        ui_distance_page();
+    }
+    if (page == 2) {
+        ui_home_page();
+    }
+}
+
+void ui_parameter_select_box_bold(int mode) // 参数选择框加粗，即选中框
+{
+    char select_box_size = 3;
+    switch (mode) {
+        case 0: // P
+            LCD_Draw_Rectangle(34 - select_box_size + 1,
+                               104 - select_box_size + 1, 104 + select_box_size - 1,
+                               128 + select_box_size - 1, WHITE);
+            break;
+        case 1: // I
+            LCD_Draw_Rectangle(118 - select_box_size + 1,
+                               104 - select_box_size + 1, 188 + select_box_size - 1,
+                               128 + select_box_size - 1, WHITE);
+            break;
+        case 2: // D
+            LCD_Draw_Rectangle(202 - select_box_size + 1, 104 - select_box_size + 1,
+                               272 + select_box_size - 1, 128 + select_box_size - 1, WHITE);
+            break;
+        case 3: // target
+            LCD_Draw_Rectangle(320 - 150 - select_box_size + 1,
+                               170 - 34 - select_box_size + 1, 316 + select_box_size - 1,
+                               166 + select_box_size - 1, WHITE);
+            break;
+        case 4: // all clean
+            LCD_Draw_Rectangle(34 - select_box_size + 1,
+                               104 - select_box_size + 1,
+                               104 + select_box_size - 1, 128 + select_box_size - 1, BLACK);
+            LCD_Draw_Rectangle(118 - select_box_size + 1,
+                               104 - select_box_size + 1,
+                               188 + select_box_size - 1, 128 + select_box_size - 1, BLACK);
+            LCD_Draw_Rectangle(202 - select_box_size + 1,
+                               104 - select_box_size + 1, 272 + select_box_size - 1,
+                               128 + select_box_size - 1, BLACK);
+            LCD_Draw_Rectangle(320 - 150 - select_box_size + 1,
+                               170 - 34 - select_box_size + 1,
+                               316 + select_box_size - 1, 166 + select_box_size - 1, BLACK);
+            break;
+    }
+}
+
+uint16_t draw_speed_curve(int window_start_x, int window_start_y,
+                          int window_w, int window_h, int curve_color,
+                          int background_color, short int rawValue)
+{
+    uint16_t x = 0, y = 0, i = 0;
+    static char firstDraw  = 1; // 判断是否第一次画
+    static uint16_t last_x = 0, last_y = 0;
+
+    if (rawValue >= window_h) // 限制最大值
+        rawValue = window_h;
+    if (rawValue <= 0) // 限制最小值
+        rawValue = 0;
+
+    //基于波形框 底部Y轴点 计算显示数据的偏移量
+    y = (window_start_y + window_h) - rawValue;
+
+    if (firstDraw) { // 第一次描点，则无需连线，直接描点即可
+        LCD_Draw_Point(window_start_x, y, curve_color);
+        last_x    = window_start_x;
+        last_y    = y;
+        firstDraw = 0;
+        return 0;
+    }
+
+    x = last_x + 1; // 更新x轴时间线
+
+    if (x < window_w) { // 不超过屏幕宽度
+        LCD_Draw_VerrticalLine(x, window_start_y, window_start_y + window_h, background_color);
+        LCD_Draw_Line(last_x, last_y, x, y, curve_color);
+        LCD_Draw_VerrticalLine(x + 1, window_start_y, window_start_y + window_h, background_color);
+        last_x = x;
+        last_y = y;
+    } else { // 超过屏幕宽度，清屏重新画
+        // 清除第一列中之前的点
+        LCD_Draw_VerrticalLine(window_start_x, window_start_y, window_start_y + window_h, background_color);
+        // 显示当前的点
+        LCD_Draw_Point(window_start_x, y, curve_color);
+        // 更新之前的坐标为当前坐标
+        last_x = window_start_x;
+        last_y = y;
+    }
+    return x;
+}
+
+uint16_t draw_distance_curve(int window_start_x, int window_start_y,
+                             int window_w, int window_h, int curve_color,
+                             int background_color, short int rawValue)
+{
+    uint16_t x = 0, y = 0, i = 0;
+    static uint16_t last_x = 0, last_y = 0;
+    static char firstDraw = 1; // 判断是否第一次画
+
+    if (rawValue > window_h) // 限制最大值
+        rawValue = window_h;
+    if (rawValue < 0) // 限制最小值
+        rawValue = 0;
+
+    if (firstDraw) {
+        LCD_Draw_Point(window_start_x, y, curve_color);
+        last_x    = window_start_x;
+        last_y    = y;
+        firstDraw = 0;
+        return 0;
+    }
+    x = last_x + 1; // 更新x轴时间线
+
+    if (x < window_w) { // 不超过屏幕宽度
+        LCD_Draw_VerrticalLine(x, window_start_y, window_start_y + window_h, background_color);
+        LCD_Draw_Line(last_x, last_y, x, y, curve_color);
+        LCD_Draw_VerrticalLine(x + 1, window_start_y, window_start_y + window_h, background_color);
+        last_x = x;
+        last_y = y;
+    } else { // 超过屏幕宽度，清屏重新画
+        // 清除第一列中之前的点
+        LCD_Draw_VerrticalLine(window_start_x, window_start_y, window_start_y + window_h, background_color);
+        LCD_Draw_Point(window_start_x, y, curve_color);
+        last_x = window_start_x;
+        last_y = y;
+    }
+    return x;
+}

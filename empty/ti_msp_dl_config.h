@@ -167,21 +167,26 @@ extern "C" {
 /* Defines for PIN_BLK: GPIOB.26 with pinCMx 57 on package pin 28 */
 #define GPIO_LCD_PIN_BLK_PIN                                    (DL_GPIO_PIN_26)
 #define GPIO_LCD_PIN_BLK_IOMUX                                   (IOMUX_PINCM57)
-/* Port definition for Pin Group GPIO_KEY */
-#define GPIO_KEY_PORT                                                    (GPIOA)
-
 /* Defines for PIN_UP: GPIOA.9 with pinCMx 20 on package pin 55 */
+#define GPIO_KEY_PIN_UP_PORT                                             (GPIOA)
 #define GPIO_KEY_PIN_UP_PIN                                      (DL_GPIO_PIN_9)
 #define GPIO_KEY_PIN_UP_IOMUX                                    (IOMUX_PINCM20)
 /* Defines for PIN_LEFT: GPIOA.8 with pinCMx 19 on package pin 54 */
+#define GPIO_KEY_PIN_LEFT_PORT                                           (GPIOA)
 #define GPIO_KEY_PIN_LEFT_PIN                                    (DL_GPIO_PIN_8)
 #define GPIO_KEY_PIN_LEFT_IOMUX                                  (IOMUX_PINCM19)
 /* Defines for PIN_RIGHT: GPIOA.31 with pinCMx 6 on package pin 39 */
+#define GPIO_KEY_PIN_RIGHT_PORT                                          (GPIOA)
 #define GPIO_KEY_PIN_RIGHT_PIN                                  (DL_GPIO_PIN_31)
 #define GPIO_KEY_PIN_RIGHT_IOMUX                                  (IOMUX_PINCM6)
 /* Defines for PIN_DOWN: GPIOA.28 with pinCMx 3 on package pin 35 */
+#define GPIO_KEY_PIN_DOWN_PORT                                           (GPIOA)
 #define GPIO_KEY_PIN_DOWN_PIN                                   (DL_GPIO_PIN_28)
 #define GPIO_KEY_PIN_DOWN_IOMUX                                   (IOMUX_PINCM3)
+/* Defines for PIN_MID: GPIOB.4 with pinCMx 17 on package pin 52 */
+#define GPIO_KEY_PIN_MID_PORT                                            (GPIOB)
+#define GPIO_KEY_PIN_MID_PIN                                     (DL_GPIO_PIN_4)
+#define GPIO_KEY_PIN_MID_IOMUX                                   (IOMUX_PINCM17)
 /* Port definition for Pin Group GPIO_ENCODER */
 #define GPIO_ENCODER_PORT                                                (GPIOB)
 

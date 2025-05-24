@@ -8,6 +8,7 @@ typedef struct {
     unsigned int left : 1;
     unsigned int right : 1;
     unsigned int down : 1;
+    unsigned int mid : 1; // ÖÐ¼ä°´¼ü
 } KEY_STATUS;
 
 KEY_STATUS key_scan(void);

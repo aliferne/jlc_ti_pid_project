@@ -72,7 +72,7 @@ GPIO2.associatedPins[3].assignedPort = "PORTB";
 GPIO2.associatedPins[3].assignedPin  = "26";
 
 GPIO3.$name                              = "GPIO_KEY";
-GPIO3.associatedPins.create(4);
+GPIO3.associatedPins.create(5);
 GPIO3.associatedPins[0].$name            = "PIN_UP";
 GPIO3.associatedPins[0].direction        = "INPUT";
 GPIO3.associatedPins[0].internalResistor = "PULL_UP";
@@ -93,6 +93,11 @@ GPIO3.associatedPins[3].direction        = "INPUT";
 GPIO3.associatedPins[3].internalResistor = "PULL_UP";
 GPIO3.associatedPins[3].assignedPort     = "PORTA";
 GPIO3.associatedPins[3].assignedPin      = "28";
+GPIO3.associatedPins[4].$name            = "PIN_MID";
+GPIO3.associatedPins[4].direction        = "INPUT";
+GPIO3.associatedPins[4].internalResistor = "PULL_UP";
+GPIO3.associatedPins[4].assignedPort     = "PORTB";
+GPIO3.associatedPins[4].assignedPin      = "4";
 
 GPIO4.$name                               = "GPIO_ENCODER";
 GPIO4.associatedPins.create(2);
@@ -194,6 +199,7 @@ GPIO3.associatedPins[0].pin.$suggestSolution       = "PA9";
 GPIO3.associatedPins[1].pin.$suggestSolution       = "PA8";
 GPIO3.associatedPins[2].pin.$suggestSolution       = "PA31";
 GPIO3.associatedPins[3].pin.$suggestSolution       = "PA28";
+GPIO3.associatedPins[4].pin.$suggestSolution       = "PB4";
 GPIO4.associatedPins[0].pin.$suggestSolution       = "PB0";
 GPIO4.associatedPins[1].pin.$suggestSolution       = "PB1";
 TIMER1.peripheral.$suggestSolution                 = "TIMA0";

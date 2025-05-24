@@ -11,5 +11,6 @@ void btn_up_cb(flex_button_t *btn);
 void btn_left_cb(flex_button_t *btn);
 void btn_right_cb(flex_button_t *btn);
 void btn_down_cb(flex_button_t *btn);
+void btn_mid_cb(flex_button_t *btn);
 
 #endif
