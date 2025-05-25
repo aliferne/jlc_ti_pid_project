@@ -2,6 +2,15 @@
 #include "string.h"
 #include "stdio.h"
 #include "hw_lcd.h"
+#include "app_sys_mode.h"
+
+/**
+ * @file app_ui.c
+ * @brief 用户界面绘制与更新
+ *
+ * 本文件包含用户界面的绘制和更新函数，用于在LCD屏幕上显示和更新各种UI元素。
+ * 包括静态UI的绘制、参数值的显示、选择框的绘制以及波形曲线的绘制等。
+ */
 
 /**
  * @brief 在屏幕中心绘制带圆角背景的字符串
@@ -26,13 +35,15 @@ void disp_x_center(int y, int str_len, uint16_t bc, unsigned char fontSize, unsi
     int str_center_y = fontSize / 2;
 
     // 绘制圆角矩形
-    LCD_Draw_ArcRect(screen_center_x - str_center_x - 10,
-                     y,
-                     screen_center_x + str_center_x + 10,
-                     fontSize + y,
-                     bc);
-    LCD_Show_Chinese(screen_center_x - str_center_x,
-                     y, str, WHITE, bc, fontSize, 1);
+    LCD_Draw_ArcRect(
+        screen_center_x - str_center_x - 10,
+        y,
+        screen_center_x + str_center_x + 10,
+        fontSize + y,
+        bc);
+    LCD_Show_Chinese(
+        screen_center_x - str_center_x,
+        y, str, WHITE, bc, fontSize, 1);
 }
 
 /**
@@ -62,10 +73,11 @@ void disp_string_rect(int x, int w, int y, int h, int str_len, int fontSize, uns
     int rect_center_y = y + (h / 2);
 
     LCD_Draw_ArcRect(x, y, x + w, y + h, color);
-    LCD_Show_Chinese(rect_center_x - str_center_x,
-                     rect_center_y - str_center_y,
-                     str, WHITE,
-                     color, fontSize, 1);
+    LCD_Show_Chinese(
+        rect_center_x - str_center_x,
+        rect_center_y - str_center_y,
+        str, WHITE,
+        color, fontSize, 1);
 }
 
 void disp_select_box(int x, int w, int y, int h, int line_length, int interval, int color)
@@ -113,8 +125,8 @@ void ui_home_page(void)
     // 绘制任务二：PID定距
     disp_string_rect(x2, x2_offset, y2, y2_offset, 2, 24, (uint8_t *)"定距", BLUE);
 
-    // TODO: 该函数尚未完成
-    switch (0) {
+    // 根据首页当前选择内容 绘制选择框
+    switch (get_default_page_flag()) {
         case 0:
             disp_select_box(40, 80, 65, 80, 10, 5, BLUE);
             break;
@@ -146,14 +158,6 @@ void ui_home_page_select(int mode)
 
 /* *********************** 以下是定速页面 *********************** */
 
-typedef struct {
-    unsigned int start_x;
-    unsigned int start_y;
-    unsigned int end_x;
-    unsigned int end_y;
-    unsigned int center;
-} TXT_OBJECT;
-
 // 绘制定速页静态UI
 void ui_speed_page(void)
 {
@@ -166,12 +170,15 @@ void ui_speed_page(void)
     int str_center_x = (24 * 1) / 2;
 
     // 显示静态的PID标题
-    LCD_Show_Char(screen_center_x - str_center_x - DEFAULT_CENTER_X_OFFSET,
-                  DEFAULT_PID_TITLE_Y_POSITION, 'P', WHITE, BLUE, FONTSIZE, 1);
-    LCD_Show_Char(screen_center_x - str_center_x,
-                  DEFAULT_PID_TITLE_Y_POSITION, 'I', WHITE, BLUE, FONTSIZE, 1);
-    LCD_Show_Char(screen_center_x - str_center_x + DEFAULT_CENTER_X_OFFSET,
-                  DEFAULT_PID_TITLE_Y_POSITION, 'D', WHITE, BLUE, FONTSIZE, 1);
+    LCD_Show_Char(
+        screen_center_x - str_center_x - DEFAULT_CENTER_X_OFFSET,
+        DEFAULT_PID_TITLE_Y_POSITION, 'P', WHITE, BLUE, FONTSIZE, 1);
+    LCD_Show_Char(
+        screen_center_x - str_center_x,
+        DEFAULT_PID_TITLE_Y_POSITION, 'I', WHITE, BLUE, FONTSIZE, 1);
+    LCD_Show_Char(
+        screen_center_x - str_center_x + DEFAULT_CENTER_X_OFFSET,
+        DEFAULT_PID_TITLE_Y_POSITION, 'D', WHITE, BLUE, FONTSIZE, 1);
 
     // 显示P参数的圆角矩形背景
     p.start_x = screen_center_x - str_center_x - DEFAULT_CENTER_X_OFFSET - 30;
@@ -266,38 +273,39 @@ void ui_speed_page_value_set(float p, float i, float d, int speed,
     }
 }
 
+void ui_speed_page_draw_box(int p_color, int i_color, int d_color, int target_color)
+{
+    char select_box_interval = 3;
+    // P
+    disp_select_box(34, 104 - 34, 104, 128 - 104, 10, select_box_interval, p_color);
+    // I
+    disp_select_box(118, 188 - 118, 104, 128 - 104, 10, select_box_interval, i_color);
+    // D
+    disp_select_box(202, 272 - 202, 104, 128 - 104, 10, select_box_interval, d_color);
+    // Target
+    disp_select_box(320 - 150, 316 - (320 - 150), 170 - 34, 166 - (170 - 34), 10, select_box_interval, target_color);
+}
+
 // 绘制定速页选择框
 // 参数选择框
 void ui_speed_page_select_box(int mode)
 {
-    char select_box_interval = 3;
 
     switch (mode) {
-        case 0: // P
-            disp_select_box(34, 104 - 34, 104, 128 - 104, 10, select_box_interval, WHITE);
-            disp_select_box(118, 188 - 118, 104, 128 - 104, 10, select_box_interval, BLACK);
-            disp_select_box(320 - 150, 316 - (320 - 150), 170 - 34, 166 - (170 - 34), 10, select_box_interval, BLACK);
+        case P_SELECTED: // P
+            ui_speed_page_draw_box(WHITE, BLACK, BLACK, BLACK);
             break;
-        case 1: // I
-            disp_select_box(118, 188 - 118, 104, 128 - 104, 10, select_box_interval, WHITE);
-            disp_select_box(202, 272 - 202, 104, 128 - 104, 10, select_box_interval, BLACK);
-            disp_select_box(34, 104 - 34, 104, 128 - 104, 10, select_box_interval, BLACK);
+        case I_SELECTED: // I
+            ui_speed_page_draw_box(BLACK, WHITE, BLACK, BLACK);
             break;
-        case 2: // D
-            disp_select_box(202, 272 - 202, 104, 128 - 104, 10, select_box_interval, WHITE);
-            disp_select_box(320 - 150, 316 - (320 - 150), 170 - 34, 166 - (170 - 34), 10, select_box_interval, BLACK);
-            disp_select_box(118, 188 - 118, 104, 128 - 104, 10, select_box_interval, BLACK);
+        case D_SELECTED: // D
+            ui_speed_page_draw_box(BLACK, BLACK, WHITE, BLACK);
             break;
-        case 3: // target
-            disp_select_box(320 - 150, 316 - (320 - 150), 170 - 34, 166 - (170 - 34), 10, select_box_interval, WHITE);
-            disp_select_box(34, 104 - 34, 104, 128 - 104, 10, select_box_interval, BLACK);
-            disp_select_box(202, 272 - 202, 104, 128 - 104, 10, select_box_interval, BLACK);
+        case TARGET_SELECTED: // target
+            ui_speed_page_draw_box(BLACK, BLACK, BLACK, WHITE);
             break;
-        case 4: // all clean
-            disp_select_box(34, 104 - 34, 104, 128 - 104, 10, select_box_interval, BLACK);
-            disp_select_box(118, 188 - 118, 104, 128 - 104, 10, select_box_interval, BLACK);
-            disp_select_box(202, 272 - 202, 104, 128 - 104, 10, select_box_interval, BLACK);
-            disp_select_box(320 - 150, 316 - (320 - 150), 170 - 34, 166 - (170 - 34), 10, select_box_interval, BLACK);
+        case ALL_CLEAN: // all clean
+            ui_speed_page_draw_box(BLACK, BLACK, BLACK, BLACK);
             break;
     }
 }
@@ -313,12 +321,15 @@ void ui_distance_page(void) // 绘制定距页静态UI
     int str_center_x = (24 * 1) / 2;
 
     // 显示静态的PID标题
-    LCD_Show_Char(screen_center_x - str_center_x - DEFAULT_CENTER_X_OFFSET,
-                  DEFAULT_PID_TITLE_Y_POSITION, 'P', WHITE, BLUE, FONTSIZE, 1);
-    LCD_Show_Char(screen_center_x - str_center_x,
-                  DEFAULT_PID_TITLE_Y_POSITION, 'I', WHITE, BLUE, FONTSIZE, 1);
-    LCD_Show_Char(screen_center_x - str_center_x + DEFAULT_CENTER_X_OFFSET,
-                  DEFAULT_PID_TITLE_Y_POSITION, 'D', WHITE, BLUE, FONTSIZE, 1);
+    LCD_Show_Char(
+        screen_center_x - str_center_x - DEFAULT_CENTER_X_OFFSET,
+        DEFAULT_PID_TITLE_Y_POSITION, 'P', WHITE, BLUE, FONTSIZE, 1);
+    LCD_Show_Char(
+        screen_center_x - str_center_x,
+        DEFAULT_PID_TITLE_Y_POSITION, 'I', WHITE, BLUE, FONTSIZE, 1);
+    LCD_Show_Char(
+        screen_center_x - str_center_x + DEFAULT_CENTER_X_OFFSET,
+        DEFAULT_PID_TITLE_Y_POSITION, 'D', WHITE, BLUE, FONTSIZE, 1);
 
     // 显示P参数的圆角矩形背景
     p.start_x = screen_center_x - str_center_x - DEFAULT_CENTER_X_OFFSET - 30;
@@ -408,62 +419,66 @@ void ui_distance_page_value_set(float p, float i, float d, int distance, int tar
     }
 }
 
-void ui_select_page_show(unsigned char page) // 根据选择确定显示哪一个页面
+void ui_select_page_show(int page) // 根据选择确定显示哪一个页面
 {
-    if (page == 0) {
+    if (page == SPEED_PAGE) {
         ui_speed_page();
-    }
-    if (page == 1) {
+    } else if (page == DIS_PAGE) {
         ui_distance_page();
-    }
-    if (page == 2) {
+    } else if (page == HOME_PAGE) {
         ui_home_page();
     }
 }
 
-void ui_parameter_select_box_bold(int mode) // 参数选择框加粗，即选中框
+void ui_parameter_select_draw_bold_box(int p_color, int i_color, int d_color, int target_color)
 {
     char select_box_size = 3;
+
+    LCD_Draw_Rectangle(
+        34 - select_box_size + 1,
+        104 - select_box_size + 1,
+        104 + select_box_size - 1, 128 + select_box_size - 1,
+        p_color);
+    LCD_Draw_Rectangle(
+        118 - select_box_size + 1,
+        104 - select_box_size + 1,
+        188 + select_box_size - 1, 128 + select_box_size - 1,
+        i_color);
+    LCD_Draw_Rectangle(
+        202 - select_box_size + 1,
+        104 - select_box_size + 1, 272 + select_box_size - 1,
+        128 + select_box_size - 1, d_color);
+    LCD_Draw_Rectangle(
+        320 - 150 - select_box_size + 1,
+        170 - 34 - select_box_size + 1,
+        316 + select_box_size - 1, 166 + select_box_size - 1,
+        target_color);
+}
+
+void ui_parameter_select_box_bold(int mode) // 参数选择框加粗，即选中框
+{
     switch (mode) {
-        case 0: // P
-            LCD_Draw_Rectangle(34 - select_box_size + 1,
-                               104 - select_box_size + 1, 104 + select_box_size - 1,
-                               128 + select_box_size - 1, WHITE);
+        case P_SELECTED: // P
+            ui_parameter_select_draw_bold_box(WHITE, BLACK, BLACK, BLACK);
             break;
-        case 1: // I
-            LCD_Draw_Rectangle(118 - select_box_size + 1,
-                               104 - select_box_size + 1, 188 + select_box_size - 1,
-                               128 + select_box_size - 1, WHITE);
+        case I_SELECTED: // I
+            ui_parameter_select_draw_bold_box(BLACK, WHITE, BLACK, BLACK);
             break;
-        case 2: // D
-            LCD_Draw_Rectangle(202 - select_box_size + 1, 104 - select_box_size + 1,
-                               272 + select_box_size - 1, 128 + select_box_size - 1, WHITE);
+        case D_SELECTED: // D
+            ui_parameter_select_draw_bold_box(BLACK, BLACK, WHITE, BLACK);
             break;
-        case 3: // target
-            LCD_Draw_Rectangle(320 - 150 - select_box_size + 1,
-                               170 - 34 - select_box_size + 1, 316 + select_box_size - 1,
-                               166 + select_box_size - 1, WHITE);
-            break;
-        case 4: // all clean
-            LCD_Draw_Rectangle(34 - select_box_size + 1,
-                               104 - select_box_size + 1,
-                               104 + select_box_size - 1, 128 + select_box_size - 1, BLACK);
-            LCD_Draw_Rectangle(118 - select_box_size + 1,
-                               104 - select_box_size + 1,
-                               188 + select_box_size - 1, 128 + select_box_size - 1, BLACK);
-            LCD_Draw_Rectangle(202 - select_box_size + 1,
-                               104 - select_box_size + 1, 272 + select_box_size - 1,
-                               128 + select_box_size - 1, BLACK);
-            LCD_Draw_Rectangle(320 - 150 - select_box_size + 1,
-                               170 - 34 - select_box_size + 1,
-                               316 + select_box_size - 1, 166 + select_box_size - 1, BLACK);
+        case TARGET_SELECTED: // target
+            ui_parameter_select_draw_bold_box(BLACK, BLACK, BLACK, WHITE);
+        case ALL_CLEAN: // all clean
+            ui_parameter_select_draw_bold_box(BLACK, BLACK, BLACK, BLACK);
             break;
     }
 }
 
-uint16_t draw_speed_curve(int window_start_x, int window_start_y,
-                          int window_w, int window_h, int curve_color,
-                          int background_color, short int rawValue)
+uint16_t draw_speed_curve(
+    int window_start_x, int window_start_y,
+    int window_w, int window_h, int curve_color,
+    int background_color, short int rawValue)
 {
     uint16_t x = 0, y = 0, i = 0;
     static char firstDraw  = 1; // 判断是否第一次画
@@ -474,7 +489,7 @@ uint16_t draw_speed_curve(int window_start_x, int window_start_y,
     if (rawValue <= 0) // 限制最小值
         rawValue = 0;
 
-    //基于波形框 底部Y轴点 计算显示数据的偏移量
+    // 基于波形框 底部Y轴点 计算显示数据的偏移量
     y = (window_start_y + window_h) - rawValue;
 
     if (firstDraw) { // 第一次描点，则无需连线，直接描点即可

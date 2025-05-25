@@ -1,5 +1,12 @@
 #include "hw_encoder.h"
 
+/**
+ * @file encoder_driver.c
+ * @brief 编码器驱动程序
+ * 
+ * 本文件包含编码器初始化、值获取、方向获取以及中断处理函数。
+ * 编码器用于检测旋转动作及其方向，常用于位置或速度控制。
+ */
 
 static ENCODER_RES motor_encoder;
 

@@ -1,6 +1,9 @@
+
 /**
- * @file HW_LCD_H
- * @brief LCDÓ²¼şÇı¶¯Í·ÎÄ¼ş
+ * @file hw_lcd.h
+ * @brief LCDé©±åŠ¨ç¨‹åºå¤´æ–‡ä»¶
+ * 
+ * æœ¬æ–‡ä»¶åŒ…å«äº†LCDçš„åˆå§‹åŒ–ã€å†™å…¥æ•°æ®ã€ç»˜åˆ¶åŸºæœ¬å›¾å½¢ã€æ˜¾ç¤ºå­—ç¬¦å’Œå­—ç¬¦ä¸²ã€æ˜¾ç¤ºæ•´æ•°å’Œå°æ•°ã€æ˜¾ç¤ºå›¾ç‰‡ç­‰åŠŸèƒ½ã€‚
  */
 
 #ifndef __HW_LCD_H__
@@ -9,379 +12,379 @@
 #include "ti_msp_dl_config.h"
 
 /**
- * @brief LCD¿í¶È
+ * @brief LCDå®½åº¦
  */
 #define LCD_W 320
 
 /**
- * @brief LCD¸ß¶È
+ * @brief LCDé«˜åº¦
  */
 #define LCD_H 170
 
 /**
- * @brief ÆÁÄ»ÖĞĞÄX×ø±ê
+ * @brief å±å¹•ä¸­å¿ƒXåæ ‡
  */
 #define screen_center_x (LCD_W / 2)
 
 /**
- * @brief ÆÁÄ»ÖĞĞÄY×ø±ê
+ * @brief å±å¹•ä¸­å¿ƒYåæ ‡
  */
 #define screen_center_y (LCD_H / 2)
 
 /**
- * @brief °×É«
+ * @brief ç™½è‰²
  */
 #define WHITE 0xFFFF
 
 /**
- * @brief ºÚÉ«
+ * @brief é»‘è‰²
  */
 #define BLACK 0x0000
 
 /**
- * @brief À¶É«
+ * @brief è“è‰²
  */
 #define BLUE 0x001F
 
 /**
- * @brief ×ØºìÉ«
+ * @brief æ£•çº¢è‰²
  */
 #define BRED 0XF81F
 
 /**
- * @brief ÂÌºìÉ«
+ * @brief ç»¿çº¢è‰²
  */
 #define GRED 0XFFE0
 
 /**
- * @brief ÂÌÀ¶É«
+ * @brief ç»¿è“è‰²
  */
 #define GBLUE 0X07FF
 
 /**
- * @brief ºìÉ«
+ * @brief çº¢è‰²
  */
 #define RED 0xF800
 
 /**
- * @brief Æ·ºìÉ«
+ * @brief å“çº¢è‰²
  */
 #define MAGENTA 0xF81F
 
 /**
- * @brief ÂÌÉ«
+ * @brief ç»¿è‰²
  */
 #define GREEN 0x07E0
 
 /**
- * @brief ÇàÉ«
+ * @brief é’è‰²
  */
 #define CYAN 0x7FFF
 
 /**
- * @brief »ÆÉ«
+ * @brief é»„è‰²
  */
 #define YELLOW 0xFFE0
 
 /**
- * @brief ×ØÉ«
+ * @brief æ£•è‰²
  */
 #define BROWN 0XBC40
 
 /**
- * @brief ×ØºìÉ«
+ * @brief æ£•çº¢è‰²
  */
 #define BRRED 0XFC07
 
 /**
- * @brief »ÒÉ«
+ * @brief ç°è‰²
  */
 #define GRAY 0X8430
 
 /**
- * @brief ÉîÀ¶É«
+ * @brief æ·±è“è‰²
  */
 #define DARKBLUE 0X01CF
 
 /**
- * @brief Ç³À¶É«
+ * @brief æµ…è“è‰²
  */
 #define LIGHTBLUE 0X7D7C
 
 /**
- * @brief »ÒÀ¶É«
+ * @brief ç°è“è‰²
  */
 #define GRAYBLUE 0X5458
 
 /**
- * @brief Ç³ÂÌÉ«
+ * @brief æµ…ç»¿è‰²
  */
 #define LIGHTGREEN 0X841F
 
 /**
- * @brief Ç³»ÒÉ«
+ * @brief æµ…ç°è‰²
  */
 #define LGRAY 0XC618
 
 /**
- * @brief Ç³»ÒÀ¶É«
+ * @brief æµ…ç°è“è‰²
  */
 #define LGRAYBLUE 0XA651
 
 /**
- * @brief Ç³×ØÀ¶É«
+ * @brief æµ…æ£•è“è‰²
  */
 #define LBBLUE 0X2B12
 
 /**
- * @brief Çå³ıLCD¸´Î»Òı½Å
+ * @brief æ¸…é™¤LCDå¤ä½å¼•è„š
  */
 #define LCD_RES_Clear() DL_GPIO_clearPins(GPIO_LCD_PORT, GPIO_LCD_PIN_RES_PIN)
 
 /**
- * @brief ÉèÖÃLCD¸´Î»Òı½Å
+ * @brief è®¾ç½®LCDå¤ä½å¼•è„š
  */
 #define LCD_RES_Set() DL_GPIO_setPins(GPIO_LCD_PORT, GPIO_LCD_PIN_RES_PIN)
 
 /**
- * @brief Çå³ıLCDÊı¾İ/ÃüÁîÒı½Å
+ * @brief æ¸…é™¤LCDæ•°æ®/å‘½ä»¤å¼•è„š
  */
 #define LCD_DC_Clear() DL_GPIO_clearPins(GPIO_LCD_PORT, GPIO_LCD_PIN_DC_PIN)
 
 /**
- * @brief ÉèÖÃLCDÊı¾İ/ÃüÁîÒı½Å
+ * @brief è®¾ç½®LCDæ•°æ®/å‘½ä»¤å¼•è„š
  */
 #define LCD_DC_Set() DL_GPIO_setPins(GPIO_LCD_PORT, GPIO_LCD_PIN_DC_PIN)
 
 /**
- * @brief Çå³ıLCDÆ¬Ñ¡Òı½Å
+ * @brief æ¸…é™¤LCDç‰‡é€‰å¼•è„š
  */
 #define LCD_CS_Clear() DL_GPIO_clearPins(GPIO_LCD_PORT, GPIO_LCD_PIN_CS_PIN)
 
 /**
- * @brief ÉèÖÃLCDÆ¬Ñ¡Òı½Å
+ * @brief è®¾ç½®LCDç‰‡é€‰å¼•è„š
  */
 #define LCD_CS_Set() DL_GPIO_setPins(GPIO_LCD_PORT, GPIO_LCD_PIN_CS_PIN)
 
 /**
- * @brief Çå³ıLCD±³¹âÒı½Å
+ * @brief æ¸…é™¤LCDèƒŒå…‰å¼•è„š
  */
 #define LCD_BLK_Clear() DL_GPIO_clearPins(GPIO_LCD_PORT, GPIO_LCD_PIN_BLK_PIN)
 
 /**
- * @brief ÉèÖÃLCD±³¹âÒı½Å
+ * @brief è®¾ç½®LCDèƒŒå…‰å¼•è„š
  */
 #define LCD_BLK_Set() DL_GPIO_setPins(GPIO_LCD_PORT, GPIO_LCD_PIN_BLK_PIN)
 
 /**
- * @brief Ğ´Èë8Î»Êı¾İµ½LCD
- * @param dat ÒªĞ´ÈëµÄÊı¾İ
+ * @brief å†™å…¥8ä½æ•°æ®åˆ°LCD
+ * @param dat è¦å†™å…¥çš„æ•°æ®
  */
 void LCD_Write_Data8(unsigned char dat);
 
 /**
- * @brief ³õÊ¼»¯LCD
+ * @brief åˆå§‹åŒ–LCD
  */
 void LCD_Init(void);
 
 /**
- * @brief ÉèÖÃLCDµØÖ·
- * @param x1 ÆğÊ¼X×ø±ê
- * @param y1 ÆğÊ¼Y×ø±ê
- * @param x2 ½áÊøX×ø±ê
- * @param y2 ½áÊøY×ø±ê
+ * @brief è®¾ç½®LCDåœ°å€
+ * @param x1 èµ·å§‹Xåæ ‡
+ * @param y1 èµ·å§‹Yåæ ‡
+ * @param x2 ç»“æŸXåæ ‡
+ * @param y2 ç»“æŸYåæ ‡
  */
 void LCD_Address_Set(unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2);
 
 /**
- * @brief Ìî³äÖ¸¶¨ÇøÓòÑÕÉ«
- * @param xsta ÆğÊ¼X×ø±ê
- * @param ysta ÆğÊ¼Y×ø±ê
- * @param xend ½áÊøX×ø±ê
- * @param yend ½áÊøY×ø±ê
- * @param color Ìî³äÑÕÉ«
+ * @brief å¡«å……æŒ‡å®šåŒºåŸŸé¢œè‰²
+ * @param xsta èµ·å§‹Xåæ ‡
+ * @param ysta èµ·å§‹Yåæ ‡
+ * @param xend ç»“æŸXåæ ‡
+ * @param yend ç»“æŸYåæ ‡
+ * @param color å¡«å……é¢œè‰²
  */
 void LCD_Fill(unsigned int xsta, unsigned int ysta, unsigned int xend, unsigned int yend, unsigned int color);
 
 /**
- * @brief ÔÚÖ¸¶¨Î»ÖÃ»­Ò»¸öµã
- * @param x µãµÄX×ø±ê
- * @param y µãµÄY×ø±ê
- * @param color µãµÄÑÕÉ«
+ * @brief åœ¨æŒ‡å®šä½ç½®ç”»ä¸€ä¸ªç‚¹
+ * @param x ç‚¹çš„Xåæ ‡
+ * @param y ç‚¹çš„Yåæ ‡
+ * @param color ç‚¹çš„é¢œè‰²
  */
 void LCD_Draw_Point(unsigned int x, unsigned int y, unsigned int color);
 
 /**
- * @brief ÔÚÖ¸¶¨Î»ÖÃ»­Ò»ÌõÏß
- * @param x1 ÆğÊ¼X×ø±ê
- * @param y1 ÆğÊ¼Y×ø±ê
- * @param x2 ½áÊøX×ø±ê
- * @param y2 ½áÊøY×ø±ê
- * @param color ÏßµÄÑÕÉ«
+ * @brief åœ¨æŒ‡å®šä½ç½®ç”»ä¸€æ¡çº¿
+ * @param x1 èµ·å§‹Xåæ ‡
+ * @param y1 èµ·å§‹Yåæ ‡
+ * @param x2 ç»“æŸXåæ ‡
+ * @param y2 ç»“æŸYåæ ‡
+ * @param color çº¿çš„é¢œè‰²
  */
 void LCD_Draw_Line(unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2, unsigned int color);
 
 /**
- * @brief »­´¹Ö±Ïß
- * @param x ÏßµÄX×ø±ê
- * @param y1 ÆğÊ¼Y×ø±ê
- * @param y2 ½áÊøY×ø±ê
- * @param color ÏßµÄÑÕÉ«
+ * @brief ç”»å‚ç›´çº¿
+ * @param x çº¿çš„Xåæ ‡
+ * @param y1 èµ·å§‹Yåæ ‡
+ * @param y2 ç»“æŸYåæ ‡
+ * @param color çº¿çš„é¢œè‰²
  */
 void LCD_Draw_VerrticalLine(int x, int y1, int y2, unsigned int color);
 
 /**
- * @brief ÔÚÖ¸¶¨Î»ÖÃ»­Ò»¸ö¾ØĞÎ
- * @param x1 ÆğÊ¼X×ø±ê
- * @param y1 ÆğÊ¼Y×ø±ê
- * @param x2 ½áÊøX×ø±ê
- * @param y2 ½áÊøY×ø±ê
- * @param color ¾ØĞÎµÄÑÕÉ«
+ * @brief åœ¨æŒ‡å®šä½ç½®ç”»ä¸€ä¸ªçŸ©å½¢
+ * @param x1 èµ·å§‹Xåæ ‡
+ * @param y1 èµ·å§‹Yåæ ‡
+ * @param x2 ç»“æŸXåæ ‡
+ * @param y2 ç»“æŸYåæ ‡
+ * @param color çŸ©å½¢çš„é¢œè‰²
  */
 void LCD_Draw_Rectangle(unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2, unsigned int color);
 
 /**
- * @brief ÔÚÖ¸¶¨Î»ÖÃ»­Ò»¸öÔ²
- * @param x0 Ô²ĞÄµÄX×ø±ê
- * @param y0 Ô²ĞÄµÄY×ø±ê
- * @param r Ô²µÄ°ë¾¶
- * @param color Ô²µÄÑÕÉ«
+ * @brief åœ¨æŒ‡å®šä½ç½®ç”»ä¸€ä¸ªåœ†
+ * @param x0 åœ†å¿ƒçš„Xåæ ‡
+ * @param y0 åœ†å¿ƒçš„Yåæ ‡
+ * @param r åœ†çš„åŠå¾„
+ * @param color åœ†çš„é¢œè‰²
  */
 void LCD_Draw_Circle(unsigned int x0, unsigned int y0, unsigned char r, unsigned int color);
 
 /**
- * @brief »­Ô²½Ç¾ØĞÎ
- * @param xsta ÆğÊ¼X×ø±ê
- * @param ysta ÆğÊ¼Y×ø±ê
- * @param xend ½áÊøX×ø±ê
- * @param yend ½áÊøY×ø±ê
- * @param color ¾ØĞÎµÄÑÕÉ«
+ * @brief ç”»åœ†è§’çŸ©å½¢
+ * @param xsta èµ·å§‹Xåæ ‡
+ * @param ysta èµ·å§‹Yåæ ‡
+ * @param xend ç»“æŸXåæ ‡
+ * @param yend ç»“æŸYåæ ‡
+ * @param color çŸ©å½¢çš„é¢œè‰²
  */
 void LCD_Draw_ArcRect(unsigned int xsta, unsigned int ysta, unsigned int xend, unsigned int yend, unsigned int color);
 
 /**
- * @brief ÏÔÊ¾ºº×Ö´®
- * @param x ºº×ÖÏÔÊ¾µÄX×ø±ê
- * @param y ºº×ÖÏÔÊ¾µÄY×ø±ê
- * @param s ºº×Ö×Ö·û´®Ö¸Õë
- * @param fc Ç°¾°É«£¨×ÖÌåÑÕÉ«£©
- * @param bc ±³¾°É«
- * @param sizey ×ÖÌå´óĞ¡
- * @param mode ÏÔÊ¾Ä£Ê½
+ * @brief æ˜¾ç¤ºæ±‰å­—ä¸²
+ * @param x æ±‰å­—æ˜¾ç¤ºçš„Xåæ ‡
+ * @param y æ±‰å­—æ˜¾ç¤ºçš„Yåæ ‡
+ * @param s æ±‰å­—å­—ç¬¦ä¸²æŒ‡é’ˆ
+ * @param fc å‰æ™¯è‰²ï¼ˆå­—ä½“é¢œè‰²ï¼‰
+ * @param bc èƒŒæ™¯è‰²
+ * @param sizey å­—ä½“å¤§å°
+ * @param mode æ˜¾ç¤ºæ¨¡å¼
  */
 void LCD_Show_Chinese(unsigned int x, unsigned int y, unsigned char *s, unsigned int fc, unsigned int bc, unsigned char sizey, unsigned char mode);
 
 /**
- * @brief ÏÔÊ¾µ¥¸ö12x12ºº×Ö
- * @param x ºº×ÖÏÔÊ¾µÄX×ø±ê
- * @param y ºº×ÖÏÔÊ¾µÄY×ø±ê
- * @param s ºº×Ö×Ö·û´®Ö¸Õë
- * @param fc Ç°¾°É«£¨×ÖÌåÑÕÉ«£©
- * @param bc ±³¾°É«
- * @param sizey ×ÖÌå´óĞ¡
- * @param mode ÏÔÊ¾Ä£Ê½
+ * @brief æ˜¾ç¤ºå•ä¸ª12x12æ±‰å­—
+ * @param x æ±‰å­—æ˜¾ç¤ºçš„Xåæ ‡
+ * @param y æ±‰å­—æ˜¾ç¤ºçš„Yåæ ‡
+ * @param s æ±‰å­—å­—ç¬¦ä¸²æŒ‡é’ˆ
+ * @param fc å‰æ™¯è‰²ï¼ˆå­—ä½“é¢œè‰²ï¼‰
+ * @param bc èƒŒæ™¯è‰²
+ * @param sizey å­—ä½“å¤§å°
+ * @param mode æ˜¾ç¤ºæ¨¡å¼
  */
 void LCD_Show_Chinese12x12(unsigned int x, unsigned int y, unsigned char *s, unsigned int fc, unsigned int bc, unsigned char sizey, unsigned char mode);
 
 /**
- * @brief ÏÔÊ¾µ¥¸ö16x16ºº×Ö
- * @param x ºº×ÖÏÔÊ¾µÄX×ø±ê
- * @param y ºº×ÖÏÔÊ¾µÄY×ø±ê
- * @param s ºº×Ö×Ö·û´®Ö¸Õë
- * @param fc Ç°¾°É«£¨×ÖÌåÑÕÉ«£©
- * @param bc ±³¾°É«
- * @param sizey ×ÖÌå´óĞ¡
- * @param mode ÏÔÊ¾Ä£Ê½
+ * @brief æ˜¾ç¤ºå•ä¸ª16x16æ±‰å­—
+ * @param x æ±‰å­—æ˜¾ç¤ºçš„Xåæ ‡
+ * @param y æ±‰å­—æ˜¾ç¤ºçš„Yåæ ‡
+ * @param s æ±‰å­—å­—ç¬¦ä¸²æŒ‡é’ˆ
+ * @param fc å‰æ™¯è‰²ï¼ˆå­—ä½“é¢œè‰²ï¼‰
+ * @param bc èƒŒæ™¯è‰²
+ * @param sizey å­—ä½“å¤§å°
+ * @param mode æ˜¾ç¤ºæ¨¡å¼
  */
 void LCD_Show_Chinese16x16(unsigned int x, unsigned int y, unsigned char *s, unsigned int fc, unsigned int bc, unsigned char sizey, unsigned char mode);
 
 /**
- * @brief ÏÔÊ¾µ¥¸ö24x24ºº×Ö
- * @param x ºº×ÖÏÔÊ¾µÄX×ø±ê
- * @param y ºº×ÖÏÔÊ¾µÄY×ø±ê
- * @param s ºº×Ö×Ö·û´®Ö¸Õë
- * @param fc Ç°¾°É«£¨×ÖÌåÑÕÉ«£©
- * @param bc ±³¾°É«
- * @param sizey ×ÖÌå´óĞ¡
- * @param mode ÏÔÊ¾Ä£Ê½
+ * @brief æ˜¾ç¤ºå•ä¸ª24x24æ±‰å­—
+ * @param x æ±‰å­—æ˜¾ç¤ºçš„Xåæ ‡
+ * @param y æ±‰å­—æ˜¾ç¤ºçš„Yåæ ‡
+ * @param s æ±‰å­—å­—ç¬¦ä¸²æŒ‡é’ˆ
+ * @param fc å‰æ™¯è‰²ï¼ˆå­—ä½“é¢œè‰²ï¼‰
+ * @param bc èƒŒæ™¯è‰²
+ * @param sizey å­—ä½“å¤§å°
+ * @param mode æ˜¾ç¤ºæ¨¡å¼
  */
 void LCD_Show_Chinese24x24(unsigned int x, unsigned int y, unsigned char *s, unsigned int fc, unsigned int bc, unsigned char sizey, unsigned char mode);
 
 /**
- * @brief ÏÔÊ¾µ¥¸ö32x32ºº×Ö
- * @param x ºº×ÖÏÔÊ¾µÄX×ø±ê
- * @param y ºº×ÖÏÔÊ¾µÄY×ø±ê
- * @param s ºº×Ö×Ö·û´®Ö¸Õë
- * @param fc Ç°¾°É«£¨×ÖÌåÑÕÉ«£©
- * @param bc ±³¾°É«
- * @param sizey ×ÖÌå´óĞ¡
- * @param mode ÏÔÊ¾Ä£Ê½
+ * @brief æ˜¾ç¤ºå•ä¸ª32x32æ±‰å­—
+ * @param x æ±‰å­—æ˜¾ç¤ºçš„Xåæ ‡
+ * @param y æ±‰å­—æ˜¾ç¤ºçš„Yåæ ‡
+ * @param s æ±‰å­—å­—ç¬¦ä¸²æŒ‡é’ˆ
+ * @param fc å‰æ™¯è‰²ï¼ˆå­—ä½“é¢œè‰²ï¼‰
+ * @param bc èƒŒæ™¯è‰²
+ * @param sizey å­—ä½“å¤§å°
+ * @param mode æ˜¾ç¤ºæ¨¡å¼
  */
 void LCD_Show_Chinese32x32(unsigned int x, unsigned int y, unsigned char *s, unsigned int fc, unsigned int bc, unsigned char sizey, unsigned char mode);
 
 /**
- * @brief ÏÔÊ¾Ò»¸ö×Ö·û
- * @param x ×Ö·ûÏÔÊ¾µÄX×ø±ê
- * @param y ×Ö·ûÏÔÊ¾µÄY×ø±ê
- * @param num ×Ö·û±àÂë
- * @param fc Ç°¾°É«£¨×ÖÌåÑÕÉ«£©
- * @param bc ±³¾°É«
- * @param sizey ×ÖÌå´óĞ¡
- * @param mode ÏÔÊ¾Ä£Ê½
+ * @brief æ˜¾ç¤ºä¸€ä¸ªå­—ç¬¦
+ * @param x å­—ç¬¦æ˜¾ç¤ºçš„Xåæ ‡
+ * @param y å­—ç¬¦æ˜¾ç¤ºçš„Yåæ ‡
+ * @param num å­—ç¬¦ç¼–ç 
+ * @param fc å‰æ™¯è‰²ï¼ˆå­—ä½“é¢œè‰²ï¼‰
+ * @param bc èƒŒæ™¯è‰²
+ * @param sizey å­—ä½“å¤§å°
+ * @param mode æ˜¾ç¤ºæ¨¡å¼
  */
 void LCD_Show_Char(unsigned int x, unsigned int y, unsigned char num, unsigned int fc, unsigned int bc, unsigned char sizey, unsigned char mode);
 
 /**
- * @brief ÏÔÊ¾×Ö·û´®
- * @param x ×Ö·û´®ÏÔÊ¾µÄX×ø±ê
- * @param y ×Ö·û´®ÏÔÊ¾µÄY×ø±ê
- * @param p ×Ö·û´®Ö¸Õë
- * @param fc Ç°¾°É«£¨×ÖÌåÑÕÉ«£©
- * @param bc ±³¾°É«
- * @param sizey ×ÖÌå´óĞ¡
- * @param mode ÏÔÊ¾Ä£Ê½
+ * @brief æ˜¾ç¤ºå­—ç¬¦ä¸²
+ * @param x å­—ç¬¦ä¸²æ˜¾ç¤ºçš„Xåæ ‡
+ * @param y å­—ç¬¦ä¸²æ˜¾ç¤ºçš„Yåæ ‡
+ * @param p å­—ç¬¦ä¸²æŒ‡é’ˆ
+ * @param fc å‰æ™¯è‰²ï¼ˆå­—ä½“é¢œè‰²ï¼‰
+ * @param bc èƒŒæ™¯è‰²
+ * @param sizey å­—ä½“å¤§å°
+ * @param mode æ˜¾ç¤ºæ¨¡å¼
  */
 void LCD_Show_String(unsigned int x, unsigned int y, const unsigned char *p, unsigned int fc, unsigned int bc, unsigned char sizey, unsigned char mode);
 
 /**
- * @brief ÇóÃİ
- * @param m µ×Êı
- * @param n Ö¸Êı
- * @return mµÄn´ÎÃİ
+ * @brief æ±‚å¹‚
+ * @param m åº•æ•°
+ * @param n æŒ‡æ•°
+ * @return mçš„næ¬¡å¹‚
  */
 unsigned int mypow(unsigned char m, unsigned char n);
 
 /**
- * @brief ÏÔÊ¾ÕûÊı±äÁ¿
- * @param x ÏÔÊ¾µÄX×ø±ê
- * @param y ÏÔÊ¾µÄY×ø±ê
- * @param num ÒªÏÔÊ¾µÄÕûÊı
- * @param len ÕûÊıµÄ³¤¶È
- * @param fc Ç°¾°É«£¨×ÖÌåÑÕÉ«£©
- * @param bc ±³¾°É«
- * @param sizey ×ÖÌå´óĞ¡
+ * @brief æ˜¾ç¤ºæ•´æ•°å˜é‡
+ * @param x æ˜¾ç¤ºçš„Xåæ ‡
+ * @param y æ˜¾ç¤ºçš„Yåæ ‡
+ * @param num è¦æ˜¾ç¤ºçš„æ•´æ•°
+ * @param len æ•´æ•°çš„é•¿åº¦
+ * @param fc å‰æ™¯è‰²ï¼ˆå­—ä½“é¢œè‰²ï¼‰
+ * @param bc èƒŒæ™¯è‰²
+ * @param sizey å­—ä½“å¤§å°
  */
 void LCD_Show_IntNum(unsigned int x, unsigned int y, unsigned int num, unsigned char len, unsigned int fc, unsigned int bc, unsigned char sizey);
 
 /**
- * @brief ÏÔÊ¾Á½Î»Ğ¡Êı±äÁ¿
- * @param x ÏÔÊ¾µÄX×ø±ê
- * @param y ÏÔÊ¾µÄY×ø±ê
- * @param num ÒªÏÔÊ¾µÄĞ¡Êı
- * @param len Ğ¡ÊıµÄ³¤¶È
- * @param fc Ç°¾°É«£¨×ÖÌåÑÕÉ«£©
- * @param bc ±³¾°É«
- * @param sizey ×ÖÌå´óĞ¡
+ * @brief æ˜¾ç¤ºä¸¤ä½å°æ•°å˜é‡
+ * @param x æ˜¾ç¤ºçš„Xåæ ‡
+ * @param y æ˜¾ç¤ºçš„Yåæ ‡
+ * @param num è¦æ˜¾ç¤ºçš„å°æ•°
+ * @param len å°æ•°çš„é•¿åº¦
+ * @param fc å‰æ™¯è‰²ï¼ˆå­—ä½“é¢œè‰²ï¼‰
+ * @param bc èƒŒæ™¯è‰²
+ * @param sizey å­—ä½“å¤§å°
  */
 void LCD_Show_FloatNum(unsigned int x, unsigned int y, float num, unsigned char len, unsigned int fc, unsigned int bc, unsigned char sizey);
 
 /**
- * @brief ÏÔÊ¾Í¼Æ¬
- * @param x Í¼Æ¬ÏÔÊ¾µÄX×ø±ê
- * @param y Í¼Æ¬ÏÔÊ¾µÄY×ø±ê
- * @param length Í¼Æ¬µÄ³¤¶È
- * @param width Í¼Æ¬µÄ¿í¶È
- * @param pic Í¼Æ¬Êı¾İÖ¸Õë
+ * @brief æ˜¾ç¤ºå›¾ç‰‡
+ * @param x å›¾ç‰‡æ˜¾ç¤ºçš„Xåæ ‡
+ * @param y å›¾ç‰‡æ˜¾ç¤ºçš„Yåæ ‡
+ * @param length å›¾ç‰‡çš„é•¿åº¦
+ * @param width å›¾ç‰‡çš„å®½åº¦
+ * @param pic å›¾ç‰‡æ•°æ®æŒ‡é’ˆ
  */
 void LCD_ShowPicture(unsigned int x, unsigned int y, unsigned int length, unsigned int width, const unsigned char pic[]);
 

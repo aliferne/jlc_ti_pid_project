@@ -38,16 +38,16 @@ typedef void (*flex_button_response_callback)(void*);
 
 typedef enum
 {
-    FLEX_BTN_PRESS_DOWN = 0,        // °´ÏÂÊÂ¼þ
-    FLEX_BTN_PRESS_CLICK,           // µ¥»÷ÊÂ¼þ
-    FLEX_BTN_PRESS_DOUBLE_CLICK,    // Ë«»÷ÊÂ¼þ
-    FLEX_BTN_PRESS_REPEAT_CLICK,    // Á¬»÷ÊÂ¼þ£¬Ê¹ÓÃ flex_button_t ÖÐµÄ click_cnt ¶Ï¶¨Á¬»÷´ÎÊý
-    FLEX_BTN_PRESS_SHORT_START,     // ¶Ì°´¿ªÊ¼ÊÂ¼þ
-    FLEX_BTN_PRESS_SHORT_UP,        // ¶Ì°´Ì§ÆðÊÂ¼þ
-    FLEX_BTN_PRESS_LONG_START,      // ³¤°´¿ªÊ¼ÊÂ¼þ
-    FLEX_BTN_PRESS_LONG_UP,         // ³¤°´Ì§ÆðÊÂ¼þ
-    FLEX_BTN_PRESS_LONG_HOLD,       // ³¤°´±£³ÖÊÂ¼þ
-    FLEX_BTN_PRESS_LONG_HOLD_UP,    // ³¤°´±£³ÖµÄÌ§ÆðÊÂ¼þ
+    FLEX_BTN_PRESS_DOWN = 0,        // æŒ‰ä¸‹äº‹ä»¶
+    FLEX_BTN_PRESS_CLICK,           // å•å‡»äº‹ä»¶
+    FLEX_BTN_PRESS_DOUBLE_CLICK,    // åŒå‡»äº‹ä»¶
+    FLEX_BTN_PRESS_REPEAT_CLICK,    // è¿žå‡»äº‹ä»¶ï¼Œä½¿ç”¨ flex_button_t ä¸­çš„ click_cnt æ–­å®šè¿žå‡»æ¬¡æ•°
+    FLEX_BTN_PRESS_SHORT_START,     // çŸ­æŒ‰å¼€å§‹äº‹ä»¶
+    FLEX_BTN_PRESS_SHORT_UP,        // çŸ­æŒ‰æŠ¬èµ·äº‹ä»¶
+    FLEX_BTN_PRESS_LONG_START,      // é•¿æŒ‰å¼€å§‹äº‹ä»¶
+    FLEX_BTN_PRESS_LONG_UP,         // é•¿æŒ‰æŠ¬èµ·äº‹ä»¶
+    FLEX_BTN_PRESS_LONG_HOLD,       // é•¿æŒ‰ä¿æŒäº‹ä»¶
+    FLEX_BTN_PRESS_LONG_HOLD_UP,    // é•¿æŒ‰ä¿æŒçš„æŠ¬èµ·äº‹ä»¶
     FLEX_BTN_PRESS_MAX,
     FLEX_BTN_PRESS_NONE,
 } flex_button_event_t;

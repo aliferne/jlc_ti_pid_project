@@ -9,19 +9,20 @@
 #include "hw_encoder.h"
 #include "mid_timer.h"
 #include "app_ui.h"
+#include "app_sys_mode.h"
 
-#include <stdlib.h> //随机数使用
+#define SPEED_ENCODER_VALUE_MAX         (-(SPEED_ENCODER_VALUE_MIN))
+#define SPEED_ENCODER_VALUE_MID         0
+#define SPEED_ENCODER_VALUE_MIN         (-100)
+#define SPEED_WAVEFORM_REDUCTION_FACTOR 10
 
-// 生成范围在 0 到 88 之间的随机整数
-int generate_random(void)
-{
-    return (rand() % 89);
-}
+#define DISTANCE_ENCODER_VALUE_MAX      (-(DISTANCE_ENCODER_VALUE_MIN))
+#define DISTANCE_ENCODER_VALUE_MID      0
+#define DISTANCE_ENCODER_VALUE_MIN      (-360)
 
 int main(void)
 {
-
-    int sys_time = 0;
+    int curve_x = 0;
 
     SYSCFG_DL_init();
 
@@ -37,33 +38,47 @@ int main(void)
     // 定时器初始化
     timer_init();
 
+    // 系统参数初始化
+    sys_event_init();
+
     // LCD初始化
     LCD_Init();
 
-    // // LCD显示UI
-    // ui_home_page();
-
-    // // 暂停2秒
-    // delay_cycles(80000000 * 2);
-
-    // 显示定速界面
-    ui_speed_page();
-    // 显示定速界面的PID参数
-    ui_speed_page_value_set(12.1, 2.2, 3.12, 50, 30, 1);
-    // I值位置显示选择框
-    ui_speed_page_select_box(1);
-    // D值位置显示选中框
-    ui_parameter_select_box_bold(2);
+    // LCD显示UI
+    ui_home_page();
 
     while (1) {
-        sys_time++;
 
-        if (sys_time % 10 == 0) // 2*10=20ms刷新一次屏幕
-        {
-            // 使用随机数刷新波形
-            draw_speed_curve(0, 0, 319, 88, GREEN, BLACK, generate_random());
+        if (get_motor_status_flag() == MOTOR_STATUS_ON) {
+            switch (get_functional_mode()) {
+                case SPEED_FUNCTION:
+
+                    // 防止任务冲突，再判断一次
+                    if (get_motor_status_flag() == MOTOR_STATUS_ON) {
+
+                        if (curve_x < 319) curve_x++;
+
+                        // 绘制目标速度的波形点
+                        LCD_Draw_Point(curve_x, 88 - ((50 + SPEED_ENCODER_VALUE_MAX) / SPEED_WAVEFORM_REDUCTION_FACTOR), RED);
+                    }
+                    break;
+
+                case DISTANCE_FUNCTION:
+
+                    // 防止任务冲突，再判断一次
+                    if (get_motor_status_flag() == MOTOR_STATUS_ON) {
+                        if (curve_x > 0) curve_x--;
+
+                        // 绘制目标速度的波形点
+                        LCD_Draw_Point(curve_x, 88 - ((50 + SPEED_ENCODER_VALUE_MAX) / SPEED_WAVEFORM_REDUCTION_FACTOR), RED);
+                    }
+                    break;
+            }
         }
 
-        delay_cycles(CPUCLK_FREQ / 1000 * 2); // 时间基准2ms
+        if (get_show_state() == PARAMETER_PAGE) {
+            // 长按按键时的屏幕显示参数变化
+            // ui_speed_page_value_set(temp_pid->kp, temp_pid->ki, temp_pid->kd, encoder_value, temp_pid->target, 1);
+        }
     }
 }
