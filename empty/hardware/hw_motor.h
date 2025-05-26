@@ -3,7 +3,7 @@
 
 #include "ti_msp_dl_config.h"
 
-// µç»ú×î´óÊäÈëµÄPWMÖµ
+// ç”µæœºæœ€å¤§è¾“å…¥çš„PWMå€¼
 #define MOTOR_PWM_MAX 9999
 
 void set_motor(uint16_t fi_value, uint16_t bi_value);
