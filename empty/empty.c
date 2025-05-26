@@ -23,7 +23,7 @@ void ui_speed_or_distance_page_value_set_quick(LongPressStatus update_status)
         if( get_functional_mode() == SPEED_FUNCTION )
             set_speed_pid_parameter(get_speed_pid(), system_status.set_page_flag, 0);
     }
-    else if( update_status == LONG_PRESS_SUBTRACT_START )   
+    else if( update_status == LONG_PRESS_SUB_START )   
     {
         if( get_functional_mode() == SPEED_FUNCTION )
             set_speed_pid_parameter(get_speed_pid(), system_status.set_page_flag, 1);

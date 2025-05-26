@@ -20,16 +20,19 @@
 #define HOME_PAGE  2
 
 // 此处用于 `ui_speed_page_select_box()` 中
-#define P_SELECTED                   0
-#define I_SELECTED                   1
-#define D_SELECTED                   2
-#define TARGET_SELECTED              3
-#define ALL_CLEAN                    4
+#define P_SELECTED                         0
+#define I_SELECTED                         1
+#define D_SELECTED                         2
+#define TARGET_SELECTED                    3
+#define ALL_CLEAN                          4
 
-#define FONTSIZE                     16        // PID 字体大小
-#define DEFAULT_PID_TITLE_Y_POSITION 87        // 默认Y轴起始位置
-#define DEFAULT_CENTER_X_OFFSET      84        // 默认X轴偏移量
-#define PID_NEXT_Y_START_POSITION    (60 + 44) // PID参数Y轴起始位置
+#define FONTSIZE                           16        // PID 字体大小
+#define DEFAULT_PID_TITLE_Y_POSITION       87        // 默认Y轴起始位置
+#define DEFAULT_CENTER_X_OFFSET            84        // 默认X轴偏移量
+#define PID_NEXT_Y_START_POSITION          (60 + 44) // PID参数Y轴起始位置
+
+#define SPEED_WAVEFORM_REDUCTION_FACTOR    2.3 // 定速波形衰减倍数
+#define DISTANCE_WAVEFORM_REDUCTION_FACTOR 8.3 // 定距波形衰减倍数
 
 // 该结构体用于PID控制
 typedef struct {
@@ -158,5 +161,16 @@ uint16_t draw_speed_curve(int window_start_x, int window_start_y, int window_w, 
  * 该函数用于在指定窗口内绘制距离曲线。
  */
 uint16_t draw_distance_curve(int window_start_x, int window_start_y, int window_w, int window_h, int curve_color, int background_color, short int rawValue);
+
+/**
+ * @brief 绘制速度曲线界面
+ *
+ * 该函数用于在用户界面上绘制速度曲线，包括当前编码器数值曲线和目标速度的波形点。
+ * 在绘制过程中，禁止任务调度以避免界面刷新时的闪烁或异常。
+ *
+ * @param None
+ * @return None
+ */
+void ui_speed_curve();
 
 #endif

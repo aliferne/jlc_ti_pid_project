@@ -2,6 +2,8 @@
 #include "hw_motor.h"
 #include "app_ui.h"
 #include "app_sys_mode.h"
+#include "app_speed_pid.h"
+#include "hw_encoder.h"
 
 /**
  * @file app_key_task.c
@@ -30,11 +32,12 @@ void btn_up_cb(flex_button_t *btn)
             }
             if (get_show_state() == PARAMETER_PAGE) {
                 if (get_functional_mode() == SPEED_FUNCTION) { // 如果之前是定速功能
-                    // 定速参数显示
-                    ui_speed_page_value_set(12.12, 11.123, 1.223, 50, 50, 0);
+                    // 定速参数更新
+                    set_speed_pid_parameter(get_speed_pid(), system_status.set_page_flag, ADD);
                 } else if (get_functional_mode() == DISTANCE_FUNCTION) { // 如果是定距功能
-                    // 定距参数显示
+                    // 定距参数更新
                     ui_distance_page_value_set(12.12, 11.123, 1.223, 90, 90, 0);
+                    // set_speed_pid_parameter(get_speed_pid(), system_status.set_page_flag, ADD);
                 }
             }
             break;
@@ -70,10 +73,10 @@ void btn_down_cb(flex_button_t *btn)
             }
             if (get_show_state() == PARAMETER_PAGE) {
                 if (get_functional_mode() == SPEED_FUNCTION) { // 如果之前是定速功能
-                                                               // 定速参数显示
-                    ui_speed_page_value_set(12.12, 11.123, 1.223, 90, 90, 0);
+                    // 定速参数更新
+                    set_speed_pid_parameter(get_speed_pid(), system_status.set_page_flag, SUBTRACT);
                 } else if (get_functional_mode() == DISTANCE_FUNCTION) { // 如果是定距功能
-                    // 定距参数显示
+                    // 定距参数更新
                     ui_distance_page_value_set(12.12, 11.123, 1.223, 90, 90, 0);
                 }
             }
@@ -97,8 +100,8 @@ void btn_left_cb(flex_button_t *btn)
         case FLEX_BTN_PRESS_CLICK: // 单击事件
             if (get_show_state() == PID_PAGE || get_show_state() == DISTANCE_PAGE) {
                 ui_select_page_show(HOME_PAGE);          // 显示主页面
-                stop_motor();                            // 停掉电机
                 set_motor_status_flag(MOTOR_STATUS_OFF); // 设置电机状态为关闭
+                stop_motor();                            // 停掉电机
                 event_manager(&system_status, QUIT_EVENT);
             }
             if (get_show_state() == SET_PAGE) {
@@ -139,11 +142,13 @@ void btn_right_cb(flex_button_t *btn)
                 // 如果下一个是定速页
                 if (get_show_state() == PID_PAGE) {
                     // 显示定速页的参数
-                    ui_speed_page_value_set(12.12, 11.123, 1.223, 90, 90, 0);
+                    ui_speed_page_value_set(
+                        get_speed_pid()->kp, get_speed_pid()->ki, get_speed_pid()->kd,
+                        get_encoder_count(), get_speed_pid()->target, 0);
                 }
                 // 如果下一个是定距页
                 if (get_show_state() == DISTANCE_PAGE) {
-                    // 显示定距页的参数
+                    // 显示定距页的参数 TODO:
                     ui_distance_page_value_set(12.12, 11.123, 1.223, 90, 90, 0);
                 }
             }

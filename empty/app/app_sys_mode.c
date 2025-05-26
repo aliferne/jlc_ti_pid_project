@@ -3,7 +3,7 @@
 /**
  * @file app_sys_mode.c
  * @brief 系统模式与事件管理
- * 
+ *
  * 本文件包含系统状态和事件管理的实现，包括系统事件的初始化、处理以及状态获取和设置。
  * 通过事件管理函数，系统可以根据不同的事件执行相应的状态转换和逻辑处理。
  */
@@ -64,12 +64,13 @@ void event_manager(SystemStatus *status, SystemEvent Event)
                 status->show_state = SET_PAGE;
             }
             break;
-        case MOTOR_EVENT:   // 设置电机
+        case MOTOR_EVENT: // 设置电机
             if (status->motor_flag == MOTOR_STATUS_OFF) {
                 status->motor_flag = MOTOR_STATUS_ON;
             } else {
                 status->motor_flag = MOTOR_STATUS_OFF;
             }
+            break;
         case LONG_PRESS_ADD_START_EVENT:
             status->long_press_state = LONG_PRESS_ADD_START;
             break;

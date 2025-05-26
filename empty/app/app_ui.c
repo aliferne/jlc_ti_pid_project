@@ -3,7 +3,10 @@
 #include "stdio.h"
 #include "hw_lcd.h"
 #include "app_sys_mode.h"
-#include "mid_debug_led.h"
+#include "app_speed_pid.h"
+#include "app_distance_pid.h"
+#include "hw_encoder.h"
+#include "mid_timer.h"
 
 /**
  * @file app_ui.c
@@ -234,7 +237,7 @@ void ui_speed_page_value_set(float p, float i, float d, int speed,
 
     if (last_p != p) { // 不同了，此时该刷新了
         last_p = p;
-        sprintf(show_buff, "%.2f", p);
+        sprintf(show_buff, " %.2f ", p);
         txt_size      = strlen(show_buff) * char_width_pixel; // 计算字符串的长度
         txt_p.start_x = rect_start_x + ((rect_w - txt_size) / 2);
         txt_p.start_y = 104 + ((rect_h - FONTSIZE) / 2);
@@ -521,9 +524,10 @@ uint16_t draw_speed_curve(
     return x;
 }
 
-uint16_t draw_distance_curve(int window_start_x, int window_start_y,
-                             int window_w, int window_h, int curve_color,
-                             int background_color, short int rawValue)
+uint16_t draw_distance_curve(
+    int window_start_x, int window_start_y,
+    int window_w, int window_h, int curve_color,
+    int background_color, short int rawValue)
 {
     uint16_t x = 0, y = 0, i = 0;
     static uint16_t last_x = 0, last_y = 0;
@@ -557,4 +561,54 @@ uint16_t draw_distance_curve(int window_start_x, int window_start_y,
         last_y = y;
     }
     return x;
+}
+
+void ui_speed_curve()
+{
+    disable_task_interrupt(); // 禁止任务调度
+
+    PID_Struct *pid = get_speed_pid();
+    ui_speed_page_value_set(
+        pid->kp, pid->ki, pid->kd,
+        get_encoder_count(), pid->target, 1);
+
+    // “+ SPEED_ENCODER_VALUE_MAX” 将编码器数值放大，去除负数
+    // “/ SPEED_WAVEFORM_REDUCTION_FACTOR 因为屏幕小放不下编码器最大值和最小值，因此做除法衰减数值
+    // 绘制当前编码器数值曲线
+    int curve_x = 0;
+    curve_x = draw_speed_curve(
+        0, 0, 319, 88, GREEN, BLACK,
+        (get_encoder_count() + SPEED_ENCODER_VALUE_MAX) /
+            SPEED_WAVEFORM_REDUCTION_FACTOR);
+
+    // 绘制目标速度的波形点
+    LCD_Draw_Point(
+        curve_x,
+        80 - ((get_speed_pid_target() + SPEED_ENCODER_VALUE_MAX) / SPEED_WAVEFORM_REDUCTION_FACTOR),
+        RED);
+
+    enable_task_interrupt(); // 允许任务调度
+}
+
+void ui_distance_curve()
+{
+    int current_angle =0;
+
+    disable_task_interrupt(); // 禁止任务调度
+
+    current_angle = get_temp_encoder() * DEGREES_PER_PULSE;
+
+    int curve_x = 0;
+    curve_x = draw_distance_curve(
+        0, 0, 319, 88, GREEN, BLACK,
+        (get_encoder_count() + SPEED_ENCODER_VALUE_MAX) /
+            SPEED_WAVEFORM_REDUCTION_FACTOR);
+
+    // 绘制目标速度的波形点
+    LCD_Draw_Point(
+        curve_x,
+        80 - ((get_distance_pid_target()() + SPEED_ENCODER_VALUE_MAX) / SPEED_WAVEFORM_REDUCTION_FACTOR),
+        RED);
+
+    enable_task_interrupt(); // 允许任务调度
 }

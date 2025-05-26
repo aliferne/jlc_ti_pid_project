@@ -3,6 +3,14 @@
 
 #include "ti_msp_dl_config.h"
 
+#define SPEED_ENCODER_VALUE_MAX    (-(SPEED_ENCODER_VALUE_MIN))
+#define SPEED_ENCODER_VALUE_MID    0
+#define SPEED_ENCODER_VALUE_MIN    (-100)
+
+#define DISTANCE_ENCODER_VALUE_MAX (-(DISTANCE_ENCODER_VALUE_MIN))
+#define DISTANCE_ENCODER_VALUE_MID 0
+#define DISTANCE_ENCODER_VALUE_MIN (-360)
+
 typedef enum {
     FORWARD, // 正向
     REVERSAL // 反向
