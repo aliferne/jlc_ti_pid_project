@@ -2,21 +2,21 @@
 
 static DEBUG_LED_STRUCT debug_led;
 
-// ´ò¿ªLED
+// æ‰“å¼€LED
 void set_debug_led_on(void) 
 {
 	debug_led.state = LED_ON;
 	DL_GPIO_setPins(DEBUG_LED_PORT, DEBUG_LED_PIN_22_PIN);
 }
 
-// ¹Ø±ÕLED
+// å…³é—­LED
 void set_debug_led_off(void) 
 {
 	debug_led.state = LED_OFF;
 	DL_GPIO_clearPins(DEBUG_LED_PORT, DEBUG_LED_PIN_22_PIN);
 }
 
-// ÇĞ»»LED×´Ì¬²¢²Ù×÷µÆ
+// åˆ‡æ¢LEDçŠ¶æ€å¹¶æ“ä½œç¯
 void set_debug_led_toggle(void) 
 {
 	if( debug_led.state == LED_ON )
@@ -29,7 +29,7 @@ void set_debug_led_toggle(void)
 	}
 }
 
-// »ñÈ¡LEDµÄ×´Ì¬
+// è·å–LEDçš„çŠ¶æ€
 LED_STATE_ENUM get_debug_led_state(void)
 {
 	return debug_led.state;

@@ -25,59 +25,47 @@ int main(void)
     int curve_x = 0;
 
     SYSCFG_DL_init();
-
-    // DEBUG´®¿Ú³õÊ¼»¯
+    // DEBUGä¸²å£åˆå§‹åŒ–
     debug_uart_init();
-
-    // °´¼üÈÎÎñ³õÊ¼»¯
+    // æŒ‰é”®ä»»åŠ¡åˆå§‹åŒ–
     user_button_init();
-
-    // ±àÂëÆ÷³õÊ¼»¯
+    // ç¼–ç å™¨åˆå§‹åŒ–
     encoder_init();
-
-    // ¶¨Ê±Æ÷³õÊ¼»¯
+    // å®šæ—¶å™¨åˆå§‹åŒ–
     timer_init();
-
-    // ÏµÍ³²ÎÊı³õÊ¼»¯
+    // ç³»ç»Ÿå‚æ•°åˆå§‹åŒ–
     sys_event_init();
-
-    // LCD³õÊ¼»¯
+    // LCDåˆå§‹åŒ–
     LCD_Init();
-
-    // LCDÏÔÊ¾UI
+    // LCDæ˜¾ç¤ºUI
     ui_home_page();
 
     while (1) {
 
         if (get_motor_status_flag() == MOTOR_STATUS_ON) {
             switch (get_functional_mode()) {
+                case NO_FUNCTION:
+                    break;
                 case SPEED_FUNCTION:
-
-                    // ·ÀÖ¹ÈÎÎñ³åÍ»£¬ÔÙÅĞ¶ÏÒ»´Î
+                    // é˜²æ­¢ä»»åŠ¡å†²çªï¼Œå†åˆ¤æ–­ä¸€æ¬¡
                     if (get_motor_status_flag() == MOTOR_STATUS_ON) {
-
                         if (curve_x < 319) curve_x++;
-
-                        // »æÖÆÄ¿±êËÙ¶ÈµÄ²¨ĞÎµã
+                        // ç»˜åˆ¶ç›®æ ‡é€Ÿåº¦çš„æ³¢å½¢ç‚¹
                         LCD_Draw_Point(curve_x, 88 - ((50 + SPEED_ENCODER_VALUE_MAX) / SPEED_WAVEFORM_REDUCTION_FACTOR), RED);
                     }
                     break;
-
                 case DISTANCE_FUNCTION:
-
-                    // ·ÀÖ¹ÈÎÎñ³åÍ»£¬ÔÙÅĞ¶ÏÒ»´Î
+                    // é˜²æ­¢ä»»åŠ¡å†²çªï¼Œå†åˆ¤æ–­ä¸€æ¬¡
                     if (get_motor_status_flag() == MOTOR_STATUS_ON) {
                         if (curve_x > 0) curve_x--;
-
-                        // »æÖÆÄ¿±êËÙ¶ÈµÄ²¨ĞÎµã
+                        // ç»˜åˆ¶ç›®æ ‡é€Ÿåº¦çš„æ³¢å½¢ç‚¹
                         LCD_Draw_Point(curve_x, 88 - ((50 + SPEED_ENCODER_VALUE_MAX) / SPEED_WAVEFORM_REDUCTION_FACTOR), RED);
                     }
                     break;
             }
         }
-
         if (get_show_state() == PARAMETER_PAGE) {
-            // ³¤°´°´¼üÊ±µÄÆÁÄ»ÏÔÊ¾²ÎÊı±ä»¯
+            // é•¿æŒ‰æŒ‰é”®æ—¶çš„å±å¹•æ˜¾ç¤ºå‚æ•°å˜åŒ–
             // ui_speed_page_value_set(temp_pid->kp, temp_pid->ki, temp_pid->kd, encoder_value, temp_pid->target, 1);
         }
     }

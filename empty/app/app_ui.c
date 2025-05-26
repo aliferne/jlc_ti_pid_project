@@ -3,6 +3,7 @@
 #include "stdio.h"
 #include "hw_lcd.h"
 #include "app_sys_mode.h"
+#include "mid_debug_led.h"
 
 /**
  * @file app_ui.c
@@ -128,10 +129,10 @@ void ui_home_page(void)
     // 根据首页当前选择内容 绘制选择框
     switch (get_default_page_flag()) {
         case 0:
-            disp_select_box(40, 80, 65, 80, 10, 5, BLUE);
+            disp_select_box(40, 80, 65, 80, 10, 5, WHITE);
             break;
         case 1:
-            disp_select_box(200, 80, 65, 80, 10, 5, BLUE);
+            disp_select_box(200, 80, 65, 80, 10, 5, WHITE);
             break;
     }
 
@@ -290,7 +291,6 @@ void ui_speed_page_draw_box(int p_color, int i_color, int d_color, int target_co
 // 参数选择框
 void ui_speed_page_select_box(int mode)
 {
-
     switch (mode) {
         case P_SELECTED: // P
             ui_speed_page_draw_box(WHITE, BLACK, BLACK, BLACK);
@@ -469,6 +469,7 @@ void ui_parameter_select_box_bold(int mode) // 参数选择框加粗，即选中
             break;
         case TARGET_SELECTED: // target
             ui_parameter_select_draw_bold_box(BLACK, BLACK, BLACK, WHITE);
+            break;
         case ALL_CLEAN: // all clean
             ui_parameter_select_draw_bold_box(BLACK, BLACK, BLACK, BLACK);
             break;
