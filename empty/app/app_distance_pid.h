@@ -8,7 +8,7 @@
 #define DEGREES_PER_PULSE     0.28846f // 每脉冲度数 360 / ENCODER_RESOLUTION
 #define DEFAULT_ANGLE         90       // 起始默认旋转角度
 
-
+// TODO: 看定距电机一章，然后写程序
 void distance_pid_init(void);
 PID_Struct *get_distance_pid(void);
 int get_distance_pid_target(void);
