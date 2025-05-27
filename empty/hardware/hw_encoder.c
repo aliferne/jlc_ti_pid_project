@@ -21,7 +21,6 @@ void encoder_init(void)
 //获取编码器的值
 int get_encoder_count(void)
 {
-    
 	return motor_encoder.count;
 }
 //获取编码器的方向
@@ -30,15 +29,19 @@ ENCODER_DIR get_encoder_dir(void)
 	return motor_encoder.dir;
 }
 
+long long get_temp_encoder_count(void)
+{
+	//返回实时计数值
+	return motor_encoder.temp_count;
+}
+
 //编码器数据更新
 //请间隔一定时间更新
 void encoder_update(void)
 {
 	motor_encoder.count = motor_encoder.temp_count;
-
 	//确定方向
 	motor_encoder.dir = ( motor_encoder.count >= 0 ) ? FORWARD : REVERSAL;
-
 	motor_encoder.temp_count = 0;//编码器计数值清零
 }
 

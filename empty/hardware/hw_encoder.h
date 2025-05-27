@@ -48,6 +48,15 @@ int get_encoder_count(void);
 ENCODER_DIR get_encoder_dir(void);
 
 /**
+ * @brief 获取编码器实时数据
+ *
+ * @return 编码器的当前实时计数值
+ *
+ * 该函数用于获取编码器的当前实时计数值。
+ */
+long long get_temp_encoder_count(void);
+
+/**
  * @brief 更新编码器状态
  *
  * 该函数用于更新编码器的状态，包括计数和方向。

@@ -173,4 +173,15 @@ uint16_t draw_distance_curve(int window_start_x, int window_start_y, int window_
  */
 void ui_speed_curve();
 
+/**
+ * @brief 绘制距离曲线界面
+ *
+ * 该函数用于在用户界面上绘制距离曲线，包括当前编码器数值曲线和目标距离的波形点。
+ * 在绘制过程中，禁止任务调度以避免界面刷新时的闪烁或异常。
+ *
+ * @param None
+ * @return None
+ */
+void ui_distance_curve(void);
+
 #endif

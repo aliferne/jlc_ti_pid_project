@@ -3,6 +3,7 @@
 #include "app_ui.h"
 #include "app_sys_mode.h"
 #include "app_speed_pid.h"
+#include "app_distance_pid.h"
 #include "hw_encoder.h"
 
 /**
@@ -36,8 +37,7 @@ void btn_up_cb(flex_button_t *btn)
                     set_speed_pid_parameter(get_speed_pid(), system_status.set_page_flag, ADD);
                 } else if (get_functional_mode() == DISTANCE_FUNCTION) { // 如果是定距功能
                     // 定距参数更新
-                    ui_distance_page_value_set(12.12, 11.123, 1.223, 90, 90, 0);
-                    // set_speed_pid_parameter(get_speed_pid(), system_status.set_page_flag, ADD);
+                    set_speed_pid_parameter(get_distance_pid(), system_status.set_page_flag, ADD);
                 }
             }
             break;
@@ -77,7 +77,7 @@ void btn_down_cb(flex_button_t *btn)
                     set_speed_pid_parameter(get_speed_pid(), system_status.set_page_flag, SUBTRACT);
                 } else if (get_functional_mode() == DISTANCE_FUNCTION) { // 如果是定距功能
                     // 定距参数更新
-                    ui_distance_page_value_set(12.12, 11.123, 1.223, 90, 90, 0);
+                    set_distance_pid_parameter(get_distance_pid(), system_status.set_page_flag, SUBTRACT);
                 }
             }
             break;
@@ -148,8 +148,10 @@ void btn_right_cb(flex_button_t *btn)
                 }
                 // 如果下一个是定距页
                 if (get_show_state() == DISTANCE_PAGE) {
-                    // 显示定距页的参数 TODO:
-                    ui_distance_page_value_set(12.12, 11.123, 1.223, 90, 90, 0);
+                    int current_angle = get_temp_encoder_count() * DEGREES_PER_PULSE;
+                    ui_speed_page_value_set(
+                        get_distance_pid()->kp, get_distance_pid()->ki, get_distance_pid()->kd,
+                        current_angle, get_distance_pid()->target, 0);
                 }
             }
             // 如果是定速页或者定距页

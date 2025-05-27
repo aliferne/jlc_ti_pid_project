@@ -538,6 +538,9 @@ uint16_t draw_distance_curve(
     if (rawValue < 0) // 限制最小值
         rawValue = 0;
 
+    // 基于波形框 底部Y轴点 计算显示数据的偏移量
+    y = (window_start_y + window_h) - rawValue;
+
     if (firstDraw) {
         LCD_Draw_Point(window_start_x, y, curve_color);
         last_x    = window_start_x;
@@ -576,7 +579,7 @@ void ui_speed_curve()
     // “/ SPEED_WAVEFORM_REDUCTION_FACTOR 因为屏幕小放不下编码器最大值和最小值，因此做除法衰减数值
     // 绘制当前编码器数值曲线
     int curve_x = 0;
-    curve_x = draw_speed_curve(
+    curve_x     = draw_speed_curve(
         0, 0, 319, 88, GREEN, BLACK,
         (get_encoder_count() + SPEED_ENCODER_VALUE_MAX) /
             SPEED_WAVEFORM_REDUCTION_FACTOR);
@@ -584,7 +587,7 @@ void ui_speed_curve()
     // 绘制目标速度的波形点
     LCD_Draw_Point(
         curve_x,
-        80 - ((get_speed_pid_target() + SPEED_ENCODER_VALUE_MAX) / SPEED_WAVEFORM_REDUCTION_FACTOR),
+        88 - ((get_speed_pid_target() + SPEED_ENCODER_VALUE_MAX) / SPEED_WAVEFORM_REDUCTION_FACTOR),
         RED);
 
     enable_task_interrupt(); // 允许任务调度
@@ -592,22 +595,29 @@ void ui_speed_curve()
 
 void ui_distance_curve()
 {
-    int current_angle =0;
+    int current_angle = 0;
 
     disable_task_interrupt(); // 禁止任务调度
 
-    current_angle = get_temp_encoder() * DEGREES_PER_PULSE;
+    current_angle   = get_temp_encoder_count() * DEGREES_PER_PULSE;
+    PID_Struct *pid = get_distance_pid();
+    ui_distance_page_value_set(
+        pid->kp, pid->ki,
+        pid->kd, current_angle, pid->target, 1);
 
     int curve_x = 0;
+    // “+ DISTANCE_ENCODER_VALUE_MAX” 将编码器数值放大，去除负数
+    // “/ DISTANCE_WAVEFORM_REDUCTION_FACTOR 因为屏幕小放不下编码器最大值和最小值，因此做除法衰减数值
+    // 绘制当前编码器数值曲线
     curve_x = draw_distance_curve(
         0, 0, 319, 88, GREEN, BLACK,
-        (get_encoder_count() + SPEED_ENCODER_VALUE_MAX) /
-            SPEED_WAVEFORM_REDUCTION_FACTOR);
+        (current_angle + DISTANCE_ENCODER_VALUE_MAX) /
+            DISTANCE_WAVEFORM_REDUCTION_FACTOR);
 
     // 绘制目标速度的波形点
     LCD_Draw_Point(
         curve_x,
-        80 - ((get_distance_pid_target()() + SPEED_ENCODER_VALUE_MAX) / SPEED_WAVEFORM_REDUCTION_FACTOR),
+        88 - ((get_distance_pid_target() + DISTANCE_ENCODER_VALUE_MAX) / DISTANCE_WAVEFORM_REDUCTION_FACTOR),
         RED);
 
     enable_task_interrupt(); // 允许任务调度
