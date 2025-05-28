@@ -3,25 +3,26 @@
 
 #include "mid_pid.h"
 
-#define MOTOR_REDUCTION_RATIO 48       // 电机减速比 1：48
-#define ENCODER_RESOLUTION    1248     // 电机一圈的编码器脉冲数 1248脉冲/转
-#define DEGREES_PER_PULSE     0.28846f // 每脉冲度数 360 / ENCODER_RESOLUTION
+#define MOTOR_REDUCTION_RATIO      48                            // 电机减速比 1：48
+#define ENCODER_RESOLUTION         1248                          // 电机一圈的编码器脉冲数 1248脉冲/转
+#define DEGREES_PER_PULSE          (360.0f / ENCODER_RESOLUTION) // 每脉冲度数 360 / ENCODER_RESOLUTION
 
-#define DEFAULT_KP            75 // 起始默认Kp
-#define DEFAULT_KI            2  // 起始默认Ki
-#define DEFAULT_KD            10 // 起始默认Kd
-#define DEFAULT_ANGLE         90 // 起始默认旋转角度
+#define DEFAULT_DISTANCE_PID_KP    75 // 起始默认Kp
+#define DEFAULT_DISTANCE_PID_KI    2  // 起始默认Ki
+#define DEFAULT_DISTANCE_PID_KD    10 // 起始默认Kd
+#define DEFAULT_DISTANCE_PID_ANGLE 90 // 起始默认旋转角度
 
-#define ADD                   0    // 增加
-#define SUBTRACT              1    // 减少
-#define MODIFY_PID_STEP       0.1f // 调节Kp等参数的步长
-#define MODIFY_TARGET_STEP    1    // 调节电机PWM的步长
-#define ANGLE_MAX             360  // 角度最大限制
+#define ADD                        0            // 增加
+#define SUBTRACT                   1            // 减少
+#define MODIFY_PID_STEP            0.1f         // 调节Kp等参数的步长
+#define MODIFY_TARGET_STEP         1            // 调节电机PWM的步长
+#define ANGLE_MAX                  360          // 角度最大限制
+#define ANGLE_MIN                  (-ANGLE_MAX) // 角度最小限制
 
-#define MODIFY_P              0 // 调节P参数
-#define MODIFY_I              1 // 调节I参数
-#define MODIFY_D              2 // 调节D参数
-#define MODIFY_ANGLE          3 // 调节角度
+#define MODIFY_P                   0 // 调节P参数
+#define MODIFY_I                   1 // 调节I参数
+#define MODIFY_D                   2 // 调节D参数
+#define MODIFY_ANGLE               3 // 调节角度
 
 /**
  * @brief 初始化距离PID控制器

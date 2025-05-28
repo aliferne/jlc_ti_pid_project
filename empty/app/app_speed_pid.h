@@ -3,16 +3,22 @@
 
 #include "mid_pid.h"
 
-#define ADD                0    // 增加
-#define SUBTRACT           1    // 减少
-#define MODIFY_PID_STEP    0.1f // 调节Kp等参数的步长
-#define MODIFY_TARGET_STEP 1    // 调节电机PWM的步长
-#define TARGET_MAX         100  // 目标值最大限制
+#define DEFAULT_SPEED_PID_KP     35
+#define DEFAULT_SPEED_PID_KI     6
+#define DEFAULT_SPEED_PID_KD     10
+#define DEFAULT_SPEED_PID_TARGET 90
 
-#define MODIFY_P           0 // 调节P参数
-#define MODIFY_I           1 // 调节I参数
-#define MODIFY_D           2 // 调节D参数
-#define MODIFY_TARGET      3 // 调节目标值
+#define ADD                      0             // 增加
+#define SUBTRACT                 1             // 减少
+#define MODIFY_PID_STEP          0.1f          // 调节Kp等参数的步长
+#define MODIFY_TARGET_STEP       1             // 调节电机PWM的步长
+#define TARGET_MAX               100           // 目标值最大限制
+#define TARGET_MIN               (-TARGET_MAX) // 目标值最小限制
+
+#define MODIFY_P                 0 // 调节P参数
+#define MODIFY_I                 1 // 调节I参数
+#define MODIFY_D                 2 // 调节D参数
+#define MODIFY_TARGET            3 // 调节目标值
 
 void speed_pid_init(void);
 PID_Struct *get_speed_pid(void);

@@ -6,7 +6,10 @@ PID_Struct speed_pid;
 
 void speed_pid_init(void)
 {
-    pid_init(&speed_pid, 35, 6, 10, MOTOR_PWM_MAX, MOTOR_PWM_MAX, 98);
+    pid_init(
+        &speed_pid, DEFAULT_SPEED_PID_KP, DEFAULT_SPEED_PID_KI,
+        DEFAULT_SPEED_PID_KD,
+        MOTOR_PWM_MAX, MOTOR_PWM_MAX, DEFAULT_SPEED_PID_TARGET);
 }
 
 PID_Struct *get_speed_pid(void)
@@ -28,7 +31,7 @@ PID_Struct motor_speed_control(int target)
     // 控制刷新速度
     delay_cycles(80000 * 5);
 
-    set_motor(PWM);
+    set_motor_value(PWM);
 
     return speed_pid;
 }
@@ -71,7 +74,7 @@ void set_speed_pid_parameter(PID_Struct *pid_value, int select, int add_or_subtr
                 pid_value->kd = (pid_value->kd <= -0.0f) ? 0.0f : pid_value->kd; // 消除负零
                 break;
             case MODIFY_TARGET:
-                if (pid_value->target > -TARGET_MAX) // 限制目标值最小为-100
+                if (pid_value->target > TARGET_MIN) // 限制目标值最小为-100
                     pid_value->target -= MODIFY_TARGET_STEP;
                 break;
             default:
