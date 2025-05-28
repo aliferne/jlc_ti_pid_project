@@ -33,7 +33,7 @@ typedef enum {
     QUIT_EVENT,                 // 退出事件
     MOTOR_EVENT,                // 按键事件
     LONG_PRESS_ADD_START_EVENT, // 长按加开始事件
-    LONG_PRESS_SUB_START_EVENT, // 长按减停止事件
+    LONG_PRESS_SUBTRACT_START_EVENT, // 长按减停止事件
     LONG_PRESS_END_EVENT,       // 长按结束事件
 } SystemEvent;
 
@@ -47,7 +47,7 @@ typedef enum {
 typedef enum {
     LONG_PRESS_END = 0,
     LONG_PRESS_ADD_START,
-    LONG_PRESS_SUB_START,
+    LONG_PRESS_SUBTRACT_START,
 } LongPressStatus;
 
 // 定义系统相关信息

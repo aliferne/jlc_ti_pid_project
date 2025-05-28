@@ -29,7 +29,7 @@ ENCODER_DIR get_encoder_dir(void)
 	return motor_encoder.dir;
 }
 
-long long get_temp_encoder_count(void)
+long long get_temp_encoder(void)
 {
 	//返回实时计数值
 	return motor_encoder.temp_count;

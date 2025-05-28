@@ -29,7 +29,7 @@ void btn_up_cb(flex_button_t *btn)
                 if (system_status.set_page_flag < 0) {
                     system_status.set_page_flag = 3;
                 }
-                ui_speed_page_select_box(system_status.set_page_flag);
+                ui_page_select_box(system_status.set_page_flag);
             }
             if (get_show_state() == PARAMETER_PAGE) {
                 if (get_functional_mode() == SPEED_FUNCTION) { // 如果之前是定速功能
@@ -37,7 +37,7 @@ void btn_up_cb(flex_button_t *btn)
                     set_speed_pid_parameter(get_speed_pid(), system_status.set_page_flag, ADD);
                 } else if (get_functional_mode() == DISTANCE_FUNCTION) { // 如果是定距功能
                     // 定距参数更新
-                    set_speed_pid_parameter(get_distance_pid(), system_status.set_page_flag, ADD);
+                    set_distance_pid_parameter(get_distance_pid(), system_status.set_page_flag, ADD);
                 }
             }
             break;
@@ -69,7 +69,7 @@ void btn_down_cb(flex_button_t *btn)
             if (get_show_state() == SET_PAGE) {
                 // 这骚操作是为了实现选项 P、I、D 和 Target 的循环
                 system_status.set_page_flag = (system_status.set_page_flag + 1) % 4;
-                ui_speed_page_select_box(system_status.set_page_flag);
+                ui_page_select_box(system_status.set_page_flag);
             }
             if (get_show_state() == PARAMETER_PAGE) {
                 if (get_functional_mode() == SPEED_FUNCTION) { // 如果之前是定速功能
@@ -83,7 +83,7 @@ void btn_down_cb(flex_button_t *btn)
             break;
         case FLEX_BTN_PRESS_LONG_HOLD: // 长按保持事件
             // 触发长按减事件
-            event_manager(&system_status, LONG_PRESS_SUB_START_EVENT);
+            event_manager(&system_status, LONG_PRESS_SUBTRACT_START_EVENT);
             break;
         case FLEX_BTN_PRESS_LONG_HOLD_UP: // 长按保持后抬起事件
             // 触发长按停止事件
@@ -108,7 +108,7 @@ void btn_left_cb(flex_button_t *btn)
                 // 触发退出事件
                 event_manager(&system_status, QUIT_EVENT);
                 // 擦除全部选择框
-                ui_speed_page_select_box(ALL_CLEAN);
+                ui_page_select_box(ALL_CLEAN);
             }
             // 如果当前是调参页
             if (get_show_state() == PARAMETER_PAGE) {
@@ -148,8 +148,8 @@ void btn_right_cb(flex_button_t *btn)
                 }
                 // 如果下一个是定距页
                 if (get_show_state() == DISTANCE_PAGE) {
-                    int current_angle = get_temp_encoder_count() * DEGREES_PER_PULSE;
-                    ui_speed_page_value_set(
+                    int current_angle = get_temp_encoder() * DEGREES_PER_PULSE;
+                    ui_distance_page_value_set(
                         get_distance_pid()->kp, get_distance_pid()->ki, get_distance_pid()->kd,
                         current_angle, get_distance_pid()->target, 0);
                 }
@@ -159,7 +159,7 @@ void btn_right_cb(flex_button_t *btn)
                 // 触发进入事件
                 event_manager(&system_status, ENTER_EVENT);
                 // 显示选择框
-                ui_speed_page_select_box(system_status.set_page_flag);
+                ui_page_select_box(system_status.set_page_flag);
             }
             // 如果是设置页
             else if (get_show_state() == SET_PAGE) {

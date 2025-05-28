@@ -277,7 +277,7 @@ void ui_speed_page_value_set(float p, float i, float d, int speed,
     }
 }
 
-void ui_speed_page_draw_box(int p_color, int i_color, int d_color, int target_color)
+void ui_page_draw_box(int p_color, int i_color, int d_color, int target_color)
 {
     char select_box_interval = 3;
     // P
@@ -292,23 +292,23 @@ void ui_speed_page_draw_box(int p_color, int i_color, int d_color, int target_co
 
 // 绘制定速页选择框
 // 参数选择框
-void ui_speed_page_select_box(int mode)
+void ui_page_select_box(int mode)
 {
     switch (mode) {
         case P_SELECTED: // P
-            ui_speed_page_draw_box(WHITE, BLACK, BLACK, BLACK);
+            ui_page_draw_box(WHITE, BLACK, BLACK, BLACK);
             break;
         case I_SELECTED: // I
-            ui_speed_page_draw_box(BLACK, WHITE, BLACK, BLACK);
+            ui_page_draw_box(BLACK, WHITE, BLACK, BLACK);
             break;
         case D_SELECTED: // D
-            ui_speed_page_draw_box(BLACK, BLACK, WHITE, BLACK);
+            ui_page_draw_box(BLACK, BLACK, WHITE, BLACK);
             break;
         case TARGET_SELECTED: // target
-            ui_speed_page_draw_box(BLACK, BLACK, BLACK, WHITE);
+            ui_page_draw_box(BLACK, BLACK, BLACK, WHITE);
             break;
         case ALL_CLEAN: // all clean
-            ui_speed_page_draw_box(BLACK, BLACK, BLACK, BLACK);
+            ui_page_draw_box(BLACK, BLACK, BLACK, BLACK);
             break;
     }
 }
@@ -599,7 +599,7 @@ void ui_distance_curve()
 
     disable_task_interrupt(); // 禁止任务调度
 
-    current_angle   = get_temp_encoder_count() * DEGREES_PER_PULSE;
+    current_angle   = get_temp_encoder() * DEGREES_PER_PULSE;
     PID_Struct *pid = get_distance_pid();
     ui_distance_page_value_set(
         pid->kp, pid->ki,

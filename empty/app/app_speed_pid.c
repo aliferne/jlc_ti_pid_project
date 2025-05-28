@@ -28,11 +28,8 @@ PID_Struct motor_speed_control(int target)
     // 控制刷新速度
     delay_cycles(80000 * 5);
 
-    if (PWM > 0) {
-        set_motor(0, PWM);
-    } else if (PWM < 0) {
-        set_motor(-PWM, 0);
-    }
+    set_motor(PWM);
+
     return speed_pid;
 }
 

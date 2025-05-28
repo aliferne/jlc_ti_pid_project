@@ -24,7 +24,7 @@ void ui_speed_or_distance_page_value_set_quick(LongPressStatus update_status)
             set_speed_pid_parameter(get_speed_pid(), system_status.set_page_flag, 0);
         else
             set_distance_pid_parameter(get_distance_pid(), system_status.set_page_flag, 0);
-    } else if (update_status == LONG_PRESS_SUB_START) {
+    } else if (update_status == LONG_PRESS_SUBTRACT_START) {
         if (get_functional_mode() == SPEED_FUNCTION)
             set_speed_pid_parameter(get_speed_pid(), system_status.set_page_flag, 1);
         else
@@ -108,11 +108,12 @@ int main(void)
         }
 
         if (get_show_state() == PARAMETER_PAGE) {
-            // 数值的快速加减
-            ui_speed_or_distance_page_value_set_quick(get_long_press_state());
-            // 长按按键时的屏幕显示参数变化
-            PID_Struct *temp_pid = (get_functional_mode() == SPEED_FUNCTION) ? get_speed_pid() : get_distance_pid();
-            ui_speed_page_value_set(temp_pid->kp, temp_pid->ki, temp_pid->kd, get_encoder_count(), temp_pid->target, 1);
+            //数值的快速加减
+			ui_speed_or_distance_page_value_set_quick( get_long_press_state() );
+            //屏幕显示参数变化
+            PID_Struct *temp_pid     = (get_functional_mode() == SPEED_FUNCTION) ? get_speed_pid() : get_distance_pid();
+            int encoder_value = (get_functional_mode() == SPEED_FUNCTION) ? get_encoder_count() : (get_temp_encoder() * DEGREES_PER_PULSE);
+            ui_speed_page_value_set(temp_pid->kp, temp_pid->ki, temp_pid->kd, encoder_value, temp_pid->target, 1);
         }
     }
 }

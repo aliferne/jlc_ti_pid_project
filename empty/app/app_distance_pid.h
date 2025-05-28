@@ -6,7 +6,11 @@
 #define MOTOR_REDUCTION_RATIO 48       // 电机减速比 1：48
 #define ENCODER_RESOLUTION    1248     // 电机一圈的编码器脉冲数 1248脉冲/转
 #define DEGREES_PER_PULSE     0.28846f // 每脉冲度数 360 / ENCODER_RESOLUTION
-#define DEFAULT_ANGLE         90       // 起始默认旋转角度
+
+#define DEFAULT_KP            75 // 起始默认Kp
+#define DEFAULT_KI            2  // 起始默认Ki
+#define DEFAULT_KD            10 // 起始默认Kd
+#define DEFAULT_ANGLE         90 // 起始默认旋转角度
 
 #define ADD                   0    // 增加
 #define SUBTRACT              1    // 减少

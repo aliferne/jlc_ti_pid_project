@@ -19,7 +19,7 @@
 #define DIS_PAGE   1
 #define HOME_PAGE  2
 
-// 此处用于 `ui_speed_page_select_box()` 中
+// 此处用于 `ui_page_select_box()` 中
 #define P_SELECTED                         0
 #define I_SELECTED                         1
 #define D_SELECTED                         2
@@ -81,13 +81,13 @@ void ui_speed_page(void);
 void ui_speed_page_value_set(float p, float i, float d, int speed, int target, int quick_update);
 
 /**
- * @brief 绘制定速页选择框
+ * @brief 绘制选择框
  *
  * @param mode 选择框的模式
  *
  * 该函数用于在定速页上绘制选择框，根据不同的模式显示不同的选择框。
  */
-void ui_speed_page_select_box(int mode);
+void ui_page_select_box(int mode);
 
 /**
  * @brief 绘制定距页静态UI
