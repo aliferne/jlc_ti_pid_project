@@ -7,8 +7,10 @@ PID_Struct distance_pid;
 void distance_pid_init(void)
 {
     pid_init(
-        &distance_pid, DEFAULT_KP, DEFAULT_KI, DEFAULT_KD,
-        MOTOR_PWM_MAX, MOTOR_PWM_MAX, DEFAULT_ANGLE);
+        &distance_pid, DEFAULT_DISTANCE_PID_KP,
+        DEFAULT_DISTANCE_PID_KI,
+        DEFAULT_DISTANCE_PID_KD,
+        MOTOR_PWM_MAX, MOTOR_PWM_MAX, DEFAULT_DISTANCE_PID_ANGLE);
 }
 
 PID_Struct *get_distance_pid(void)
@@ -72,7 +74,7 @@ void set_distance_pid_parameter(PID_Struct *pid_value, int select, int add_or_su
                 pid_value->kd = (pid_value->kd <= -0.0f) ? 0.0f : pid_value->kd; // 消除负零
                 break;
             case MODIFY_ANGLE:
-                if (pid_value->target > -(ANGLE_MAX)) // 限制目标值最小为0
+                if (pid_value->target > ANGLE_MIN) // 限制目标值最小为-360
                     pid_value->target -= MODIFY_TARGET_STEP;
                 break;
             default:

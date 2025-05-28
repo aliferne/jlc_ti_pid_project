@@ -2,7 +2,7 @@
 /**
  * @file hw_lcd.h
  * @brief LCD驱动程序头文件
- * 
+ *
  * 本文件包含了LCD的初始化、写入数据、绘制基本图形、显示字符和字符串、显示整数和小数、显示图片等功能。
  */
 
@@ -11,130 +11,31 @@
 
 #include "ti_msp_dl_config.h"
 
-/**
- * @brief LCD宽度
- */
-#define LCD_W 320
-
-/**
- * @brief LCD高度
- */
-#define LCD_H 170
-
-/**
- * @brief 屏幕中心X坐标
- */
-#define screen_center_x (LCD_W / 2)
-
-/**
- * @brief 屏幕中心Y坐标
- */
-#define screen_center_y (LCD_H / 2)
-
-/**
- * @brief 白色
- */
-#define WHITE 0xFFFF
-
-/**
- * @brief 黑色
- */
-#define BLACK 0x0000
-
-/**
- * @brief 蓝色
- */
-#define BLUE 0x001F
-
-/**
- * @brief 棕红色
- */
-#define BRED 0XF81F
-
-/**
- * @brief 绿红色
- */
-#define GRED 0XFFE0
-
-/**
- * @brief 绿蓝色
- */
-#define GBLUE 0X07FF
-
-/**
- * @brief 红色
- */
-#define RED 0xF800
-
-/**
- * @brief 品红色
- */
-#define MAGENTA 0xF81F
-
-/**
- * @brief 绿色
- */
-#define GREEN 0x07E0
-
-/**
- * @brief 青色
- */
-#define CYAN 0x7FFF
-
-/**
- * @brief 黄色
- */
-#define YELLOW 0xFFE0
-
-/**
- * @brief 棕色
- */
-#define BROWN 0XBC40
-
-/**
- * @brief 棕红色
- */
-#define BRRED 0XFC07
-
-/**
- * @brief 灰色
- */
-#define GRAY 0X8430
-
-/**
- * @brief 深蓝色
- */
-#define DARKBLUE 0X01CF
-
-/**
- * @brief 浅蓝色
- */
-#define LIGHTBLUE 0X7D7C
-
-/**
- * @brief 灰蓝色
- */
-#define GRAYBLUE 0X5458
-
-/**
- * @brief 浅绿色
- */
-#define LIGHTGREEN 0X841F
-
-/**
- * @brief 浅灰色
- */
-#define LGRAY 0XC618
-
-/**
- * @brief 浅灰蓝色
- */
-#define LGRAYBLUE 0XA651
-
-/**
- * @brief 浅棕蓝色
- */
-#define LBBLUE 0X2B12
+#define LCD_W           320         /* LCD宽度 */
+#define LCD_H           170         /* LCD高度 */
+#define screen_center_x (LCD_W / 2) /* 屏幕中心X坐标 */
+#define screen_center_y (LCD_H / 2) /* 屏幕中心Y坐标 */
+#define WHITE           0xFFFF      /* 白色 */
+#define BLACK           0x0000      /* 黑色 */
+#define BLUE            0x001F      /* 蓝色 */
+#define BRED            0XF81F      /* 棕红色 */
+#define GRED            0XFFE0      /* 绿红色 */
+#define GBLUE           0X07FF      /* 绿蓝色 */
+#define RED             0xF800      /* 红色 */
+#define MAGENTA         0xF81F      /* 品红色 */
+#define GREEN           0x07E0      /* 绿色 */
+#define CYAN            0x7FFF      /* 青色 */
+#define YELLOW          0xFFE0      /* 黄色 */
+#define BROWN           0XBC40      /* 棕色 */
+#define BRRED           0XFC07      /* 棕红色 */
+#define GRAY            0X8430      /* 灰色 */
+#define DARKBLUE        0X01CF      /* 深蓝色 */
+#define LIGHTBLUE       0X7D7C      /* 浅蓝色 */
+#define GRAYBLUE        0X5458      /* 灰蓝色 */
+#define LIGHTGREEN      0X841F      /* 浅绿色 */
+#define LGRAY           0XC618      /* 浅灰色 */
+#define LGRAYBLUE       0XA651      /* 浅灰蓝色 */
+#define LBBLUE          0X2B12      /* 浅棕蓝色 */
 
 /**
  * @brief 清除LCD复位引脚
