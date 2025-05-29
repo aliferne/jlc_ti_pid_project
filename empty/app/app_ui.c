@@ -460,7 +460,7 @@ void ui_select_page_show(int page) // 根据选择确定显示哪一个页面
 {
     if (page == SPEED_PAGE) {
         ui_speed_page();
-    } else if (page == DISTANCE_PAGE) {
+    } else if (page == DIS_PAGE) {
         ui_distance_page();
     } else if (page == HOME_PAGE) {
         ui_home_page();

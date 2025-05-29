@@ -32,7 +32,7 @@
 
 // 此处用于 `ui_select_page_show` 中
 #define SPEED_PAGE    0
-#define DISTANCE_PAGE 1
+#define DIS_PAGE 1
 #define HOME_PAGE     2
 
 // 此处用于 `ui_page_select_box()` 中
