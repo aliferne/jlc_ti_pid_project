@@ -54,7 +54,7 @@ ENCODER_DIR get_encoder_dir(void);
  *
  * 该函数用于获取编码器的当前实时计数值。
  */
-long long get_temp_encoder_count(void);
+long long get_temp_encoder(void);
 
 /**
  * @brief 更新编码器状态

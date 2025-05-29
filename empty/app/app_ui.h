@@ -14,12 +14,28 @@
 #define screen_center_x (LCD_W / 2) // 屏幕中心X = 屏幕x/2
 #define screen_center_y (LCD_H / 2) // 屏幕中心Y = 屏幕y/2
 
-// 此处用于 `ui_select_page_show` 中
-#define SPEED_PAGE 0
-#define DIS_PAGE   1
-#define HOME_PAGE  2
+// SPEED选项框绘制参数（ui_home_page中调用）
+#define PID_SPEED_SELECT_BOX_X_START   40 // 起始x坐标
+#define PID_SPEED_SELECT_BOX_WIDTH     80 // 宽度
+#define PID_SPEED_SELECT_BOX_Y_START   65 // 起始y坐标
+#define PID_SPEED_SELECT_BOX_HEIGHT    80 // 高度
+#define PID_SPEED_SELECT_LINE_LEN      10 // 外圈选择框线长度
+#define PID_SPEED_SELECT_LINE_INTERVAL 5  // 外圈选择框线与选择框间隔
 
-// 此处用于 `ui_speed_page_select_box()` 中
+// DISTANCE选项框绘制参数（ui_home_page中调用）
+#define PID_DISTANCE_SELECT_BOX_X_START   40 // 起始x坐标
+#define PID_DISTANCE_SELECT_BOX_WIDTH     80 // 宽度
+#define PID_DISTANCE_SELECT_BOX_Y_START   65 // 起始y坐标
+#define PID_DISTANCE_SELECT_BOX_HEIGHT    80 // 高度
+#define PID_DISTANCE_SELECT_LINE_LEN      10 // 外圈选择框线长度
+#define PID_DISTANCE_SELECT_LINE_INTERVAL 5  // 外圈选择框线与选择框间隔
+
+// 此处用于 `ui_select_page_show` 中
+#define SPEED_PAGE    0
+#define DISTANCE_PAGE 1
+#define HOME_PAGE     2
+
+// 此处用于 `ui_page_select_box()` 中
 #define P_SELECTED                         0
 #define I_SELECTED                         1
 #define D_SELECTED                         2
@@ -81,13 +97,13 @@ void ui_speed_page(void);
 void ui_speed_page_value_set(float p, float i, float d, int speed, int target, int quick_update);
 
 /**
- * @brief 绘制定速页选择框
+ * @brief 绘制选择框
  *
  * @param mode 选择框的模式
  *
  * 该函数用于在定速页上绘制选择框，根据不同的模式显示不同的选择框。
  */
-void ui_speed_page_select_box(int mode);
+void ui_page_select_box(int mode);
 
 /**
  * @brief 绘制定距页静态UI

@@ -132,30 +132,64 @@ void ui_home_page(void)
     // 根据首页当前选择内容 绘制选择框
     switch (get_default_page_flag()) {
         case 0:
-            disp_select_box(40, 80, 65, 80, 10, 5, WHITE);
+            disp_select_box(
+                PID_SPEED_SELECT_BOX_X_START,
+                PID_SPEED_SELECT_BOX_WIDTH,
+                PID_SPEED_SELECT_BOX_Y_START,
+                PID_SPEED_SELECT_BOX_HEIGHT,
+                PID_SPEED_SELECT_LINE_LEN,
+                PID_SPEED_SELECT_LINE_INTERVAL,
+                WHITE);
             break;
         case 1:
-            disp_select_box(200, 80, 65, 80, 10, 5, WHITE);
+            disp_select_box(
+                PID_DISTANCE_SELECT_BOX_X_START,
+                PID_DISTANCE_SELECT_BOX_WIDTH,
+                PID_DISTANCE_SELECT_BOX_Y_START,
+                PID_DISTANCE_SELECT_BOX_HEIGHT,
+                PID_DISTANCE_SELECT_LINE_LEN,
+                PID_DISTANCE_SELECT_LINE_INTERVAL,
+                WHITE);
             break;
     }
 
     LCD_BLK_Set(); // 打开背光
 
-    // 先关背光再打开是为了刷新时更好的视觉体验
+    // NOTE: 先关背光再打开是为了刷新时更好的视觉体验
+}
+
+// 给定速选项和定距选项绘制选择框（主要在 `ui_home_page_select` 中调用）
+void ui_home_page_draw_select_box(int speed_color, int distance_color)
+{
+    char select_box_size = 5;
+
+    disp_select_box(
+        PID_SPEED_SELECT_BOX_X_START,
+        PID_SPEED_SELECT_BOX_WIDTH,
+        PID_SPEED_SELECT_BOX_Y_START,
+        PID_SPEED_SELECT_BOX_HEIGHT,
+        PID_SPEED_SELECT_LINE_LEN,
+        select_box_size,
+        speed_color);
+    disp_select_box(
+        PID_DISTANCE_SELECT_BOX_X_START,
+        PID_DISTANCE_SELECT_BOX_WIDTH,
+        PID_DISTANCE_SELECT_BOX_Y_START,
+        PID_DISTANCE_SELECT_BOX_HEIGHT,
+        PID_DISTANCE_SELECT_LINE_LEN,
+        select_box_size,
+        distance_color);
 }
 
 // 绘制首页选择框
 void ui_home_page_select(int mode)
 {
-    char select_box_size = 5;
     switch (mode) {
-        case 0: // 选择PID定速模式
-            disp_select_box(40, 80, 65, 80, 10, select_box_size, WHITE);
-            disp_select_box(200, 80, 65, 80, 10, select_box_size, BLACK);
+        case SPEED_PAGE: // 选择PID定速模式
+            ui_home_page_draw_select_box(WHITE, BLACK);
             break;
-        case 1: // 选择PID定距模式
-            disp_select_box(40, 80, 65, 80, 10, select_box_size, BLACK);
-            disp_select_box(200, 80, 65, 80, 10, select_box_size, WHITE);
+        case DISTANCE_PAGE: // 选择PID定距模式
+            ui_home_page_draw_select_box(BLACK, WHITE);
             break;
     }
 }
@@ -277,7 +311,7 @@ void ui_speed_page_value_set(float p, float i, float d, int speed,
     }
 }
 
-void ui_speed_page_draw_box(int p_color, int i_color, int d_color, int target_color)
+void ui_page_draw_box(int p_color, int i_color, int d_color, int target_color)
 {
     char select_box_interval = 3;
     // P
@@ -292,23 +326,23 @@ void ui_speed_page_draw_box(int p_color, int i_color, int d_color, int target_co
 
 // 绘制定速页选择框
 // 参数选择框
-void ui_speed_page_select_box(int mode)
+void ui_page_select_box(int mode)
 {
     switch (mode) {
         case P_SELECTED: // P
-            ui_speed_page_draw_box(WHITE, BLACK, BLACK, BLACK);
+            ui_page_draw_box(WHITE, BLACK, BLACK, BLACK);
             break;
         case I_SELECTED: // I
-            ui_speed_page_draw_box(BLACK, WHITE, BLACK, BLACK);
+            ui_page_draw_box(BLACK, WHITE, BLACK, BLACK);
             break;
         case D_SELECTED: // D
-            ui_speed_page_draw_box(BLACK, BLACK, WHITE, BLACK);
+            ui_page_draw_box(BLACK, BLACK, WHITE, BLACK);
             break;
         case TARGET_SELECTED: // target
-            ui_speed_page_draw_box(BLACK, BLACK, BLACK, WHITE);
+            ui_page_draw_box(BLACK, BLACK, BLACK, WHITE);
             break;
         case ALL_CLEAN: // all clean
-            ui_speed_page_draw_box(BLACK, BLACK, BLACK, BLACK);
+            ui_page_draw_box(BLACK, BLACK, BLACK, BLACK);
             break;
     }
 }
@@ -426,7 +460,7 @@ void ui_select_page_show(int page) // 根据选择确定显示哪一个页面
 {
     if (page == SPEED_PAGE) {
         ui_speed_page();
-    } else if (page == DIS_PAGE) {
+    } else if (page == DISTANCE_PAGE) {
         ui_distance_page();
     } else if (page == HOME_PAGE) {
         ui_home_page();
@@ -599,7 +633,7 @@ void ui_distance_curve()
 
     disable_task_interrupt(); // 禁止任务调度
 
-    current_angle   = get_temp_encoder_count() * DEGREES_PER_PULSE;
+    current_angle   = get_temp_encoder() * DEGREES_PER_PULSE;
     PID_Struct *pid = get_distance_pid();
     ui_distance_page_value_set(
         pid->kp, pid->ki,
