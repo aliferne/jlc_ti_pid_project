@@ -419,6 +419,7 @@ void ui_distance_page_value_set(
 
 void ui_select_page_show(int page) // 根据选择确定显示哪一个页面
 {
+    // FIXME: 这里的这堆依赖要改到同个文件
     if (page == SPEED_PAGE) {
         ui_speed_page();
     } else if (page == DIS_PAGE) {
@@ -474,10 +475,9 @@ void ui_parameter_select_box_bold(int mode) // 参数选择框加粗，即选中
     }
 }
 
-uint16_t draw_speed_curve(
-    int window_start_x, int window_start_y,
-    int window_w, int window_h, int curve_color,
-    int background_color, short int rawValue)
+uint16_t draw_motor_pid_curve(int window_start_x, int window_start_y,
+                              int window_w, int window_h, int curve_color,
+                              int background_color, short int rawValue)
 {
     uint16_t x = 0, y = 0, i = 0;
     static char firstDraw  = 1; // 判断是否第一次画
@@ -519,46 +519,26 @@ uint16_t draw_speed_curve(
     return x;
 }
 
+uint16_t draw_speed_curve(
+    int window_start_x, int window_start_y,
+    int window_w, int window_h, int curve_color,
+    int background_color, short int rawValue)
+{
+    return draw_motor_pid_curve(
+        window_start_x, window_start_y,
+        window_w, window_h,
+        curve_color, background_color, rawValue);
+}
+
 uint16_t draw_distance_curve(
     int window_start_x, int window_start_y,
     int window_w, int window_h, int curve_color,
     int background_color, short int rawValue)
 {
-    uint16_t x = 0, y = 0, i = 0;
-    static uint16_t last_x = 0, last_y = 0;
-    static char firstDraw = 1; // 判断是否第一次画
-
-    if (rawValue > window_h) // 限制最大值
-        rawValue = window_h;
-    if (rawValue < 0) // 限制最小值
-        rawValue = 0;
-
-    // 基于波形框 底部Y轴点 计算显示数据的偏移量
-    y = (window_start_y + window_h) - rawValue;
-
-    if (firstDraw) {
-        LCD_Draw_Point(window_start_x, y, curve_color);
-        last_x    = window_start_x;
-        last_y    = y;
-        firstDraw = 0;
-        return 0;
-    }
-    x = last_x + 1; // 更新x轴时间线
-
-    if (x < window_w) { // 不超过屏幕宽度
-        LCD_Draw_VerrticalLine(x, window_start_y, window_start_y + window_h, background_color);
-        LCD_Draw_Line(last_x, last_y, x, y, curve_color);
-        LCD_Draw_VerrticalLine(x + 1, window_start_y, window_start_y + window_h, background_color);
-        last_x = x;
-        last_y = y;
-    } else { // 超过屏幕宽度，清屏重新画
-        // 清除第一列中之前的点
-        LCD_Draw_VerrticalLine(window_start_x, window_start_y, window_start_y + window_h, background_color);
-        LCD_Draw_Point(window_start_x, y, curve_color);
-        last_x = window_start_x;
-        last_y = y;
-    }
-    return x;
+    return draw_motor_pid_curve(
+        window_start_x, window_start_y,
+        window_w, window_h,
+        curve_color, background_color, rawValue);
 }
 
 void ui_speed_curve()
