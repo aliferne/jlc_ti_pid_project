@@ -146,12 +146,32 @@ extern "C" {
 
 
 
+/* Defines for ADC_STICK_Y */
+#define ADC_STICK_Y_INST                                                    ADC1
+#define ADC_STICK_Y_INST_IRQHandler                              ADC1_IRQHandler
+#define ADC_STICK_Y_INST_INT_IRQN                                (ADC1_INT_IRQn)
+#define ADC_STICK_Y_ADCMEM_CH0                                DL_ADC12_MEM_IDX_0
+#define ADC_STICK_Y_ADCMEM_CH0_REF               DL_ADC12_REFERENCE_VOLTAGE_VDDA
+#define ADC_STICK_Y_ADCMEM_CH0_REF_VOLTAGE_V                                     3.3
+#define GPIO_ADC_STICK_Y_C0_PORT                                           GPIOA
+#define GPIO_ADC_STICK_Y_C0_PIN                                   DL_GPIO_PIN_15
+
+
+
+
+
 /* Port definition for Pin Group DEBUG_LED */
 #define DEBUG_LED_PORT                                                   (GPIOB)
 
 /* Defines for PIN_22: GPIOB.22 with pinCMx 50 on package pin 21 */
 #define DEBUG_LED_PIN_22_PIN                                    (DL_GPIO_PIN_22)
 #define DEBUG_LED_PIN_22_IOMUX                                   (IOMUX_PINCM50)
+/* Port definition for Pin Group GPIO_STICK_Z */
+#define GPIO_STICK_Z_PORT                                                (GPIOA)
+
+/* Defines for SWITCH: GPIOA.22 with pinCMx 47 on package pin 18 */
+#define GPIO_STICK_Z_SWITCH_PIN                                 (DL_GPIO_PIN_22)
+#define GPIO_STICK_Z_SWITCH_IOMUX                                (IOMUX_PINCM47)
 /* Port definition for Pin Group GPIO_LCD */
 #define GPIO_LCD_PORT                                                    (GPIOB)
 
@@ -212,6 +232,8 @@ void SYSCFG_DL_PWM_MOTOR_init(void);
 void SYSCFG_DL_TIMER_TICK_init(void);
 void SYSCFG_DL_UART_DEBUG_init(void);
 void SYSCFG_DL_SPI_LCD_init(void);
+void SYSCFG_DL_ADC_STICK_Y_init(void);
+void SYSCFG_DL_DMA_init(void);
 
 
 bool SYSCFG_DL_saveConfiguration(void);

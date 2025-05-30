@@ -8,7 +8,7 @@
 #include "hw_encoder.h"
 #include "mid_timer.h"
 
-#define ABS(x) ((x < 0) ? (-(x)) : x)
+#define ABS(x) ((x) > 0 ? (x) : -(x))
 
 /**
  * @file app_ui.c
@@ -129,39 +129,44 @@ void show_select_box(
     target_y -= interval; // 向上偏移interval的距离
     h += interval * 2;    // 高度增加interval * 2的距离
 
-    int mode = 0; // mode = 0表示不开启pid画框，mode = 其他值表示开启pid画框
+    int mode = 0; // TODO: mode = 0表示不开启pid画框，mode = 其他值表示开启pid画框
 
     if (mode == 0) {
         ui_draw_lines_horizonal(target_x, w, target_y, h, line_length, interval, color);
         ui_draw_lines_vertical(target_x, w, target_y, h, line_length, interval, color);
     } else {
+        // p、i、d的参数
         float kp = 0.4, ki = 0.2, kd = 0.2;
-        int current_x = 0;
-        int current_y = 0;
+        int current_x = 0;  // 当前x轴坐标（从0开始）
+        int current_y = 0;  // 当前y轴坐标（从0开始）
 
-        int value_x, value_y;
-        PID_Struct screen_x, screen_y;
+        int value_x, value_y;   // x轴和y轴方向上与目标的差值
+        PID_Struct screen_x, screen_y;      // x轴和y轴方向上的pid结构体
 
+        // 初始化PID
         pid_init(&screen_x, kp, ki, kd, LCD_W, LCD_W, target_x);
         pid_init(&screen_y, kp, ki, kd, LCD_H, LCD_H, target_y);
 
         do {
+            // 分别计算x轴和y轴方向上的差值
+            value_x = pid_calc(&screen_x, target_x, current_x);
+            value_y = pid_calc(&screen_y, target_y, current_y);
             // 清除上次线条
             ui_draw_lines_horizonal(current_x, w, target_y, h, line_length, interval, BLACK);
             ui_draw_lines_vertical(target_x, w, current_y, h, line_length, interval, BLACK);
-
-            value_x = pid_calc(&screen_x, target_x, current_x);
-            value_y = pid_calc(&screen_y, target_y, current_y);
+            // 平移到本次坐标的位置
             current_x += value_x;
             current_y += value_y;
-
+            // 绘制本次线条
             ui_draw_lines_horizonal(current_x, w, target_y, h, line_length, interval, color);
             ui_draw_lines_vertical(target_x, w, current_y, h, line_length, interval, color);
-
+            // 延迟一段时间
             delay_cycles(100000 * 8);
         } while (
+            // 限制误差在0.5以内
             (ABS(current_x - target_x) > 0.5) &&
             (ABS(current_y - target_y) > 0.5));
+        // 将参数置零
         pid_change_zero(&screen_x);
         pid_change_zero(&screen_y);
     }
@@ -176,7 +181,7 @@ void ui_home_page(void)
     // 绘制一些其他的文字
     show_x_center(3, 5, BLUE, FONTSIZE, (uint8_t *)"立创开发板");
     show_x_center(23, 8, BLUE, FONTSIZE, (uint8_t *)"简易PID入门套件");
-    show_x_center(43, 2, BLUE, FONTSIZE, (uint8_t *)"Ferne");
+    show_x_center(43, 3, BLUE, FONTSIZE, (uint8_t *)"Ferne");
 
     // 绘制任务一：PID定速
     show_string_rect(

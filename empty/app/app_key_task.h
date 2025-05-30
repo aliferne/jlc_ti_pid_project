@@ -47,4 +47,12 @@ void btn_down_cb(flex_button_t *btn);
  */
 void btn_mid_cb(flex_button_t *btn);
 
+/**
+ * @brief 摇杆z轴按键事件回调函数
+ *
+ * @param btn 指向按键结构体的指针
+ */
+void btn_stick_z_cb(flex_button_t *btn);
+
+
 #endif // _APP_KEY_TASK_H_

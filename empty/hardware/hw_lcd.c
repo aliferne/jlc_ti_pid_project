@@ -10,6 +10,7 @@
 
 #define delay_ms(X) delay_cycles(((CPUCLK_FREQ / 1000) * (X)))
 
+// TODO: 尝试使用DMA驱动TFT屏幕
 void spi_write_bus(unsigned char dat)
 {
     // 发送数据

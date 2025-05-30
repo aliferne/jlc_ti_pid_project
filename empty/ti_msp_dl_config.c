@@ -58,6 +58,8 @@ SYSCONFIG_WEAK void SYSCFG_DL_init(void)
     SYSCFG_DL_TIMER_TICK_init();
     SYSCFG_DL_UART_DEBUG_init();
     SYSCFG_DL_SPI_LCD_init();
+    SYSCFG_DL_ADC_STICK_Y_init();
+    SYSCFG_DL_DMA_init();
     /* Ensure backup structures have no valid state */
 	gPWM_MOTORBackup.backupRdy 	= false;
 	gTIMER_TICKBackup.backupRdy 	= false;
@@ -100,6 +102,8 @@ SYSCONFIG_WEAK void SYSCFG_DL_initPower(void)
     DL_TimerA_reset(TIMER_TICK_INST);
     DL_UART_Main_reset(UART_DEBUG_INST);
     DL_SPI_reset(SPI_LCD_INST);
+    DL_ADC12_reset(ADC_STICK_Y_INST);
+
 
     DL_GPIO_enablePower(GPIOA);
     DL_GPIO_enablePower(GPIOB);
@@ -107,6 +111,8 @@ SYSCONFIG_WEAK void SYSCFG_DL_initPower(void)
     DL_TimerA_enablePower(TIMER_TICK_INST);
     DL_UART_Main_enablePower(UART_DEBUG_INST);
     DL_SPI_enablePower(SPI_LCD_INST);
+    DL_ADC12_enablePower(ADC_STICK_Y_INST);
+
     delay_cycles(POWER_STARTUP_DELAY);
 }
 
@@ -134,6 +140,10 @@ SYSCONFIG_WEAK void SYSCFG_DL_GPIO_init(void)
     DL_GPIO_initDigitalOutputFeatures(DEBUG_LED_PIN_22_IOMUX,
 		 DL_GPIO_INVERSION_DISABLE, DL_GPIO_RESISTOR_PULL_DOWN,
 		 DL_GPIO_DRIVE_STRENGTH_LOW, DL_GPIO_HIZ_DISABLE);
+
+    DL_GPIO_initDigitalInputFeatures(GPIO_STICK_Z_SWITCH_IOMUX,
+		 DL_GPIO_INVERSION_DISABLE, DL_GPIO_RESISTOR_PULL_UP,
+		 DL_GPIO_HYSTERESIS_DISABLE, DL_GPIO_WAKEUP_DISABLE);
 
     DL_GPIO_initDigitalOutput(GPIO_LCD_PIN_RES_IOMUX);
 
@@ -386,4 +396,31 @@ SYSCONFIG_WEAK void SYSCFG_DL_SPI_LCD_init(void) {
     /* Enable module */
     DL_SPI_enable(SPI_LCD_INST);
 }
+
+/* ADC_STICK_Y Initialization */
+static const DL_ADC12_ClockConfig gADC_STICK_YClockConfig = {
+    .clockSel       = DL_ADC12_CLOCK_SYSOSC,
+    .divideRatio    = DL_ADC12_CLOCK_DIVIDE_8,
+    .freqRange      = DL_ADC12_CLOCK_FREQ_RANGE_24_TO_32,
+};
+SYSCONFIG_WEAK void SYSCFG_DL_ADC_STICK_Y_init(void)
+{
+    DL_ADC12_setClockConfig(ADC_STICK_Y_INST, (DL_ADC12_ClockConfig *) &gADC_STICK_YClockConfig);
+    DL_ADC12_initSingleSample(ADC_STICK_Y_INST,
+        DL_ADC12_REPEAT_MODE_ENABLED, DL_ADC12_SAMPLING_SOURCE_AUTO, DL_ADC12_TRIG_SRC_SOFTWARE,
+        DL_ADC12_SAMP_CONV_RES_12_BIT, DL_ADC12_SAMP_CONV_DATA_FORMAT_UNSIGNED);
+    DL_ADC12_configConversionMem(ADC_STICK_Y_INST, ADC_STICK_Y_ADCMEM_CH0,
+        DL_ADC12_INPUT_CHAN_0, DL_ADC12_REFERENCE_VOLTAGE_VDDA, DL_ADC12_SAMPLE_TIMER_SOURCE_SCOMP0, DL_ADC12_AVERAGING_MODE_DISABLED,
+        DL_ADC12_BURN_OUT_SOURCE_DISABLED, DL_ADC12_TRIGGER_MODE_AUTO_NEXT, DL_ADC12_WINDOWS_COMP_MODE_DISABLED);
+    DL_ADC12_setPowerDownMode(ADC_STICK_Y_INST,DL_ADC12_POWER_DOWN_MODE_MANUAL);
+    DL_ADC12_setSampleTime0(ADC_STICK_Y_INST,40000);
+    /* Enable ADC12 interrupt */
+    DL_ADC12_clearInterruptStatus(ADC_STICK_Y_INST,(DL_ADC12_INTERRUPT_MEM0_RESULT_LOADED));
+    DL_ADC12_enableInterrupt(ADC_STICK_Y_INST,(DL_ADC12_INTERRUPT_MEM0_RESULT_LOADED));
+    DL_ADC12_enableConversions(ADC_STICK_Y_INST);
+}
+
+SYSCONFIG_WEAK void SYSCFG_DL_DMA_init(void){
+}
+
 

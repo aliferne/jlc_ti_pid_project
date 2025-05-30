@@ -14,11 +14,12 @@
  * 该结构体使用位字段来表示每个按键的状态，以节省空间。
  */
 typedef struct {
-    unsigned int up : 1;    //!< 上按键状态
-    unsigned int left : 1;  //!< 左按键状态
-    unsigned int right : 1; //!< 右按键状态
-    unsigned int down : 1;  //!< 下按键状态
-    unsigned int mid : 1;   //!< 中间按键状态
+    unsigned int up : 1;      // 上按键状态
+    unsigned int left : 1;    // 左按键状态
+    unsigned int right : 1;   // 右按键状态
+    unsigned int down : 1;    // 下按键状态
+    unsigned int mid : 1;     // 中间按键状态
+    unsigned int stick_z : 1; // 摇杆Z轴按键状态
 } KEY_STATUS;
 
 /**

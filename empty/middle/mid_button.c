@@ -40,6 +40,7 @@ typedef enum {
     BUTTON_RIGHT,
     BUTTON_DOWN,
     BUTTON_MID, // 中间按键 新增加的，用来代替案例中开启电机的方案
+    STICK_Z, // 新增加的，摇杆模块的z轴，定义端口为PA22
     USER_BUTTON_MAX
 } user_button_t;
 
@@ -62,21 +63,30 @@ static uint8_t button_up_read(void)
 {
     return key_scan().up;
 }
+
 static uint8_t button_left_read(void)
 {
     return key_scan().left;
 }
+
 static uint8_t button_right_read(void)
 {
     return key_scan().right;
 }
+
 static uint8_t button_down_read(void)
 {
     return key_scan().down;
 }
+
 static uint8_t button_mid_read(void)
 {
     return key_scan().mid;
+}
+
+static uint8_t button_stick_z_read(void)
+{
+    return key_scan().stick_z;
 }
 
 // 配置按键初始化
@@ -102,6 +112,9 @@ void user_button_init(void)
 
     user_button[BUTTON_MID].usr_button_read = button_mid_read;
     user_button[BUTTON_MID].cb              = (flex_button_response_callback)btn_mid_cb; // 按键事件回调函数
+
+    user_button[STICK_Z].usr_button_read = button_stick_z_read;
+    user_button[STICK_Z].cb              = (flex_button_response_callback)btn_stick_z_cb; // 按键事件回调函数
 
     /* 初始化 按键引脚 */
 
