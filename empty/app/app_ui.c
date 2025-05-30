@@ -84,6 +84,32 @@ void show_string_rect(int x, int w, int y, int h, int str_len, int fontSize, uns
         color, fontSize, 1);
 }
 
+// void show_select_box(int x, int w, int y, int h, int line_length, int interval, int color)
+// {
+//     // interval: 间距
+//     x -= interval;     // 向左偏移interval的距离
+//     w += interval * 2; // 宽度增加interval*2的距离（矩形框两边对称）
+//     y -= interval;     // 向上偏移interval的距离
+//     h += interval * 2; // 高度增加interval*2的距离
+//     // 左上
+//     LCD_Draw_Line(x, y, x + line_length, y, color);
+//     LCD_Draw_Line(x, y, x, y + line_length, color);
+//     // 右上
+//     LCD_Draw_Line(x + w, y, x + w - line_length, y, color);
+//     LCD_Draw_Line(x + w, y, x + w, y + line_length, color);
+//     // 左下
+//     LCD_Draw_Line(x, y + h, x + line_length, y + h, color);
+//     LCD_Draw_Line(x, y + h, x, y + h - line_length, color);
+//     // 右下
+//     LCD_Draw_Line(x + w, y + h, x + w - line_length, y + h, color);
+//     LCD_Draw_Line(x + w, y + h, x + w, y + h - line_length, color);
+// }
+
+// BUG: 这部分不合适的话可以删去，目前正在试验阶段
+// NOTE: 所以我们的思路应该是在切换选项的时候，加上动态特效
+// NOTE: 因此current就应该是当前选项的坐标位置，而target就是目标选项的坐标位置
+// NOTE: UI界面的选择框是由两点确定的，所以实际上只要移动两点就可以实现线条的抖动
+/* ************* 尝试使用PID 融入 ui 的想法 ************* */
 void show_select_box(int x, int w, int y, int h, int line_length, int interval, int color)
 {
     // interval: 间距
@@ -92,19 +118,20 @@ void show_select_box(int x, int w, int y, int h, int line_length, int interval, 
     y -= interval;     // 向上偏移interval的距离
     h += interval * 2; // 高度增加interval*2的距离
 
-    // 左上
+    int kp = 2, ki = 0, kd = 0;
+    int max    = LCD_W;
+    int current = 0;
+    int target = 20;
+    PID_Struct *screen;
+
+    // FIXME: 这一段有问题
+    // pid_init(&screen, kp, ki, kd, max, max, x);
+    // int value = pid_calc(&screen, x, current);
+
     LCD_Draw_Line(x, y, x + line_length, y, color);
     LCD_Draw_Line(x, y, x, y + line_length, color);
-    // 右上
-    LCD_Draw_Line(x + w, y, x + w - line_length, y, color);
-    LCD_Draw_Line(x + w, y, x + w, y + line_length, color);
-    // 左下
-    LCD_Draw_Line(x, y + h, x + line_length, y + h, color);
-    LCD_Draw_Line(x, y + h, x, y + h - line_length, color);
-    // 右下
-    LCD_Draw_Line(x + w, y + h, x + w - line_length, y + h, color);
-    LCD_Draw_Line(x + w, y + h, x + w, y + h - line_length, color);
 }
+/* ************* 尝试使用PID 融入 ui 的想法 ************* */
 
 void ui_home_page(void)
 {
@@ -475,9 +502,10 @@ void ui_parameter_select_box_bold(int mode) // 参数选择框加粗，即选中
     }
 }
 
-uint16_t draw_motor_pid_curve(int window_start_x, int window_start_y,
-                              int window_w, int window_h, int curve_color,
-                              int background_color, short int rawValue)
+uint16_t draw_motor_pid_curve(
+    int window_start_x, int window_start_y,
+    int window_w, int window_h, int curve_color,
+    int background_color, short int rawValue)
 {
     uint16_t x = 0, y = 0, i = 0;
     static char firstDraw  = 1; // 判断是否第一次画
