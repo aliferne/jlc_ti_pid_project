@@ -118,18 +118,27 @@ void show_select_box(int x, int w, int y, int h, int line_length, int interval, 
     y -= interval;     // 向上偏移interval的距离
     h += interval * 2; // 高度增加interval*2的距离
 
-    int kp = 2, ki = 0, kd = 0;
-    int max    = LCD_W;
-    int current = 0;
-    int target = 20;
-    PID_Struct *screen;
+    float kp = 0.5, ki = 0.1, kd = 0.2;
+    float max     = LCD_W;
+    float current = 0;
+    int target    = x;
+    PID_Struct screen;
 
-    // FIXME: 这一段有问题
-    // pid_init(&screen, kp, ki, kd, max, max, x);
-    // int value = pid_calc(&screen, x, current);
-
-    LCD_Draw_Line(x, y, x + line_length, y, color);
+    int value;
+    // FIXME: 目前还没有建立一个回环（反馈机制），但理论上可行
+    // NOTE: 好耶！✌初步实现效果
+    pid_init(&screen, kp, ki, kd, max, max, (float)x);
     LCD_Draw_Line(x, y, x, y + line_length, color);
+    LCD_Draw_Line(current, y, current + line_length, y, color);
+
+    while (fabs(current - target) > 1) {
+        // 清除上次线条
+        LCD_Draw_Line(current, y, current + line_length, y, BLACK);
+        value = pid_calc(&screen, target, current);
+        current += value;
+        LCD_Draw_Line(current, y, current + line_length, y, color);
+        delay_cycles(80000 * 10);
+    }
 }
 /* ************* 尝试使用PID 融入 ui 的想法 ************* */
 
