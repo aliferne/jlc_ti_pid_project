@@ -17,7 +17,7 @@
 // SPEED选项框绘制参数（ui_home_page中调用）
 #define PID_SPEED_SELECT_BOX_X_START   40 // 起始x坐标
 #define PID_SPEED_SELECT_BOX_WIDTH     80 // 宽度
-#define PID_SPEED_SELECT_BOX_Y_START   65 // 起始y坐标
+#define PID_SPEED_SELECT_BOX_Y_START   75 // 起始y坐标
 #define PID_SPEED_SELECT_BOX_HEIGHT    80 // 高度
 #define PID_SPEED_SELECT_LINE_LEN      10 // 外圈选择框线长度
 #define PID_SPEED_SELECT_LINE_INTERVAL 5  // 外圈选择框线与选择框间隔
@@ -25,7 +25,7 @@
 // DISTANCE选项框绘制参数（ui_home_page中调用）
 #define PID_DISTANCE_SELECT_BOX_X_START   200 // 起始x坐标
 #define PID_DISTANCE_SELECT_BOX_WIDTH     80  // 宽度
-#define PID_DISTANCE_SELECT_BOX_Y_START   65  // 起始y坐标
+#define PID_DISTANCE_SELECT_BOX_Y_START   75  // 起始y坐标
 #define PID_DISTANCE_SELECT_BOX_HEIGHT    80  // 高度
 #define PID_DISTANCE_SELECT_LINE_LEN      10  // 外圈选择框线长度
 #define PID_DISTANCE_SELECT_LINE_INTERVAL 5   // 外圈选择框线与选择框间隔

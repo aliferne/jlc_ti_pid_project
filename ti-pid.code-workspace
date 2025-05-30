@@ -27,7 +27,12 @@
             "*.cpp": "cpp",
             "*.cxx": "cpp",
             "*.cc": "cpp",
-            "cmath": "c"
+            "cmath": "c",
+            "algorithm": "c",
+            "chrono": "c",
+            "limits": "c",
+            "utility": "c",
+            "xutility": "c"
         },
         "[yaml]": {
             "editor.insertSpaces": true,

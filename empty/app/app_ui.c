@@ -8,6 +8,8 @@
 #include "hw_encoder.h"
 #include "mid_timer.h"
 
+#define ABS(x) ((x < 0) ? (-(x)) : x)
+
 /**
  * @file app_ui.c
  * @brief 用户界面绘制与更新
@@ -84,63 +86,86 @@ void show_string_rect(int x, int w, int y, int h, int str_len, int fontSize, uns
         color, fontSize, 1);
 }
 
-// void show_select_box(int x, int w, int y, int h, int line_length, int interval, int color)
-// {
-//     // interval: 间距
-//     x -= interval;     // 向左偏移interval的距离
-//     w += interval * 2; // 宽度增加interval*2的距离（矩形框两边对称）
-//     y -= interval;     // 向上偏移interval的距离
-//     h += interval * 2; // 高度增加interval*2的距离
-//     // 左上
-//     LCD_Draw_Line(x, y, x + line_length, y, color);
-//     LCD_Draw_Line(x, y, x, y + line_length, color);
-//     // 右上
-//     LCD_Draw_Line(x + w, y, x + w - line_length, y, color);
-//     LCD_Draw_Line(x + w, y, x + w, y + line_length, color);
-//     // 左下
-//     LCD_Draw_Line(x, y + h, x + line_length, y + h, color);
-//     LCD_Draw_Line(x, y + h, x, y + h - line_length, color);
-//     // 右下
-//     LCD_Draw_Line(x + w, y + h, x + w - line_length, y + h, color);
-//     LCD_Draw_Line(x + w, y + h, x + w, y + h - line_length, color);
-// }
+// FIXME: 使用PID绘制UI界面相对较卡，需要使用DMA之类的技术作为辅助
+// 绘制线框的函数（水平方向）
+void ui_draw_lines_horizonal(
+    int x, int w, int y, int h,
+    int line_length, int interval, int color)
+{
+    // 左上
+    LCD_Draw_Line(x, y, x + line_length, y, color);
+    // 右上
+    LCD_Draw_Line(x + w, y, x + w - line_length, y, color);
+    // 左下
+    LCD_Draw_Line(x, y + h, x + line_length, y + h, color);
+    // 右下
+    LCD_Draw_Line(x + w, y + h, x + w - line_length, y + h, color);
+}
 
-// BUG: 这部分不合适的话可以删去，目前正在试验阶段
-// NOTE: 所以我们的思路应该是在切换选项的时候，加上动态特效
-// NOTE: 因此current就应该是当前选项的坐标位置，而target就是目标选项的坐标位置
-// NOTE: UI界面的选择框是由两点确定的，所以实际上只要移动两点就可以实现线条的抖动
-/* ************* 尝试使用PID 融入 ui 的想法 ************* */
-void show_select_box(int x, int w, int y, int h, int line_length, int interval, int color)
+// 绘制线框的函数（竖直方向）
+void ui_draw_lines_vertical(
+    int x, int w, int y, int h,
+    int line_length, int interval, int color)
+{
+    // 左上
+    LCD_Draw_Line(x, y, x, y + line_length, color);
+    // 右上
+    LCD_Draw_Line(x + w, y, x + w, y + line_length, color);
+    // 左下
+    LCD_Draw_Line(x, y + h, x, y + h - line_length, color);
+    // 右下
+    LCD_Draw_Line(x + w, y + h, x + w, y + h - line_length, color);
+}
+
+// 使用PID画出Q弹的选项框
+void show_select_box(
+    int target_x, int w, int target_y, int h,
+    int line_length, int interval, int color)
 {
     // interval: 间距
-    x -= interval;     // 向左偏移interval的距离
-    w += interval * 2; // 宽度增加interval*2的距离（矩形框两边对称）
-    y -= interval;     // 向上偏移interval的距离
-    h += interval * 2; // 高度增加interval*2的距离
+    target_x -= interval; // 向左偏移interval的距离
+    w += interval * 2;    // 宽度增加interval * 2的距离（矩形框两边对称）
 
-    float kp = 0.5, ki = 0.1, kd = 0.2;
-    float max     = LCD_W;
-    float current = 0;
-    int target    = x;
-    PID_Struct screen;
+    target_y -= interval; // 向上偏移interval的距离
+    h += interval * 2;    // 高度增加interval * 2的距离
 
-    int value;
-    // FIXME: 目前还没有建立一个回环（反馈机制），但理论上可行
-    // NOTE: 好耶！✌初步实现效果
-    pid_init(&screen, kp, ki, kd, max, max, (float)x);
-    LCD_Draw_Line(x, y, x, y + line_length, color);
-    LCD_Draw_Line(current, y, current + line_length, y, color);
+    int mode = 0; // mode = 0表示不开启pid画框，mode = 其他值表示开启pid画框
 
-    while (fabs(current - target) > 1) {
-        // 清除上次线条
-        LCD_Draw_Line(current, y, current + line_length, y, BLACK);
-        value = pid_calc(&screen, target, current);
-        current += value;
-        LCD_Draw_Line(current, y, current + line_length, y, color);
-        delay_cycles(80000 * 10);
+    if (mode == 0) {
+        ui_draw_lines_horizonal(target_x, w, target_y, h, line_length, interval, color);
+        ui_draw_lines_vertical(target_x, w, target_y, h, line_length, interval, color);
+    } else {
+        float kp = 0.4, ki = 0.2, kd = 0.2;
+        int current_x = 0;
+        int current_y = 0;
+
+        int value_x, value_y;
+        PID_Struct screen_x, screen_y;
+
+        pid_init(&screen_x, kp, ki, kd, LCD_W, LCD_W, target_x);
+        pid_init(&screen_y, kp, ki, kd, LCD_H, LCD_H, target_y);
+
+        do {
+            // 清除上次线条
+            ui_draw_lines_horizonal(current_x, w, target_y, h, line_length, interval, BLACK);
+            ui_draw_lines_vertical(target_x, w, current_y, h, line_length, interval, BLACK);
+
+            value_x = pid_calc(&screen_x, target_x, current_x);
+            value_y = pid_calc(&screen_y, target_y, current_y);
+            current_x += value_x;
+            current_y += value_y;
+
+            ui_draw_lines_horizonal(current_x, w, target_y, h, line_length, interval, color);
+            ui_draw_lines_vertical(target_x, w, current_y, h, line_length, interval, color);
+
+            delay_cycles(100000 * 8);
+        } while (
+            (ABS(current_x - target_x) > 0.5) &&
+            (ABS(current_y - target_y) > 0.5));
+        pid_change_zero(&screen_x);
+        pid_change_zero(&screen_y);
     }
 }
-/* ************* 尝试使用PID 融入 ui 的想法 ************* */
 
 void ui_home_page(void)
 {
@@ -151,19 +176,22 @@ void ui_home_page(void)
     // 绘制一些其他的文字
     show_x_center(3, 5, BLUE, FONTSIZE, (uint8_t *)"立创开发板");
     show_x_center(23, 8, BLUE, FONTSIZE, (uint8_t *)"简易PID入门套件");
+    show_x_center(43, 2, BLUE, FONTSIZE, (uint8_t *)"Ferne");
 
-    int x1        = 40;
-    int x1_offset = 80;
-    int y1        = 65;
-    int y1_offset = 80;
     // 绘制任务一：PID定速
-    show_string_rect(x1, x1_offset, y1, y1_offset, 2, 24, (uint8_t *)"定速", BLUE);
-    int x2        = 200;
-    int x2_offset = 80;
-    int y2        = 65;
-    int y2_offset = 80;
+    show_string_rect(
+        PID_SPEED_SELECT_BOX_X_START,
+        PID_SPEED_SELECT_BOX_WIDTH,
+        PID_SPEED_SELECT_BOX_Y_START,
+        PID_SPEED_SELECT_BOX_HEIGHT,
+        2, 24, (uint8_t *)"定速", BLUE);
     // 绘制任务二：PID定距
-    show_string_rect(x2, x2_offset, y2, y2_offset, 2, 24, (uint8_t *)"定距", BLUE);
+    show_string_rect(
+        PID_DISTANCE_SELECT_BOX_X_START,
+        PID_DISTANCE_SELECT_BOX_WIDTH,
+        PID_DISTANCE_SELECT_BOX_Y_START,
+        PID_DISTANCE_SELECT_BOX_HEIGHT,
+        2, 24, (uint8_t *)"定距", BLUE);
 
     // 根据首页当前选择内容 绘制选择框
     switch (get_default_page_flag()) {
