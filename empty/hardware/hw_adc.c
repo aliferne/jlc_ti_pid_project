@@ -12,7 +12,6 @@
  */
 
 #include "hw_adc.h"
-#include "stdio.h"
 
 /**
  * @brief ADC转换完成标志

@@ -50,6 +50,8 @@
 #define SPEED_WAVEFORM_REDUCTION_FACTOR    2.3 // 定速波形衰减倍数
 #define DISTANCE_WAVEFORM_REDUCTION_FACTOR 8.3 // 定距波形衰减倍数
 
+#define ABS(x) ((x) > 0 ? (x) : -(x)) // 取绝对值
+
 // 该结构体用于PID控制
 typedef struct {
     unsigned int start_x;

@@ -8,8 +8,6 @@
 #include "hw_encoder.h"
 #include "mid_timer.h"
 
-#define ABS(x) ((x) > 0 ? (x) : -(x))
-
 /**
  * @file app_ui.c
  * @brief 用户界面绘制与更新
@@ -137,11 +135,11 @@ void show_select_box(
     } else {
         // p、i、d的参数
         float kp = 0.4, ki = 0.2, kd = 0.2;
-        int current_x = 0;  // 当前x轴坐标（从0开始）
-        int current_y = 0;  // 当前y轴坐标（从0开始）
+        int current_x = 0; // 当前x轴坐标（从0开始）
+        int current_y = 0; // 当前y轴坐标（从0开始）
 
-        int value_x, value_y;   // x轴和y轴方向上与目标的差值
-        PID_Struct screen_x, screen_y;      // x轴和y轴方向上的pid结构体
+        int value_x, value_y;          // x轴和y轴方向上与目标的差值
+        PID_Struct screen_x, screen_y; // x轴和y轴方向上的pid结构体
 
         // 初始化PID
         pid_init(&screen_x, kp, ki, kd, LCD_W, LCD_W, target_x);
@@ -223,7 +221,6 @@ void ui_home_page(void)
     }
 
     LCD_BLK_Set(); // 打开背光
-
     // NOTE: 先关背光再打开是为了刷新时更好的视觉体验
 }
 
