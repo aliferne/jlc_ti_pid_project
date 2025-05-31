@@ -115,7 +115,43 @@ void ui_draw_lines_vertical(
     LCD_Draw_Line(x + w, y + h, x + w, y + h - line_length, color);
 }
 
-// 使用PID画出Q弹的选项框
+/**
+ * @brief 显示选择框
+ * 
+ * 该函数用于在指定位置绘制一个选择框，支持静态显示和PID动画显示两种模式。
+ * 选择框由水平线和垂直线组成，可以设置线条长度、间距和颜色。
+ * 
+ * @param target_x 目标X坐标位置
+ * @param w 选择框的宽度
+ * @param target_y 目标Y坐标位置  
+ * @param h 选择框的高度
+ * @param line_length 线条的长度
+ * @param interval 线条间距，同时也作为选择框向外扩展的距离
+ * @param color 线条颜色
+ * 
+ * @details 
+ * 函数内部有两种显示模式：
+ * - mode = 0：静态显示模式，直接在目标位置绘制选择框
+ * - mode ≠ 0：PID动画模式，使用PID控制算法实现选择框从当前位置平滑移动到目标位置
+ * 
+ * 在PID模式下：
+ * - 使用PID参数：kp=0.4, ki=0.2, kd=0.2
+ * - 动画过程中会先清除上一帧的线条，再绘制新位置的线条
+ * - 当X轴和Y轴误差都小于0.5时停止动画
+ * - 动画结束后会重置PID参数
+ * 
+ * @note 
+ * - 选择框的实际绘制区域会比输入的w和h各边扩大interval个像素
+ * - 需要依赖ui_draw_lines_horizonal()和ui_draw_lines_vertical()函数
+ * - PID模式需要pid_init(), pid_calc(), pid_change_zero()等PID相关函数
+ * - 需要定义LCD_W, LCD_H, BLACK等常量
+ * 
+ * @see ui_draw_lines_horizonal()
+ * @see ui_draw_lines_vertical()
+ * @see pid_init()
+ * @see pid_calc()
+ * @see pid_change_zero()
+ */
 void show_select_box(
     int target_x, int w, int target_y, int h,
     int line_length, int interval, int color)
@@ -127,7 +163,7 @@ void show_select_box(
     target_y -= interval; // 向上偏移interval的距离
     h += interval * 2;    // 高度增加interval * 2的距离
 
-    int mode = 0; // TODO: mode = 0表示不开启pid画框，mode = 其他值表示开启pid画框
+    int mode = 0;
 
     if (mode == 0) {
         ui_draw_lines_horizonal(target_x, w, target_y, h, line_length, interval, color);
