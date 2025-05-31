@@ -33,6 +33,17 @@ void ui_speed_or_distance_page_value_set_quick(LongPressStatus update_status)
     }
 }
 
+void uart_debugger()
+{
+    debug_uart_init();
+    char sbuff[100];
+    while (1) {
+        sprintf(sbuff, "adc value: %.2f\n", (adc_getValue() / 40.95));
+        debug_uart_send_string(sbuff);
+        delay_cycles(1000000);
+    }
+}
+
 int main(void)
 {
     int curve_x = 0;
@@ -105,3 +116,4 @@ int main(void)
         }
     }
 }
+

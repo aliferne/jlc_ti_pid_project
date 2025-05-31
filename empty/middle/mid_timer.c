@@ -2,6 +2,7 @@
 #include "hw_encoder.h"
 #include "mid_button.h"
 #include "app_sys_mode.h"
+#include "app_stick_task.h"
 
 static volatile Task_state tack_enable_flag = TASK_ENABLE;
 
@@ -39,8 +40,10 @@ void TIMER_TICK_INST_IRQHandler(void)
             encoder_update();
         }
         if (get_task_status() == TASK_ENABLE) {
-            // 按键扫描+事件管理
+            // 按键扫描 + 事件管理
             flex_button_scan();
+            // 摇杆扫描 + 事件处理
+            stick_scan();
         }
     }
 }

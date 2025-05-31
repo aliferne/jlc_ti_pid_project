@@ -66,9 +66,9 @@ void adc_init()
  * @see DL_ADC12_getResult()
  * @see ADC_STICK_Y_INST_IRQHandler()
  */
-uint32_t adc_getValue()
+uint16_t adc_getValue()
 {
-    uint32_t adcResult = 0;
+    uint16_t adcResult = 0;
     // 软件触发，ADC开始转换
     DL_ADC12_startConversion(ADC_STICK_Y_INST);
     // 等待转换完成

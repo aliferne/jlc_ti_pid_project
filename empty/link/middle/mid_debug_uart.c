@@ -3,65 +3,59 @@
 
 DEBUG_UART_STRUCT debug_uart;
 
-// ³õÊ¼»¯µ÷ÊÔ´®¿Ú
+// åˆå§‹åŒ–è°ƒè¯•ä¸²å£
 void debug_uart_init(void)
 {
-	NVIC_ClearPendingIRQ(UART_DEBUG_INST_INT_IRQN);
-	NVIC_EnableIRQ(UART_DEBUG_INST_INT_IRQN);
+    NVIC_ClearPendingIRQ(UART_DEBUG_INST_INT_IRQN);
+    NVIC_EnableIRQ(UART_DEBUG_INST_INT_IRQN);
 }
 
-//·¢ËÍµ¥¸ö×Ö·û
+// å‘é€å•ä¸ªå­—ç¬¦
 void debug_uart_send_char(char ch)
 {
-	while( DL_UART_isBusy(UART_DEBUG_INST) == true );
-	DL_UART_Main_transmitData(UART_DEBUG_INST, ch);
+    while (DL_UART_isBusy(UART_DEBUG_INST) == true);
+    DL_UART_Main_transmitData(UART_DEBUG_INST, ch);
 }
 
-//·¢ËÍ×Ö·û´®
-void debug_uart_send_string(char* str)
+// å‘é€å­—ç¬¦ä¸²
+void debug_uart_send_string(char *str)
 {
-	while(*str!=0&&str!=0)
-	{
-		debug_uart_send_char(*str++);
-	}
+    while (*str != 0 && str != 0) {
+        debug_uart_send_char(*str++);
+    }
 }
 
-// »ñÈ¡µ÷ÊÔ´®¿Ú½ÓÊÕµ½µÄÊı¾İ
-char* get_debug_uart_receive_data(void)
+// è·å–è°ƒè¯•ä¸²å£æ¥æ”¶åˆ°çš„æ•°æ®
+char *get_debug_uart_receive_data(void)
 {
-	return debug_uart.receive_buffer;
+    return debug_uart.receive_buffer;
 }
 
-// Çå³ıµ÷ÊÔ´®¿Ú½ÓÊÕµ½µÄÊı¾İ
+// æ¸…é™¤è°ƒè¯•ä¸²å£æ¥æ”¶åˆ°çš„æ•°æ®
 void clear_debug_uart_receive_data(void)
 {
-	int i=0;
-	debug_uart.receive_data_length = 0;
-	for( i = 0; i < REVEIVE_BUFFER_MAX; i++ )
-	{
-		debug_uart.receive_buffer[i] = 0;
-	}
+    int i                          = 0;
+    debug_uart.receive_data_length = 0;
+    for (i = 0; i < REVEIVE_BUFFER_MAX; i++) {
+        debug_uart.receive_buffer[i] = 0;
+    }
 }
-	
-// ÏŞÖÆ½ÓÊÕ³¤¶È
+
+// é™åˆ¶æ¥æ”¶é•¿åº¦
 static int debug_uart_receive_limit_length(void)
 {
-	if( debug_uart.receive_data_length >= REVEIVE_BUFFER_MAX )
-	{
-		debug_uart.receive_data_length = 0;
-		return 0;
-	}
-	return 1;
+    if (debug_uart.receive_data_length >= REVEIVE_BUFFER_MAX) {
+        debug_uart.receive_data_length = 0;
+        return 0;
+    }
+    return 1;
 }
 
-
-
-//µ÷ÊÔ´®¿ÚµÄÖĞ¶Ï·şÎñº¯Êı
+// è°ƒè¯•ä¸²å£çš„ä¸­æ–­æœåŠ¡å‡½æ•°
 void UART_DEBUG_INST_IRQHandler(void)
 {
-	if(  DL_UART_getPendingInterrupt(UART_DEBUG_INST) == DL_UART_IIDX_RX  ) 
-	{
-			debug_uart.receive_buffer[ debug_uart.receive_data_length++ ] = DL_UART_Main_receiveData(UART_DEBUG_INST);
-			debug_uart_receive_limit_length();		
-	}
+    if (DL_UART_getPendingInterrupt(UART_DEBUG_INST) == DL_UART_IIDX_RX) {
+        debug_uart.receive_buffer[debug_uart.receive_data_length++] = DL_UART_Main_receiveData(UART_DEBUG_INST);
+        debug_uart_receive_limit_length();
+    }
 }

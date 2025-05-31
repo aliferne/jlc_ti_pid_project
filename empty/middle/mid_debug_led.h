@@ -3,15 +3,15 @@
 
 #include "ti_msp_dl_config.h"
 
-// ¶¨ÒåLED×´Ì¬
+// å®šä¹‰LEDçŠ¶æ€
 typedef enum {
     LED_OFF,
     LED_ON
 } LED_STATE_ENUM;
 
-// ¶¨Òåµ÷ÊÔLED½á¹¹Ìå
+// å®šä¹‰è°ƒè¯•LEDç»“æ„ä½“
 typedef struct {
-    LED_STATE_ENUM state;   // LEDµ±Ç°×´Ì¬
+    LED_STATE_ENUM state; // LEDå½“å‰çŠ¶æ€
 } DEBUG_LED_STRUCT;
 
 void set_debug_led_on(void);

@@ -71,6 +71,6 @@ void adc_init(void);
  * printf("Joystick Y value: %lu\n", joystick_y_value);
  * @endcode
  */
-uint32_t adc_getValue(void);
+uint16_t adc_getValue(void);
 
 #endif

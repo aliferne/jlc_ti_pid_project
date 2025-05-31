@@ -1,6 +1,6 @@
 /**
  * @file hw_key.h
- * @brief Ó²¼ş°´¼ü¹ÜÀíÏà¹Øº¯ÊıºÍ½á¹¹ÌåÉùÃ÷
+ * @brief ç¡¬ä»¶æŒ‰é”®ç®¡ç†ç›¸å…³å‡½æ•°å’Œç»“æ„ä½“å£°æ˜
  */
 
 #ifndef _HW_KEY_H_
@@ -9,25 +9,25 @@
 #include "ti_msp_dl_config.h"
 
 /**
- * @brief °´¼ü×´Ì¬½á¹¹Ìå
+ * @brief æŒ‰é”®çŠ¶æ€ç»“æ„ä½“
  *
- * ¸Ã½á¹¹ÌåÊ¹ÓÃÎ»×Ö¶ÎÀ´±íÊ¾Ã¿¸ö°´¼üµÄ×´Ì¬£¬ÒÔ½ÚÊ¡¿Õ¼ä¡£
+ * è¯¥ç»“æ„ä½“ä½¿ç”¨ä½å­—æ®µæ¥è¡¨ç¤ºæ¯ä¸ªæŒ‰é”®çš„çŠ¶æ€ï¼Œä»¥èŠ‚çœç©ºé—´ã€‚
  */
 typedef struct {
-    unsigned int up : 1;      // ÉÏ°´¼ü×´Ì¬
-    unsigned int left : 1;    // ×ó°´¼ü×´Ì¬
-    unsigned int right : 1;   // ÓÒ°´¼ü×´Ì¬
-    unsigned int down : 1;    // ÏÂ°´¼ü×´Ì¬
-    unsigned int mid : 1;     // ÖĞ¼ä°´¼ü×´Ì¬
-    unsigned int stick_z : 1; // Ò¡¸ËZÖá°´¼ü×´Ì¬
+    unsigned int up : 1;      // ä¸ŠæŒ‰é”®çŠ¶æ€
+    unsigned int left : 1;    // å·¦æŒ‰é”®çŠ¶æ€
+    unsigned int right : 1;   // å³æŒ‰é”®çŠ¶æ€
+    unsigned int down : 1;    // ä¸‹æŒ‰é”®çŠ¶æ€
+    unsigned int mid : 1;     // ä¸­é—´æŒ‰é”®çŠ¶æ€
+    unsigned int stick_z : 1; // æ‘‡æ†Zè½´æŒ‰é”®çŠ¶æ€
 } KEY_STATUS;
 
 /**
- * @brief É¨Ãè°´¼ü×´Ì¬
+ * @brief æ‰«ææŒ‰é”®çŠ¶æ€
  *
- * @return µ±Ç°°´¼ü×´Ì¬
+ * @return å½“å‰æŒ‰é”®çŠ¶æ€
  *
- * ¸Ãº¯ÊıÓÃÓÚÉ¨Ãè²¢·µ»Øµ±Ç°°´¼üµÄ×´Ì¬¡£
+ * è¯¥å‡½æ•°ç”¨äºæ‰«æå¹¶è¿”å›å½“å‰æŒ‰é”®çš„çŠ¶æ€ã€‚
  */
 KEY_STATUS key_scan(void);
 

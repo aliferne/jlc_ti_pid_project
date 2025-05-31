@@ -31,6 +31,7 @@
 #include "mid_button.h"
 #include "hw_key.h"
 #include "app_key_task.h"
+#include "app_stick_task.h"
 
 // 设置你要控制多少个按键
 // 最后一位总是USER_BUTTON_MAX
@@ -40,7 +41,7 @@ typedef enum {
     BUTTON_RIGHT,
     BUTTON_DOWN,
     BUTTON_MID, // 中间按键 新增加的，用来代替案例中开启电机的方案
-    STICK_Z, // 新增加的，摇杆模块的z轴，定义端口为PA22
+    STICK_Z,    // 新增加的，摇杆模块的z轴，定义端口为PA22
     USER_BUTTON_MAX
 } user_button_t;
 

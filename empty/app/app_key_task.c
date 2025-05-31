@@ -5,7 +5,6 @@
 #include "app_speed_pid.h"
 #include "app_distance_pid.h"
 #include "hw_encoder.h"
-#include "mid_debug_led.h"
 
 /**
  * @file app_key_task.c
@@ -197,31 +196,6 @@ void btn_mid_cb(flex_button_t *btn)
             }
             break;
         case FLEX_BTN_PRESS_LONG_HOLD: // 长按保持事件
-            break;
-        case FLEX_BTN_PRESS_LONG_HOLD_UP: // 长按保持后抬起事件
-            break;
-        default:
-            break;
-    }
-}
-
-void btn_stick_z_cb(flex_button_t *btn)
-{
-    switch (btn->event) {
-        case FLEX_BTN_PRESS_CLICK: // 单击事件
-            // 如果是定速页或者定距页
-            if (get_show_state() == PID_PAGE || get_show_state() == DISTANCE_PAGE) {
-                // 触发电机事件
-                event_manager(&system_status, MOTOR_EVENT);
-                // 如果电机状态是关
-                if (get_motor_status_flag() == MOTOR_STATUS_OFF) {
-                    // 停止电机
-                    stop_motor();
-                }
-            }
-            break;
-        case FLEX_BTN_PRESS_LONG_HOLD: // 长按保持事件
-            set_debug_led_on(); // 打开调试灯
             break;
         case FLEX_BTN_PRESS_LONG_HOLD_UP: // 长按保持后抬起事件
             break;
