@@ -144,10 +144,10 @@ static void uart_clear_recv_data(UART_STRUCT *uart_struct)
     if (uart_struct == NULL) return;
     // 长度归零
     uart_struct->recv_data_length = 0;
-    // 清空数组
-    memset(uart_struct->recv_buffer, '\0', RECEIVE_BUFFER_MAX);
-    // 字符串结束符
-    uart_struct->recv_buffer[RECEIVE_BUFFER_MAX - 1] = '\0';
+    // NOTE: 使用 memset 可能会导致一些异常
+    for (uint8_t i = 0; i < RECEIVE_BUFFER_MAX; i++) {
+        uart_struct->recv_buffer[i] = '\0';
+    }
 }
 
 /**
