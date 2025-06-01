@@ -27,6 +27,7 @@ const TIMER  = scripting.addModule("/ti/driverlib/TIMER", {}, false);
 const TIMER1 = TIMER.addInstance();
 const UART   = scripting.addModule("/ti/driverlib/UART", {}, false);
 const UART1  = UART.addInstance();
+const UART2  = UART.addInstance();
 
 /**
  * Write custom configuration values to the imported modules.
@@ -202,6 +203,20 @@ UART1.rxPinConfig.onlyInternalResistor = scripting.forceWrite(false);
 UART1.rxPinConfig.passedPeripheralType = scripting.forceWrite("Digital");
 UART1.rxPinConfig.$name                = "ti_driverlib_gpio_GPIOPinGeneric1";
 
+UART2.$name                            = "UART_CMD";
+UART2.enabledInterrupts                = ["RX"];
+UART2.interruptPriority                = "2";
+UART2.peripheral.$assign               = "UART1";
+UART2.txPinConfig.$name                = "ti_driverlib_gpio_GPIOPinGeneric7";
+UART2.txPinConfig.direction            = scripting.forceWrite("OUTPUT");
+UART2.txPinConfig.hideOutputInversion  = scripting.forceWrite(false);
+UART2.txPinConfig.onlyInternalResistor = scripting.forceWrite(false);
+UART2.txPinConfig.passedPeripheralType = scripting.forceWrite("Digital");
+UART2.rxPinConfig.$name                = "ti_driverlib_gpio_GPIOPinGeneric8";
+UART2.rxPinConfig.hideOutputInversion  = scripting.forceWrite(false);
+UART2.rxPinConfig.onlyInternalResistor = scripting.forceWrite(false);
+UART2.rxPinConfig.passedPeripheralType = scripting.forceWrite("Digital");
+
 /**
  * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
@@ -228,3 +243,5 @@ GPIO4.associatedPins[1].pin.$suggestSolution       = "PB1";
 GPIO5.associatedPins[0].pin.$suggestSolution       = "PA22";
 TIMER1.peripheral.$suggestSolution                 = "TIMA0";
 UART1.peripheral.$suggestSolution                  = "UART0";
+UART2.peripheral.rxPin.$suggestSolution            = "PA18";
+UART2.peripheral.txPin.$suggestSolution            = "PA17";

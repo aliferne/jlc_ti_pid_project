@@ -32,7 +32,13 @@
             "chrono": "c",
             "limits": "c",
             "utility": "c",
-            "xutility": "c"
+            "xutility": "c",
+            "atomic": "c",
+            "bitset": "c",
+            "charconv": "c",
+            "cstring": "c",
+            "vector": "c",
+            "xmemory": "c"
         },
         "[yaml]": {
             "editor.insertSpaces": true,

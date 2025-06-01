@@ -4,7 +4,6 @@
  */
 
 #include "hw_motor.h"
-#include "mid_debug_uart.h"
 
 /**
  * @brief 设置fi引脚的PWM比较值

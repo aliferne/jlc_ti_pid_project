@@ -42,8 +42,9 @@ void TIMER_TICK_INST_IRQHandler(void)
         if (get_task_status() == TASK_ENABLE) {
             // 按键扫描 + 事件管理
             flex_button_scan();
-            // 摇杆扫描 + 事件处理
-            stick_scan();
+            // TODO: 摇杆扫描 + 事件处理
+            // Archived, waiting for done.
+            // stick_scan();
         }
     }
 }

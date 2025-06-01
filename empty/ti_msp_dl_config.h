@@ -126,6 +126,22 @@ extern "C" {
 #define UART_DEBUG_BAUD_RATE                                              (9600)
 #define UART_DEBUG_IBRD_40_MHZ_9600_BAUD                                   (260)
 #define UART_DEBUG_FBRD_40_MHZ_9600_BAUD                                    (27)
+/* Defines for UART_CMD */
+#define UART_CMD_INST                                                      UART1
+#define UART_CMD_INST_FREQUENCY                                         40000000
+#define UART_CMD_INST_IRQHandler                                UART1_IRQHandler
+#define UART_CMD_INST_INT_IRQN                                    UART1_INT_IRQn
+#define GPIO_UART_CMD_RX_PORT                                              GPIOA
+#define GPIO_UART_CMD_TX_PORT                                              GPIOA
+#define GPIO_UART_CMD_RX_PIN                                      DL_GPIO_PIN_18
+#define GPIO_UART_CMD_TX_PIN                                      DL_GPIO_PIN_17
+#define GPIO_UART_CMD_IOMUX_RX                                   (IOMUX_PINCM40)
+#define GPIO_UART_CMD_IOMUX_TX                                   (IOMUX_PINCM39)
+#define GPIO_UART_CMD_IOMUX_RX_FUNC                    IOMUX_PINCM40_PF_UART1_RX
+#define GPIO_UART_CMD_IOMUX_TX_FUNC                    IOMUX_PINCM39_PF_UART1_TX
+#define UART_CMD_BAUD_RATE                                                (9600)
+#define UART_CMD_IBRD_40_MHZ_9600_BAUD                                     (260)
+#define UART_CMD_FBRD_40_MHZ_9600_BAUD                                      (27)
 
 
 
@@ -231,6 +247,7 @@ void SYSCFG_DL_SYSCTL_init(void);
 void SYSCFG_DL_PWM_MOTOR_init(void);
 void SYSCFG_DL_TIMER_TICK_init(void);
 void SYSCFG_DL_UART_DEBUG_init(void);
+void SYSCFG_DL_UART_CMD_init(void);
 void SYSCFG_DL_SPI_LCD_init(void);
 void SYSCFG_DL_ADC_STICK_Y_init(void);
 void SYSCFG_DL_DMA_init(void);

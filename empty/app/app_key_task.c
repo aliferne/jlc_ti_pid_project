@@ -21,7 +21,6 @@ void btn_up_cb(flex_button_t *btn)
             if (get_show_state() == DEFAULT_PAGE) {
                 // 首页总共就两个选项
                 // 这里只可能存在 0 和 1
-                // FIXME: 这堆逆天算法全都改掉，要的是方便读！！！
                 system_status.default_page_flag = (system_status.default_page_flag + 1) % 2;
                 ui_home_page_select(system_status.default_page_flag); // 选择首页选项框
             }

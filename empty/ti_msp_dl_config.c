@@ -57,6 +57,7 @@ SYSCONFIG_WEAK void SYSCFG_DL_init(void)
     SYSCFG_DL_PWM_MOTOR_init();
     SYSCFG_DL_TIMER_TICK_init();
     SYSCFG_DL_UART_DEBUG_init();
+    SYSCFG_DL_UART_CMD_init();
     SYSCFG_DL_SPI_LCD_init();
     SYSCFG_DL_ADC_STICK_Y_init();
     SYSCFG_DL_DMA_init();
@@ -101,6 +102,7 @@ SYSCONFIG_WEAK void SYSCFG_DL_initPower(void)
     DL_TimerG_reset(PWM_MOTOR_INST);
     DL_TimerA_reset(TIMER_TICK_INST);
     DL_UART_Main_reset(UART_DEBUG_INST);
+    DL_UART_Main_reset(UART_CMD_INST);
     DL_SPI_reset(SPI_LCD_INST);
     DL_ADC12_reset(ADC_STICK_Y_INST);
 
@@ -110,6 +112,7 @@ SYSCONFIG_WEAK void SYSCFG_DL_initPower(void)
     DL_TimerG_enablePower(PWM_MOTOR_INST);
     DL_TimerA_enablePower(TIMER_TICK_INST);
     DL_UART_Main_enablePower(UART_DEBUG_INST);
+    DL_UART_Main_enablePower(UART_CMD_INST);
     DL_SPI_enablePower(SPI_LCD_INST);
     DL_ADC12_enablePower(ADC_STICK_Y_INST);
 
@@ -131,6 +134,10 @@ SYSCONFIG_WEAK void SYSCFG_DL_GPIO_init(void)
         GPIO_UART_DEBUG_IOMUX_TX, GPIO_UART_DEBUG_IOMUX_TX_FUNC);
     DL_GPIO_initPeripheralInputFunction(
         GPIO_UART_DEBUG_IOMUX_RX, GPIO_UART_DEBUG_IOMUX_RX_FUNC);
+    DL_GPIO_initPeripheralOutputFunction(
+        GPIO_UART_CMD_IOMUX_TX, GPIO_UART_CMD_IOMUX_TX_FUNC);
+    DL_GPIO_initPeripheralInputFunction(
+        GPIO_UART_CMD_IOMUX_RX, GPIO_UART_CMD_IOMUX_RX_FUNC);
 
     DL_GPIO_initPeripheralOutputFunction(
         GPIO_SPI_LCD_IOMUX_SCLK, GPIO_SPI_LCD_IOMUX_SCLK_FUNC);
@@ -363,6 +370,44 @@ SYSCONFIG_WEAK void SYSCFG_DL_UART_DEBUG_init(void)
 
 
     DL_UART_Main_enable(UART_DEBUG_INST);
+}
+
+static const DL_UART_Main_ClockConfig gUART_CMDClockConfig = {
+    .clockSel    = DL_UART_MAIN_CLOCK_BUSCLK,
+    .divideRatio = DL_UART_MAIN_CLOCK_DIVIDE_RATIO_1
+};
+
+static const DL_UART_Main_Config gUART_CMDConfig = {
+    .mode        = DL_UART_MAIN_MODE_NORMAL,
+    .direction   = DL_UART_MAIN_DIRECTION_TX_RX,
+    .flowControl = DL_UART_MAIN_FLOW_CONTROL_NONE,
+    .parity      = DL_UART_MAIN_PARITY_NONE,
+    .wordLength  = DL_UART_MAIN_WORD_LENGTH_8_BITS,
+    .stopBits    = DL_UART_MAIN_STOP_BITS_ONE
+};
+
+SYSCONFIG_WEAK void SYSCFG_DL_UART_CMD_init(void)
+{
+    DL_UART_Main_setClockConfig(UART_CMD_INST, (DL_UART_Main_ClockConfig *) &gUART_CMDClockConfig);
+
+    DL_UART_Main_init(UART_CMD_INST, (DL_UART_Main_Config *) &gUART_CMDConfig);
+    /*
+     * Configure baud rate by setting oversampling and baud rate divisors.
+     *  Target baud rate: 9600
+     *  Actual baud rate: 9599.81
+     */
+    DL_UART_Main_setOversampling(UART_CMD_INST, DL_UART_OVERSAMPLING_RATE_16X);
+    DL_UART_Main_setBaudRateDivisor(UART_CMD_INST, UART_CMD_IBRD_40_MHZ_9600_BAUD, UART_CMD_FBRD_40_MHZ_9600_BAUD);
+
+
+    /* Configure Interrupts */
+    DL_UART_Main_enableInterrupt(UART_CMD_INST,
+                                 DL_UART_MAIN_INTERRUPT_RX);
+    /* Setting the Interrupt Priority */
+    NVIC_SetPriority(UART_CMD_INST_INT_IRQN, 2);
+
+
+    DL_UART_Main_enable(UART_CMD_INST);
 }
 
 static const DL_SPI_Config gSPI_LCD_config = {

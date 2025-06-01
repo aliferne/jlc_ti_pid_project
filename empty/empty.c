@@ -9,7 +9,7 @@
 #include "hw_motor.h"
 #include "mid_button.h"
 #include "mid_debug_led.h"
-#include "mid_debug_uart.h"
+#include "mid_uart.h"
 #include "mid_timer.h"
 #include "string.h"
 #include "stdio.h"
@@ -49,8 +49,8 @@ int main(void)
     int curve_x = 0;
 
     SYSCFG_DL_init();
-    // DEBUG串口初始化
-    debug_uart_init();
+    // 串口初始化
+    uart_interface_init();
     // 按键任务初始化
     user_button_init();
     // adc初始化
@@ -71,49 +71,53 @@ int main(void)
     ui_home_page();
 
     while (1) {
-        if (get_motor_status_flag() == MOTOR_STATUS_ON) {
-            switch (get_functional_mode()) {
-                case SPEED_FUNCTION:
-                    // 计算定速PID
-                    motor_speed_control(get_speed_pid_target());
-                    // 防止任务冲突，再判断一次
-                    if (get_motor_status_flag() == MOTOR_STATUS_ON) {
-                        // 显示PID波形和参数
-                        ui_speed_curve();
-                    } else if (get_motor_status_flag() == MOTOR_STATUS_OFF) {
-                        // 停止电机
-                        stop_motor();
-                        pid_change_zero(get_speed_pid());
-                    }
-                    break;
-                case DISTANCE_FUNCTION:
-                    // 计算定距PID
-                    motor_distance_control(get_distance_pid_target());
-                    // 防止任务冲突，再次判断
-                    if (get_motor_status_flag() == MOTOR_STATUS_ON) {
-                        // 显示PID波形和参数
-                        ui_distance_curve();
-                    } else if (get_motor_status_flag() == MOTOR_STATUS_OFF) {
-                        // 停止电机
-                        stop_motor();
-                        pid_change_zero(get_distance_pid());
-                    }
-                    break;
-                default:
-                    enable_task_interrupt(); // 开启任务调度
-                    pid_change_zero(get_speed_pid());
-                    set_motor_status_flag(MOTOR_STATUS_OFF);
-                    break;
-            }
-        }
-        if (get_show_state() == PARAMETER_PAGE) {
-            // 数值的快速加减
-            ui_speed_or_distance_page_value_set_quick(get_long_press_state());
-            // 屏幕显示参数变化
-            PID_Struct *temp_pid = (get_functional_mode() == SPEED_FUNCTION) ? get_speed_pid() : get_distance_pid();
-            int encoder_value    = (get_functional_mode() == SPEED_FUNCTION) ? get_encoder_count() : (get_temp_encoder() * DEGREES_PER_PULSE);
-            ui_speed_page_value_set(temp_pid->kp, temp_pid->ki, temp_pid->kd, encoder_value, temp_pid->target, 1);
-        }
+        cmd_uart_clear_recv_data();
+        debug_uart_send_string(cmd_uart_get_recv_data());
     }
-}
 
+    // while (1) {
+    //     if (get_motor_status_flag() == MOTOR_STATUS_ON) {
+    //         switch (get_functional_mode()) {
+    //             case SPEED_FUNCTION:
+    //                 // 计算定速PID
+    //                 motor_speed_control(get_speed_pid_target());
+    //                 // 防止任务冲突，再判断一次
+    //                 if (get_motor_status_flag() == MOTOR_STATUS_ON) {
+    //                     // 显示PID波形和参数
+    //                     ui_speed_curve();
+    //                 } else if (get_motor_status_flag() == MOTOR_STATUS_OFF) {
+    //                     // 停止电机
+    //                     stop_motor();
+    //                     pid_change_zero(get_speed_pid());
+    //                 }
+    //                 break;
+    //             case DISTANCE_FUNCTION:
+    //                 // 计算定距PID
+    //                 motor_distance_control(get_distance_pid_target());
+    //                 // 防止任务冲突，再次判断
+    //                 if (get_motor_status_flag() == MOTOR_STATUS_ON) {
+    //                     // 显示PID波形和参数
+    //                     ui_distance_curve();
+    //                 } else if (get_motor_status_flag() == MOTOR_STATUS_OFF) {
+    //                     // 停止电机
+    //                     stop_motor();
+    //                     pid_change_zero(get_distance_pid());
+    //                 }
+    //                 break;
+    //             default:
+    //                 enable_task_interrupt(); // 开启任务调度
+    //                 pid_change_zero(get_speed_pid());
+    //                 set_motor_status_flag(MOTOR_STATUS_OFF);
+    //                 break;
+    //         }
+    //     }
+    //     if (get_show_state() == PARAMETER_PAGE) {
+    //         // 数值的快速加减
+    //         ui_speed_or_distance_page_value_set_quick(get_long_press_state());
+    //         // 屏幕显示参数变化
+    //         PID_Struct *temp_pid = (get_functional_mode() == SPEED_FUNCTION) ? get_speed_pid() : get_distance_pid();
+    //         int encoder_value    = (get_functional_mode() == SPEED_FUNCTION) ? get_encoder_count() : (get_temp_encoder() * DEGREES_PER_PULSE);
+    //         ui_speed_page_value_set(temp_pid->kp, temp_pid->ki, temp_pid->kd, encoder_value, temp_pid->target, 1);
+    //     }
+    // }
+}
