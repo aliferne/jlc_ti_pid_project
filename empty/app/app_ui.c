@@ -117,35 +117,35 @@ void ui_draw_lines_vertical(
 
 /**
  * @brief 显示选择框
- * 
+ *
  * 该函数用于在指定位置绘制一个选择框，支持静态显示和PID动画显示两种模式。
  * 选择框由水平线和垂直线组成，可以设置线条长度、间距和颜色。
- * 
+ *
  * @param target_x 目标X坐标位置
  * @param w 选择框的宽度
- * @param target_y 目标Y坐标位置  
+ * @param target_y 目标Y坐标位置
  * @param h 选择框的高度
  * @param line_length 线条的长度
  * @param interval 线条间距，同时也作为选择框向外扩展的距离
  * @param color 线条颜色
- * 
- * @details 
+ *
+ * @details
  * 函数内部有两种显示模式：
  * - mode = 0：静态显示模式，直接在目标位置绘制选择框
  * - mode ≠ 0：PID动画模式，使用PID控制算法实现选择框从当前位置平滑移动到目标位置
- * 
+ *
  * 在PID模式下：
  * - 使用PID参数：kp=0.4, ki=0.2, kd=0.2
  * - 动画过程中会先清除上一帧的线条，再绘制新位置的线条
  * - 当X轴和Y轴误差都小于0.5时停止动画
  * - 动画结束后会重置PID参数
- * 
- * @note 
+ *
+ * @note
  * - 选择框的实际绘制区域会比输入的w和h各边扩大interval个像素
  * - 需要依赖ui_draw_lines_horizonal()和ui_draw_lines_vertical()函数
  * - PID模式需要pid_init(), pid_calc(), pid_change_zero()等PID相关函数
  * - 需要定义LCD_W, LCD_H, BLACK等常量
- * 
+ *
  * @see ui_draw_lines_horizonal()
  * @see ui_draw_lines_vertical()
  * @see pid_init()
@@ -231,6 +231,30 @@ void ui_home_page(void)
         PID_DISTANCE_SELECT_BOX_Y_START,
         PID_DISTANCE_SELECT_BOX_HEIGHT,
         2, 24, (uint8_t *)"定距", BLUE);
+
+    LCD_Show_String(
+        PID_NOTICE_STRINGS_X_START,
+        PID_NOTICE_STRINGS_Y_START,
+        (uint8_t *)"up key: Move",
+        WHITE, BLACK, FONTSIZE, 0);
+
+    LCD_Show_String(
+        PID_NOTICE_STRINGS_X_START,
+        PID_NOTICE_STRINGS_Y_START + PID_NOTICE_STRINGS_Y_INTERVAL * 1,
+        (uint8_t *)"donkey: Move", // down key => donkey
+        WHITE, BLACK, FONTSIZE, 0);
+
+    LCD_Show_String(
+        PID_NOTICE_STRINGS_X_START,
+        PID_NOTICE_STRINGS_Y_START + PID_NOTICE_STRINGS_Y_INTERVAL * 2,
+        (uint8_t *)"right key: Select",
+        WHITE, BLACK, FONTSIZE, 0);
+
+    LCD_Show_String(
+        PID_NOTICE_STRINGS_X_START,
+        PID_NOTICE_STRINGS_Y_START + PID_NOTICE_STRINGS_Y_INTERVAL * 3,
+        (uint8_t *)"left key: Cancel",
+        WHITE, BLACK, FONTSIZE, 0);
 
     // 根据首页当前选择内容 绘制选择框
     switch (get_default_page_flag()) {

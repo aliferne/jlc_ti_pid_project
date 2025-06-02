@@ -3,21 +3,32 @@
 
 #include "ti_msp_dl_config.h"
 
-typedef struct
-{
-    const char *motor_on;
-    const char *motor_off;
-    const char *motor_stop;
-} CTRL_MOTOR_STATE;
+#define MAX_CMD_LENGTH 127
 
 typedef struct
 {
-    const char *speed_plus_30;
-    const char *speed_plus_60;
-    const char *speed_plus_90;
-    const char *speed_minus_30;
-    const char *speed_minus_60;
-    const char *speed_minus_90;
-} CTRL_MOTOR_SPEED;
+    const char motor_on[MAX_CMD_LENGTH];
+    const char motor_off[MAX_CMD_LENGTH];
+    const char motor_stop[MAX_CMD_LENGTH];
+} ctrl_motor_state;
+
+typedef struct
+{
+    const char cmd[MAX_CMD_LENGTH];
+    const uint8_t value;
+} motor_cmd;
+
+typedef struct
+{
+    const motor_cmd *plus_30;
+    const motor_cmd *plus_60;
+    const motor_cmd *plus_90;
+    const motor_cmd *minus_30;
+    const motor_cmd *minus_60;
+    const motor_cmd *minus_90;
+} ctrl_motor_speed;
+
+void recv_cmd();
+void send_recv_data();
 
 #endif /* __APP_UART_TASK_H__ */

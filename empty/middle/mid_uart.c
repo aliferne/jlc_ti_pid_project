@@ -1,6 +1,7 @@
 #include "mid_uart.h"
 #include "string.h"
 
+/// @warning 使用前应当先清除数组内无用信息（xxx_uart_clear_recv_data）
 static UART_STRUCT debug_uart; // 调试用串口
 static UART_STRUCT cmd_uart;   // 给天问ASRPro使用的串口
 

@@ -17,18 +17,22 @@
 // SPEED选项框绘制参数（ui_home_page中调用）
 #define PID_SPEED_SELECT_BOX_X_START   40 // 起始x坐标
 #define PID_SPEED_SELECT_BOX_WIDTH     80 // 宽度
-#define PID_SPEED_SELECT_BOX_Y_START   75 // 起始y坐标
-#define PID_SPEED_SELECT_BOX_HEIGHT    80 // 高度
+#define PID_SPEED_SELECT_BOX_Y_START   65 // 起始y坐标
+#define PID_SPEED_SELECT_BOX_HEIGHT    40 // 高度
 #define PID_SPEED_SELECT_LINE_LEN      10 // 外圈选择框线长度
 #define PID_SPEED_SELECT_LINE_INTERVAL 5  // 外圈选择框线与选择框间隔
 
 // DISTANCE选项框绘制参数（ui_home_page中调用）
-#define PID_DISTANCE_SELECT_BOX_X_START   200 // 起始x坐标
+#define PID_DISTANCE_SELECT_BOX_X_START   40  // 起始x坐标
 #define PID_DISTANCE_SELECT_BOX_WIDTH     80  // 宽度
-#define PID_DISTANCE_SELECT_BOX_Y_START   75  // 起始y坐标
-#define PID_DISTANCE_SELECT_BOX_HEIGHT    80  // 高度
+#define PID_DISTANCE_SELECT_BOX_Y_START   120 // 起始y坐标
+#define PID_DISTANCE_SELECT_BOX_HEIGHT    40  // 高度
 #define PID_DISTANCE_SELECT_LINE_LEN      10  // 外圈选择框线长度
 #define PID_DISTANCE_SELECT_LINE_INTERVAL 5   // 外圈选择框线与选择框间隔
+
+#define PID_NOTICE_STRINGS_X_START        180
+#define PID_NOTICE_STRINGS_Y_START        65
+#define PID_NOTICE_STRINGS_Y_INTERVAL     25
 
 // 此处用于 `ui_select_page_show` 中
 #define SPEED_PAGE 0
@@ -50,7 +54,7 @@
 #define SPEED_WAVEFORM_REDUCTION_FACTOR    2.3 // 定速波形衰减倍数
 #define DISTANCE_WAVEFORM_REDUCTION_FACTOR 8.3 // 定距波形衰减倍数
 
-#define ABS(x) ((x) > 0 ? (x) : -(x)) // 取绝对值
+#define ABS(x)                             ((x) > 0 ? (x) : -(x)) // 取绝对值
 
 // 该结构体用于PID控制
 typedef struct {
