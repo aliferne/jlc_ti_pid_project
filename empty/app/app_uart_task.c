@@ -13,38 +13,38 @@
 static char *command; // 缓存接收到的命令
 
 static const ctrl_motor_state motor_state_cmd = {
-    .motor_on   = "Motor On\n",
-    .motor_off  = "Motor Off\n",
-    .motor_stop = "Motor Stop\n",
+    .motor_on   = "On\n",
+    .motor_off  = "Off\n",
+    .motor_stop = "Stop\n",
 };
 
 static const motor_cmd speed_plus_30 = {
-    .cmd   = "Speed 30\n",
+    .cmd   = "S30\n",
     .value = 30,
 };
 
 static const motor_cmd speed_minus_30 = {
-    .cmd   = "Speed -30\n",
+    .cmd   = "S-30\n",
     .value = -30,
 };
 
 static const motor_cmd speed_plus_60 = {
-    .cmd   = "Speed 60\n",
+    .cmd   = "S60\n",
     .value = 60,
 };
 
 static const motor_cmd speed_minus_60 = {
-    .cmd   = "Speed -60\n",
+    .cmd   = "S-60\n",
     .value = -60,
 };
 
 static const motor_cmd speed_plus_90 = {
-    .cmd   = "Speed 90\n",
+    .cmd   = "S90\n",
     .value = 90,
 };
 
 static const motor_cmd speed_minus_90 = {
-    .cmd   = "Speed -90\n",
+    .cmd   = "S-90\n",
     .value = -90,
 };
 
@@ -71,6 +71,10 @@ void recv_cmd()
 void send_recv_data()
 {
     debug_uart_send_string(command);
+    if (strcmp(command, motor_speed_cmd.plus_30->cmd) == 0) {
+        // motor_speed_set(motor_speed_cmd.plus_30->value);
+        debug_uart_send_string("OK\r\n"); // TODO: 发送成功标志
+    }
 }
 
 bool compare_command(const char *recv, const motor_cmd *preset_cmd)

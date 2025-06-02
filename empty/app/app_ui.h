@@ -14,30 +14,39 @@
 #define screen_center_x (LCD_W / 2) // 屏幕中心X = 屏幕x/2
 #define screen_center_y (LCD_H / 2) // 屏幕中心Y = 屏幕y/2
 
+// home_page中的固定参数
+#define PID_SELECT_BOX_HEIGHT    40 // 高度
+#define PID_SELECT_LINE_LEN      10 // 外圈选择框线长度
+#define PID_SELECT_LINE_INTERVAL 5  // 外圈选择框线与选择框间隔
+
 // SPEED选项框绘制参数（ui_home_page中调用）
-#define PID_SPEED_SELECT_BOX_X_START   40 // 起始x坐标
-#define PID_SPEED_SELECT_BOX_WIDTH     80 // 宽度
-#define PID_SPEED_SELECT_BOX_Y_START   65 // 起始y坐标
-#define PID_SPEED_SELECT_BOX_HEIGHT    40 // 高度
-#define PID_SPEED_SELECT_LINE_LEN      10 // 外圈选择框线长度
-#define PID_SPEED_SELECT_LINE_INTERVAL 5  // 外圈选择框线与选择框间隔
+#define PID_SPEED_SELECT_BOX_X_START 40 // 起始x坐标
+#define PID_SPEED_SELECT_BOX_WIDTH   80 // 宽度
+#define PID_SPEED_SELECT_BOX_Y_START 65 // 起始y坐标
 
 // DISTANCE选项框绘制参数（ui_home_page中调用）
-#define PID_DISTANCE_SELECT_BOX_X_START   40  // 起始x坐标
-#define PID_DISTANCE_SELECT_BOX_WIDTH     80  // 宽度
-#define PID_DISTANCE_SELECT_BOX_Y_START   120 // 起始y坐标
-#define PID_DISTANCE_SELECT_BOX_HEIGHT    40  // 高度
-#define PID_DISTANCE_SELECT_LINE_LEN      10  // 外圈选择框线长度
-#define PID_DISTANCE_SELECT_LINE_INTERVAL 5   // 外圈选择框线与选择框间隔
+#define PID_DISTANCE_SELECT_BOX_X_START 40  // 起始x坐标
+#define PID_DISTANCE_SELECT_BOX_WIDTH   80  // 宽度
+#define PID_DISTANCE_SELECT_BOX_Y_START 120 // 起始y坐标
 
-#define PID_NOTICE_STRINGS_X_START        180
-#define PID_NOTICE_STRINGS_Y_START        65
-#define PID_NOTICE_STRINGS_Y_INTERVAL     25
+#define PID_MANUAL_SELECT_BOX_X_START   (PID_SPEED_SELECT_BOX_X_START + 140) // 起始x坐标
+#define PID_MANUAL_SELECT_BOX_Y_START   PID_SPEED_SELECT_BOX_Y_START         // 起始y坐标
+#define PID_MANUAL_SELECT_BOX_WIDTH     PID_SPEED_SELECT_BOX_WIDTH           // 宽度
+
+#define PID_SETTINGS_SELECT_BOX_X_START PID_MANUAL_SELECT_BOX_X_START   // 起始x坐标
+#define PID_SETTINGS_SELECT_BOX_Y_START PID_DISTANCE_SELECT_BOX_Y_START // 起始y坐标
+#define PID_SETTINGS_SELECT_BOX_WIDTH   PID_DISTANCE_SELECT_BOX_WIDTH   // 宽度
+
+#define PID_MANUAL_STRINGS_X_START      180
+#define PID_MANUAL_STRINGS_Y_START      65
+#define PID_MANUAL_STRINGS_Y_INTERVAL   25
 
 // 此处用于 `ui_select_page_show` 中
-#define SPEED_PAGE 0
-#define DIS_PAGE   1
-#define HOME_PAGE  2
+#define SPEED_PAGE   0 // 定速页
+#define DIS_PAGE     1 // 定距页
+#define MAN_PAGE     2 // 手册页
+#define SETTING_PAGE 3 // 设置页
+#define HOME_PAGE    4 // 首页
 
 // 此处用于 `ui_page_select_box()` 中
 #define P_SELECTED                         0
@@ -71,6 +80,15 @@ typedef struct {
  * 该函数用于绘制首页的静态用户界面元素。
  */
 void ui_home_page(void);
+
+/**
+ * @brief 绘制手册页静态UI
+ *
+ * 该函数用于绘制手册页的静态用户界面元素。
+ * 
+ * @note 包括按键的用法等
+ */
+void ui_manual_page();
 
 /**
  * @brief 绘制首页选择框

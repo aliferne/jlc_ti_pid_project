@@ -44,7 +44,7 @@ void TIMER_TICK_INST_IRQHandler(void)
             flex_button_scan();
             // TODO: 摇杆扫描 + 事件处理
             // Archived, waiting for done.
-            // stick_scan();
+            stick_scan();
         }
     }
 }

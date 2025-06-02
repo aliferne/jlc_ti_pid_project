@@ -222,89 +222,107 @@ void ui_home_page(void)
         PID_SPEED_SELECT_BOX_X_START,
         PID_SPEED_SELECT_BOX_WIDTH,
         PID_SPEED_SELECT_BOX_Y_START,
-        PID_SPEED_SELECT_BOX_HEIGHT,
-        2, 24, (uint8_t *)"定速", BLUE);
+        PID_SELECT_BOX_HEIGHT,
+        3, FONTSIZE, (uint8_t *)"Speed", BLUE);
     // 绘制任务二：PID定距
     show_string_rect(
         PID_DISTANCE_SELECT_BOX_X_START,
         PID_DISTANCE_SELECT_BOX_WIDTH,
         PID_DISTANCE_SELECT_BOX_Y_START,
-        PID_DISTANCE_SELECT_BOX_HEIGHT,
-        2, 24, (uint8_t *)"定距", BLUE);
+        PID_SELECT_BOX_HEIGHT,
+        4, FONTSIZE, (uint8_t *)"Distance", BLUE);
 
-    LCD_Show_String(
-        PID_NOTICE_STRINGS_X_START,
-        PID_NOTICE_STRINGS_Y_START,
-        (uint8_t *)"up key: Move",
-        WHITE, BLACK, FONTSIZE, 0);
+    show_string_rect(
+        PID_MANUAL_SELECT_BOX_X_START,
+        PID_MANUAL_SELECT_BOX_WIDTH,
+        PID_MANUAL_SELECT_BOX_Y_START,
+        PID_SELECT_BOX_HEIGHT,
+        3, FONTSIZE, (uint8_t *)"Manual", BLUE);
 
-    LCD_Show_String(
-        PID_NOTICE_STRINGS_X_START,
-        PID_NOTICE_STRINGS_Y_START + PID_NOTICE_STRINGS_Y_INTERVAL * 1,
-        (uint8_t *)"donkey: Move", // down key => donkey
-        WHITE, BLACK, FONTSIZE, 0);
-
-    LCD_Show_String(
-        PID_NOTICE_STRINGS_X_START,
-        PID_NOTICE_STRINGS_Y_START + PID_NOTICE_STRINGS_Y_INTERVAL * 2,
-        (uint8_t *)"right key: Select",
-        WHITE, BLACK, FONTSIZE, 0);
-
-    LCD_Show_String(
-        PID_NOTICE_STRINGS_X_START,
-        PID_NOTICE_STRINGS_Y_START + PID_NOTICE_STRINGS_Y_INTERVAL * 3,
-        (uint8_t *)"left key: Cancel",
-        WHITE, BLACK, FONTSIZE, 0);
+    show_string_rect(
+        PID_SETTINGS_SELECT_BOX_X_START,
+        PID_SETTINGS_SELECT_BOX_WIDTH,
+        PID_SETTINGS_SELECT_BOX_Y_START,
+        PID_SELECT_BOX_HEIGHT,
+        4, FONTSIZE, (uint8_t *)"Setttings", BLUE);
 
     // 根据首页当前选择内容 绘制选择框
-    switch (get_default_page_flag()) {
-        case SPEED_PAGE: // FIXME: 把这里的SPEED_PAGE这些依赖全都合并为一个
-            show_select_box(
-                PID_SPEED_SELECT_BOX_X_START,
-                PID_SPEED_SELECT_BOX_WIDTH,
-                PID_SPEED_SELECT_BOX_Y_START,
-                PID_SPEED_SELECT_BOX_HEIGHT,
-                PID_SPEED_SELECT_LINE_LEN,
-                PID_SPEED_SELECT_LINE_INTERVAL,
-                WHITE);
-            break;
-        case DIS_PAGE: // FIXME: 把这里的SPEED_PAGE这些依赖全都合并为一个
-            show_select_box(
-                PID_DISTANCE_SELECT_BOX_X_START,
-                PID_DISTANCE_SELECT_BOX_WIDTH,
-                PID_DISTANCE_SELECT_BOX_Y_START,
-                PID_DISTANCE_SELECT_BOX_HEIGHT,
-                PID_DISTANCE_SELECT_LINE_LEN,
-                PID_DISTANCE_SELECT_LINE_INTERVAL,
-                WHITE);
-            break;
-    }
+    ui_home_page_select(get_default_page_flag());
 
     LCD_BLK_Set(); // 打开背光
     // NOTE: 先关背光再打开是为了刷新时更好的视觉体验
 }
 
+// 绘制提示页面的文字（对应按键的功能之类的）
+void ui_manual_page()
+{
+    LCD_BLK_Clear();
+    LCD_Fill(0, 0, LCD_W, LCD_H, BLACK);
+
+    LCD_Show_String(
+        PID_MANUAL_STRINGS_X_START,
+        PID_MANUAL_STRINGS_Y_START,
+        (uint8_t *)"up key: Move",
+        WHITE, BLACK, FONTSIZE, 0);
+
+    LCD_Show_String(
+        PID_MANUAL_STRINGS_X_START,
+        PID_MANUAL_STRINGS_Y_START + PID_MANUAL_STRINGS_Y_INTERVAL * 1,
+        (uint8_t *)"donkey: Move", // down key => donkey
+        WHITE, BLACK, FONTSIZE, 0);
+
+    LCD_Show_String(
+        PID_MANUAL_STRINGS_X_START,
+        PID_MANUAL_STRINGS_Y_START + PID_MANUAL_STRINGS_Y_INTERVAL * 2,
+        (uint8_t *)"right key: Select",
+        WHITE, BLACK, FONTSIZE, 0);
+
+    LCD_Show_String(
+        PID_MANUAL_STRINGS_X_START,
+        PID_MANUAL_STRINGS_Y_START + PID_MANUAL_STRINGS_Y_INTERVAL * 3,
+        (uint8_t *)"left key: Cancel",
+        WHITE, BLACK, FONTSIZE, 0);
+    LCD_BLK_Set();
+}
+
 // 给定速选项和定距选项绘制选择框（主要在 `ui_home_page_select` 中调用）
-void ui_home_page_draw_select_box(int speed_color, int distance_color)
+void ui_home_page_draw_select_box(
+    int speed_color, int distance_color, int manual_color, int settings_color)
 {
     char select_box_size = 5;
 
-    show_select_box(
+    show_select_box( // SPEED PAGE
         PID_SPEED_SELECT_BOX_X_START,
         PID_SPEED_SELECT_BOX_WIDTH,
         PID_SPEED_SELECT_BOX_Y_START,
-        PID_SPEED_SELECT_BOX_HEIGHT,
-        PID_SPEED_SELECT_LINE_LEN,
+        PID_SELECT_BOX_HEIGHT,
+        PID_SELECT_LINE_LEN,
         select_box_size,
         speed_color);
-    show_select_box(
+    show_select_box( // DISTANCE PAGE
         PID_DISTANCE_SELECT_BOX_X_START,
         PID_DISTANCE_SELECT_BOX_WIDTH,
         PID_DISTANCE_SELECT_BOX_Y_START,
-        PID_DISTANCE_SELECT_BOX_HEIGHT,
-        PID_DISTANCE_SELECT_LINE_LEN,
+        PID_SELECT_BOX_HEIGHT,
+        PID_SELECT_LINE_LEN,
         select_box_size,
         distance_color);
+    show_select_box( // MANUAL PAGE
+        PID_MANUAL_SELECT_BOX_X_START,
+        PID_MANUAL_SELECT_BOX_WIDTH,
+        PID_MANUAL_SELECT_BOX_Y_START,
+        PID_SELECT_BOX_HEIGHT,
+        PID_SELECT_LINE_LEN,
+        select_box_size,
+        manual_color);
+    show_select_box( // SETTINGS PAGE
+        PID_SETTINGS_SELECT_BOX_X_START,
+        PID_SETTINGS_SELECT_BOX_WIDTH,
+        PID_SETTINGS_SELECT_BOX_Y_START,
+        PID_SELECT_BOX_HEIGHT,
+        PID_SELECT_LINE_LEN,
+        select_box_size,
+        settings_color);
 }
 
 // 绘制首页选择框
@@ -312,10 +330,16 @@ void ui_home_page_select(int mode)
 {
     switch (mode) {
         case SPEED_PAGE: // 选择PID定速模式
-            ui_home_page_draw_select_box(WHITE, BLACK);
+            ui_home_page_draw_select_box(WHITE, BLACK, BLACK, BLACK);
             break;
         case DIS_PAGE: // 选择PID定距模式
-            ui_home_page_draw_select_box(BLACK, WHITE);
+            ui_home_page_draw_select_box(BLACK, WHITE, BLACK, BLACK);
+            break;
+        case MAN_PAGE: // 选择手册模式
+            ui_home_page_draw_select_box(BLACK, BLACK, WHITE, BLACK);
+            break;
+        case SETTING_PAGE:
+            ui_home_page_draw_select_box(BLACK, BLACK, BLACK, WHITE);
             break;
     }
 }
@@ -546,12 +570,24 @@ void ui_distance_page_value_set(
 void ui_select_page_show(int page) // 根据选择确定显示哪一个页面
 {
     // FIXME: 这里的这堆依赖要改到同个文件
-    if (page == SPEED_PAGE) {
-        ui_speed_page();
-    } else if (page == DIS_PAGE) {
-        ui_distance_page();
-    } else if (page == HOME_PAGE) {
-        ui_home_page();
+    switch (page) {
+        case SPEED_PAGE:
+            ui_speed_page();
+            break;
+        case DIS_PAGE:
+            ui_distance_page();
+            break;
+        case HOME_PAGE:
+            ui_home_page();
+            break;
+        // TODO: 还有SETTINGS_PAGE需要完成
+        case SETTING_PAGE:
+            ui_home_page(); // 暂未实现
+        case MAN_PAGE:
+            ui_manual_page();
+            break;
+        default:
+            break;
     }
 }
 

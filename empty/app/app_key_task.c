@@ -14,14 +14,15 @@
  * 根据不同的按键和事件类型，执行相应的逻辑，如页面切换、参数调整、电机控制等。
  */
 
+// TODO: 这里可能能解耦，可以考虑将内部的处理方法做成API
+
 void btn_up_cb(flex_button_t *btn)
 {
     switch (btn->event) {
         case FLEX_BTN_PRESS_CLICK: // 单击事件
             if (get_show_state() == DEFAULT_PAGE) {
-                // 首页总共就两个选项
-                // 这里只可能存在 0 和 1
-                system_status.default_page_flag = (system_status.default_page_flag + 1) % 2;
+                // 目前首页有四个选项，因此对4取模
+                system_status.default_page_flag = (system_status.default_page_flag + 1) % 4;
                 ui_home_page_select(system_status.default_page_flag); // 选择首页选项框
             }
             if (get_show_state() == SET_PAGE) {
@@ -60,10 +61,10 @@ void btn_down_cb(flex_button_t *btn)
     switch (btn->event) {
         case FLEX_BTN_PRESS_CLICK: // 单击事件
             if (get_show_state() == DEFAULT_PAGE) {
-                // 首页总共就两个选项
+                // 首页目前四个选项
                 system_status.default_page_flag--;
                 if (system_status.default_page_flag < 0) {
-                    system_status.default_page_flag = 1;
+                    system_status.default_page_flag = 3;
                 }
                 ui_home_page_select(system_status.default_page_flag); // 选择首页选项框
             }
@@ -105,6 +106,15 @@ void btn_left_cb(flex_button_t *btn)
                 stop_motor();                            // 停掉电机
                 event_manager(&system_status, QUIT_EVENT);
             }
+            if (get_show_state() == MANUAL_PAGE) {
+                ui_select_page_show(HOME_PAGE); // 显示主页面
+                event_manager(&system_status, QUIT_EVENT);
+            }
+            // TODO: 还有一个 SETTINGS_PAGE 要实现
+            if (get_show_state() == SET_PAGE) {
+                ui_select_page_show(HOME_PAGE); // 显示主页面
+                event_manager(&system_status, QUIT_EVENT);
+            }
             if (get_show_state() == SET_PAGE) {
                 // 触发退出事件
                 event_manager(&system_status, QUIT_EVENT);
@@ -132,14 +142,12 @@ void btn_right_cb(flex_button_t *btn)
 {
     switch (btn->event) {
         case FLEX_BTN_PRESS_CLICK: // 单击事件
-
             // 如果是首页
             if (get_show_state() == DEFAULT_PAGE) {
                 // 触发进入事件
                 event_manager(&system_status, ENTER_EVENT);
                 // 根据首页选项显示对应功能页
                 ui_select_page_show(get_default_page_flag());
-
                 // 如果下一个是定速页
                 if (get_show_state() == PID_PAGE) {
                     // 显示定速页的参数
@@ -154,6 +162,7 @@ void btn_right_cb(flex_button_t *btn)
                         get_distance_pid()->kp, get_distance_pid()->ki, get_distance_pid()->kd,
                         current_angle, get_distance_pid()->target, 0);
                 }
+                // Note: 疑似不需要在这里处理 MANUAL_PAGE 和 SETTINGS_PAGE
             }
             // 如果是定速页或者定距页
             else if (get_show_state() == PID_PAGE || get_show_state() == DISTANCE_PAGE) {
@@ -202,4 +211,3 @@ void btn_mid_cb(flex_button_t *btn)
             break;
     }
 }
-

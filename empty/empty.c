@@ -116,6 +116,7 @@ int main(void)
             ui_speed_page_value_set(temp_pid->kp, temp_pid->ki, temp_pid->kd, encoder_value, temp_pid->target, 1);
         }
     }
+    
     // NOTE: 此部分为天问ASRPro的扩展部分，暂时不用，先把项目完结
     // while (1) {
     //     recv_cmd(); // 接收串口指令
