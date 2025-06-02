@@ -42,11 +42,11 @@
 #define PID_MANUAL_STRINGS_Y_INTERVAL   25
 
 // 此处用于 `ui_select_page_show` 中
-#define SPEED_PAGE   0 // 定速页
-#define DIS_PAGE     1 // 定距页
-#define MAN_PAGE     2 // 手册页
-#define SETTING_PAGE 3 // 设置页
-#define HOME_PAGE    4 // 首页
+// #define SPEED_PAGE   0 // 定速页
+// #define DIS_PAGE     1 // 定距页
+// #define MAN_PAGE     2 // 手册页
+// #define SETTING_PAGE 3 // 设置页
+// #define HOME_PAGE    4 // 首页
 
 // 此处用于 `ui_page_select_box()` 中
 #define P_SELECTED                         0

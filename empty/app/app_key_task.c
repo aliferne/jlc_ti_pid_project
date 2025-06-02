@@ -21,8 +21,9 @@ void btn_up_cb(flex_button_t *btn)
     switch (btn->event) {
         case FLEX_BTN_PRESS_CLICK: // 单击事件
             if (get_show_state() == DEFAULT_PAGE) {
-                // 目前首页有四个选项，因此对4取模
-                system_status.default_page_flag = (system_status.default_page_flag + 1) % 4;
+                // 目前首页有四个选项，因此对4取模（此外页面选项从1到4）
+                // FIXME: 需要思考如何才能让范围为 1 到 4
+                system_status.default_page_flag = (system_status.default_page_flag + 1) % 4 + 1;
                 ui_home_page_select(system_status.default_page_flag); // 选择首页选项框
             }
             if (get_show_state() == SET_PAGE) {
@@ -100,19 +101,19 @@ void btn_left_cb(flex_button_t *btn)
 {
     switch (btn->event) {
         case FLEX_BTN_PRESS_CLICK: // 单击事件
-            if (get_show_state() == PID_PAGE || get_show_state() == DISTANCE_PAGE) {
-                ui_select_page_show(HOME_PAGE);          // 显示主页面
+            if (get_show_state() == SPEED_PAGE || get_show_state() == DISTANCE_PAGE) {
+                ui_select_page_show(DEFAULT_PAGE);       // 显示主页面
                 set_motor_status_flag(MOTOR_STATUS_OFF); // 设置电机状态为关闭
                 stop_motor();                            // 停掉电机
                 event_manager(&system_status, QUIT_EVENT);
             }
             if (get_show_state() == MANUAL_PAGE) {
-                ui_select_page_show(HOME_PAGE); // 显示主页面
+                ui_select_page_show(DEFAULT_PAGE); // 显示主页面
                 event_manager(&system_status, QUIT_EVENT);
             }
             // TODO: 还有一个 SETTINGS_PAGE 要实现
             if (get_show_state() == SET_PAGE) {
-                ui_select_page_show(HOME_PAGE); // 显示主页面
+                ui_select_page_show(DEFAULT_PAGE); // 显示主页面
                 event_manager(&system_status, QUIT_EVENT);
             }
             if (get_show_state() == SET_PAGE) {
@@ -149,7 +150,7 @@ void btn_right_cb(flex_button_t *btn)
                 // 根据首页选项显示对应功能页
                 ui_select_page_show(get_default_page_flag());
                 // 如果下一个是定速页
-                if (get_show_state() == PID_PAGE) {
+                if (get_show_state() == SPEED_PAGE) {
                     // 显示定速页的参数
                     ui_speed_page_value_set(
                         get_speed_pid()->kp, get_speed_pid()->ki, get_speed_pid()->kd,
@@ -165,7 +166,7 @@ void btn_right_cb(flex_button_t *btn)
                 // Note: 疑似不需要在这里处理 MANUAL_PAGE 和 SETTINGS_PAGE
             }
             // 如果是定速页或者定距页
-            else if (get_show_state() == PID_PAGE || get_show_state() == DISTANCE_PAGE) {
+            else if (get_show_state() == SPEED_PAGE || get_show_state() == DISTANCE_PAGE) {
                 // 触发进入事件
                 event_manager(&system_status, ENTER_EVENT);
                 // 显示选择框
@@ -193,7 +194,7 @@ void btn_mid_cb(flex_button_t *btn)
     switch (btn->event) {
         case FLEX_BTN_PRESS_CLICK: // 单击事件
             // 如果是定速页或者定距页
-            if (get_show_state() == PID_PAGE || get_show_state() == DISTANCE_PAGE) {
+            if (get_show_state() == SPEED_PAGE || get_show_state() == DISTANCE_PAGE) {
                 // 触发电机事件
                 event_manager(&system_status, MOTOR_EVENT);
                 // 如果电机状态是关

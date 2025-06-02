@@ -13,13 +13,11 @@
 // 定义页面
 typedef enum {
     DEFAULT_PAGE = 0, // 默认首页
-    PID_PAGE,         // 定速页
+    SPEED_PAGE,         // 定速页
     DISTANCE_PAGE,    // 定距页
-    // NOTE: 中间这两个加进来的要是影响了原功能则删除
     MANUAL_PAGE,      // 手册页
-    SETTINGS_PAGE,    // 设置页
-    // NOTE: 中间这两个加进来的要是影响了原功能则删除
-    SET_PAGE,         // 设置页
+    SETTINGS_PAGE,    // 设置页（在首页中的）
+    SET_PAGE,         // 设置页（在PID定速/定距中的）
     PARAMETER_PAGE,   // 参数调整页
 } SystemPageShow;
 

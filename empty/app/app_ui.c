@@ -332,13 +332,13 @@ void ui_home_page_select(int mode)
         case SPEED_PAGE: // 选择PID定速模式
             ui_home_page_draw_select_box(WHITE, BLACK, BLACK, BLACK);
             break;
-        case DIS_PAGE: // 选择PID定距模式
+        case DISTANCE_PAGE: // 选择PID定距模式
             ui_home_page_draw_select_box(BLACK, WHITE, BLACK, BLACK);
             break;
-        case MAN_PAGE: // 选择手册模式
+        case MANUAL_PAGE: // 选择手册模式
             ui_home_page_draw_select_box(BLACK, BLACK, WHITE, BLACK);
             break;
-        case SETTING_PAGE:
+        case SETTINGS_PAGE:
             ui_home_page_draw_select_box(BLACK, BLACK, BLACK, WHITE);
             break;
     }
@@ -571,20 +571,21 @@ void ui_select_page_show(int page) // 根据选择确定显示哪一个页面
 {
     // FIXME: 这里的这堆依赖要改到同个文件
     switch (page) {
+        case DEFAULT_PAGE:
+            ui_home_page();
+            break;
         case SPEED_PAGE:
             ui_speed_page();
             break;
-        case DIS_PAGE:
+        case DISTANCE_PAGE:
             ui_distance_page();
             break;
-        case HOME_PAGE:
-            ui_home_page();
+        case MANUAL_PAGE:
+            ui_manual_page();
             break;
         // TODO: 还有SETTINGS_PAGE需要完成
-        case SETTING_PAGE:
+        case SETTINGS_PAGE:
             ui_home_page(); // 暂未实现
-        case MAN_PAGE:
-            ui_manual_page();
             break;
         default:
             break;

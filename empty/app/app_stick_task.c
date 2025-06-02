@@ -88,7 +88,7 @@ void btn_stick_z_cb(flex_button_t *btn)
                 ui_select_page_show(get_default_page_flag());
 
                 // 如果下一个是定速页
-                if (get_show_state() == PID_PAGE) {
+                if (get_show_state() == SPEED_PAGE) {
                     // 显示定速页的参数
                     ui_speed_page_value_set(
                         get_speed_pid()->kp, get_speed_pid()->ki, get_speed_pid()->kd,
@@ -103,7 +103,7 @@ void btn_stick_z_cb(flex_button_t *btn)
                 }
             }
             // 如果是定速页或者定距页
-            else if (get_show_state() == PID_PAGE || get_show_state() == DISTANCE_PAGE) {
+            else if (get_show_state() == SPEED_PAGE || get_show_state() == DISTANCE_PAGE) {
                 // 触发进入事件
                 event_manager(&system_status, ENTER_EVENT);
                 // 显示选择框
@@ -118,8 +118,8 @@ void btn_stick_z_cb(flex_button_t *btn)
             }
             break;
         case FLEX_BTN_PRESS_LONG_HOLD: // 长按保持事件
-            if (get_show_state() == PID_PAGE || get_show_state() == DISTANCE_PAGE) {
-                ui_select_page_show(HOME_PAGE);          // 显示主页面
+            if (get_show_state() == SPEED_PAGE || get_show_state() == DISTANCE_PAGE) {
+                ui_select_page_show(DEFAULT_PAGE);          // 显示主页面
                 set_motor_status_flag(MOTOR_STATUS_OFF); // 设置电机状态为关闭
                 stop_motor();                            // 停掉电机
                 event_manager(&system_status, QUIT_EVENT);
