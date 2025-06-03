@@ -11,6 +11,10 @@ PID（Proportional-Integral-Derivative）控制器是一种经典的控制系统
 1. [PID演示视频1](./img/PID项目视频1.mp4)
 2. [PID演示视频2](./img/PID项目视频2.mp4)
 
+另附立创开源平台的[链接](https://oshwhub.com/ferne_2025/lichuang-electric-race-pid-found)
+
+欢迎关注主播的Github和oshwhub喵！😁
+
 ## 一、前言
 
 开发的是TI的MSPM0G3507芯片，立创开发板，EIDE配置较为麻烦，跟着下面走一遍。
@@ -210,7 +214,7 @@ Cortex-Debug插件需要自己去设置一下，首先是在 `settings.json` 里
 
 然后是定速页，这部分就和官方案例差不多了，很标准的上半部分绘图、下半部分调参
 
-![定速页](./img/SpeedPage.jpg.jpg)
+![定速页](./img/SpeedPage.jpg)
 
 定速页和官方案例也没啥区别
 
