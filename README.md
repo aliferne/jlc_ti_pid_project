@@ -15,6 +15,18 @@ PID（Proportional-Integral-Derivative）控制器是一种经典的控制系统
 
 欢迎关注主播的Github和oshwhub喵！😁
 
+工程源码在 `./empty` 文件夹中，`launchGui.bat` 用于打开TI芯片的GUI界面配置，需要根据自己的实际情况修改。
+
+`empty`，`source`，`.metadata`和`syscfg.bat` 是TI提供给我们的移植模板，如这个工作区所移植的，之后就可以在 `empty` 文件夹里面写源代码
+
+`img` 文件夹存放的为演示图片和视频
+
+`data` 文件夹存放的为使用到的TFT屏幕资料，我的扩展版原理图和MSPM0G3507的数据手册，供大家参考。
+
+整个项目采用分层架构设计的思想，分为硬件层（`./empty/hardware`）、中间层（`./empty/middleware`）和软件层（`./empty/app`）
+
+剩下的我就不过多介绍啦，毕竟——"Talk is cheap, show me the code"
+
 ## 一、前言
 
 开发的是TI的MSPM0G3507芯片，立创开发板，EIDE配置较为麻烦，跟着下面走一遍。
