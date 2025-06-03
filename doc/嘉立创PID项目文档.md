@@ -69,11 +69,11 @@ PID（Proportional-Integral-Derivative）控制器是一种经典的控制系统
 
 ## 二、功能介绍
 
-1. 电机速度控制：通过调节PID参数和目标速度参数，实现对电机的精确速度控制
-2. 电机位置控制：通过调节PID参数和目标角度参数，实现对电机的精确位置控制
-3. 摇杆控制：通过摇杆控制电机速度和方向
-4. 语音控制：通过语音控制电机速度和方向
-5. UI动效：将PID融入UI中，使得UI界面更加生动有趣
+1. [x] 电机速度控制：通过调节PID参数和目标速度参数，实现对电机的精确速度控制
+2. [x] 电机位置控制：通过调节PID参数和目标角度参数，实现对电机的精确位置控制
+3. [x] 摇杆控制：通过摇杆控制电机速度和方向
+4. [x] UI动效：将PID融入UI中，使得UI界面更加生动有趣
+5. [ ] 语音控制：通过语音控制电机速度和方向
 
 ## 三、原理图说明
 
@@ -108,43 +108,11 @@ TODO:
 
 ## 六、关键程序说明
 
-1. 在彩屏驱动方面，我抑制了官方案例，但需要注意的是，我的开发环境为vscode，因此有些地方并不一样，比如函数 `LCD_Show_Chinese` 中，我所修改的部分如下：
+### 1. 彩屏驱动
 
-```c
-/**
- * @brief 显示汉字串
- * @param x 汉字显示的X坐标
- * @param y 汉字显示的Y坐标
- * @param s 汉字字符串指针
- * @param fc 前景色（字体颜色）
- * @param bc 背景色
- * @param sizey 字体大小
- * @param mode 显示模式
- */
-void LCD_Show_Chinese(unsigned int x, unsigned int y, unsigned char *s, unsigned int fc, unsigned int bc, unsigned char sizey, unsigned char mode)
-{
-    while (*s != 0) {
-        if (*s >= 128) {
-            if (sizey == 12)
-                LCD_Show_Chinese12x12(x, y, s, fc, bc, sizey, mode);
-            else if (sizey == 16)
-                LCD_Show_Chinese16x16(x, y, s, fc, bc, sizey, mode);
-            else if (sizey == 24)
-                LCD_Show_Chinese24x24(x, y, s, fc, bc, sizey, mode);
-            else if (sizey == 32)
-                LCD_Show_Chinese32x32(x, y, s, fc, bc, sizey, mode);
-            else
-                return;
-            s += 3; // NOTE: utf-8 汉字占用3个字节
-            x += sizey;
-        } else {
-            LCD_Show_Char(x, y, *s, fc, bc, sizey, mode);
-            s += 1;
-            x += (sizey / 2);
-        }
-    }
-}
-```
+我移植了官方案例，但需要注意的是，我的开发环境为vscode，因此有些地方并不一样，比如函数 `LCD_Show_Chinese` 中，我所修改的部分如下：
+
+![彩屏驱动实现代码](./img/彩屏驱动实现代码.png)
 
 在我提到的 `s += 3;` 那行语句，官方示例采用的是 `s += 2;`，实际上这是 Keil 默认以 GB2312 为编码的结果，而 vscode 默认是 utf-8 编码，自然需要修改。另附上不修改的显示图片：
 
@@ -152,218 +120,25 @@ void LCD_Show_Chinese(unsigned int x, unsigned int y, unsigned char *s, unsigned
 
 因此我同时也修改了`lcdfont.h`中的一些结构体定义，这里仅举一例：
 
-```c
-typedef struct
-{
-    // NOTE: 这里从2变为了4（汉字三个字节，还有一个\0）
-    unsigned char Index[4];
-    unsigned char Msk[32];
-} typFNT_GB16; // 我并没有更改结构体的名称，虽然其实应该改成UTF的
-```
+![对lcdfont的修改](img/对lcdfont的修改.png)
 
-2. 在按键驱动方面，我和官方案例一样移植了`flexible_button`开源库，同时加入了自己的一些按键扫面函数和按键回调函数的处理逻辑，代码如下：
+### 2. 电机驱动
 
-```c
-void btn_mid_cb(flex_button_t *btn)
-{
-    switch (btn->event) {
-        case FLEX_BTN_PRESS_CLICK: // 单击事件
-            // 如果是定速页或者定距页
-            if (get_show_state() == PID_PAGE || get_show_state() == DISTANCE_PAGE) {
-                // 触发电机事件
-                event_manager(&system_status, MOTOR_EVENT);
-                // 如果电机状态是关
-                if (get_motor_status_flag() == MOTOR_STATUS_OFF) {
-                    // 停止电机
-                    stop_motor();
-                }
-            }
-            break;
-        case FLEX_BTN_PRESS_LONG_HOLD: // 长按保持事件
-            break;
-        case FLEX_BTN_PRESS_LONG_HOLD_UP: // 长按保持后抬起事件
-            break;
-        default:
-            break;
-    }
-}
+在电机驱动方面，我新增了一些函数，使得可以在不需要判断PWM正负的情况下直接传入该函数内部（它会帮我们处理好），代码如下：
 
-void btn_stick_z_cb(flex_button_t *btn)
-{
-    switch (btn->event) {
-        case FLEX_BTN_PRESS_CLICK: // 单击事件
-            // 如果是定速页或者定距页
-            if (get_show_state() == PID_PAGE || get_show_state() == DISTANCE_PAGE) {
-                // 触发电机事件
-                event_manager(&system_status, MOTOR_EVENT);
-                // 如果电机状态是关
-                if (get_motor_status_flag() == MOTOR_STATUS_OFF) {
-                    // 停止电机
-                    stop_motor();
-                }
-            }
-            break;
-        case FLEX_BTN_PRESS_LONG_HOLD: // 长按保持事件
-            break;
-        case FLEX_BTN_PRESS_LONG_HOLD_UP: // 长按保持后抬起事件
-            break;
-        default:
-            break;
-    }
-}
+![电机驱动两个编码器的代码实现](./img/电机驱动两个编码器的代码实现.png)
 
+### 3. UI界面的改动
 
-```
+学习官方案例的过程中我注意到，实际上官方的ui选择框的绘制略显生硬，没有什么动效，因此我就在思考能否将ui绘制与pid结合起来，使选择框变得更加Q弹有活力，并且最终证明了我的思路其实是可行的，核心代码如下：
 
-3. 在电机驱动方面，我新增了一些函数，使得可以在不需要判断PWM正负的情况下直接传入该函数内部（它会帮我们处理好），代码如下：
+![使用PID算法绘制UI界面的实现](./img/使用PID算法绘制UI界面的实现.png)
 
-```c
-/**
- * @brief 设置电机速度，需要传入一个速度值
- * @param value 速度值，可正可负，正为顺时针，负为逆时针
- */
-void set_motor_value(int16_t value)
-{
-    restrict_pwm_max_value(&value);
-    if (value > 0) { 
-        // 顺时针
-        set_fi(0);
-        set_bi(value);
-    } else {
-        // 逆时针
-        set_fi(-value);
-        set_bi(0);
-    }
-}
-```
+### 4. PID算法的核心实现
 
-4. 学习官方案例的过程中我注意到，实际上官方的ui选择框的绘制略显生硬，没有什么动效，因此我就在思考能否将ui绘制与pid结合起来，使选择框变得更加Q弹有活力，并且最终证明了我的思路其实是可行的，核心代码如下：
+![PID算法的实现](./img/PID算法的实现.png)
 
-```c
-/**
- * @brief 显示选择框
- * 
- * 该函数用于在指定位置绘制一个选择框，支持静态显示和PID动画显示两种模式。
- * 选择框由水平线和垂直线组成，可以设置线条长度、间距和颜色。
- * 
- * @param target_x 目标X坐标位置
- * @param w 选择框的宽度
- * @param target_y 目标Y坐标位置  
- * @param h 选择框的高度
- * @param line_length 线条的长度
- * @param interval 线条间距，同时也作为选择框向外扩展的距离
- * @param color 线条颜色
- * 
- * @details 
- * 函数内部有两种显示模式：
- * - mode = 0：静态显示模式，直接在目标位置绘制选择框
- * - mode ≠ 0：PID动画模式，使用PID控制算法实现选择框从当前位置平滑移动到目标位置
- * 
- * 在PID模式下：
- * - 使用PID参数：kp=0.4, ki=0.2, kd=0.2
- * - 动画过程中会先清除上一帧的线条，再绘制新位置的线条
- * - 当X轴和Y轴误差都小于0.5时停止动画
- * - 动画结束后会重置PID参数
- * 
- * @note 
- * - 选择框的实际绘制区域会比输入的w和h各边扩大interval个像素
- * - 需要依赖ui_draw_lines_horizonal()和ui_draw_lines_vertical()函数
- * - PID模式需要pid_init(), pid_calc(), pid_change_zero()等PID相关函数
- * - 需要定义LCD_W, LCD_H, BLACK等常量
- * 
- * @see ui_draw_lines_horizonal()
- * @see ui_draw_lines_vertical()
- * @see pid_init()
- * @see pid_calc()
- * @see pid_change_zero()
- */
-void show_select_box(
-    int target_x, int w, int target_y, int h,
-    int line_length, int interval, int color)
-{
-    // interval: 间距
-    target_x -= interval; // 向左偏移interval的距离
-    w += interval * 2;    // 宽度增加interval * 2的距离（矩形框两边对称）
-
-    target_y -= interval; // 向上偏移interval的距离
-    h += interval * 2;    // 高度增加interval * 2的距离
-
-    int mode = 0;
-
-    if (mode == 0) {
-        ui_draw_lines_horizonal(target_x, w, target_y, h, line_length, interval, color);
-        ui_draw_lines_vertical(target_x, w, target_y, h, line_length, interval, color);
-    } else {
-        // p、i、d的参数
-        float kp = 0.4, ki = 0.2, kd = 0.2;
-        int current_x = 0; // 当前x轴坐标（从0开始）
-        int current_y = 0; // 当前y轴坐标（从0开始）
-
-        int value_x, value_y;          // x轴和y轴方向上与目标的差值
-        PID_Struct screen_x, screen_y; // x轴和y轴方向上的pid结构体
-
-        // 初始化PID
-        pid_init(&screen_x, kp, ki, kd, LCD_W, LCD_W, target_x);
-        pid_init(&screen_y, kp, ki, kd, LCD_H, LCD_H, target_y);
-
-        do {
-            // 分别计算x轴和y轴方向上的差值
-            value_x = pid_calc(&screen_x, target_x, current_x);
-            value_y = pid_calc(&screen_y, target_y, current_y);
-            // 清除上次线条
-            ui_draw_lines_horizonal(current_x, w, target_y, h, line_length, interval, BLACK);
-            ui_draw_lines_vertical(target_x, w, current_y, h, line_length, interval, BLACK);
-            // 平移到本次坐标的位置
-            current_x += value_x;
-            current_y += value_y;
-            // 绘制本次线条
-            ui_draw_lines_horizonal(current_x, w, target_y, h, line_length, interval, color);
-            ui_draw_lines_vertical(target_x, w, current_y, h, line_length, interval, color);
-            // 延迟一段时间
-            delay_cycles(100000 * 8);
-        } while (
-            // 限制误差像素点在0.5以内
-            (ABS(current_x - target_x) > 0.5) &&
-            (ABS(current_y - target_y) > 0.5));
-        // 将参数置零
-        pid_change_zero(&screen_x);
-        pid_change_zero(&screen_y);
-    }
-}
-```
-
-5. PID算法的核心实现
-
-```c
-float pid_calc(PID_Struct *pid, float target, float current)
-{
-    pid->last_error = pid->error;       // 更新之前误差
-    pid->error      = target - current; // 计算新的误差
-
-    pid->change_p = pid->error;                   // P
-    pid->change_i += pid->error;                  // I
-    pid->change_d = pid->error - pid->last_error; // D
-
-    if (pid->change_i > pid->max_change_i) {
-        pid->change_i = pid->max_change_i; // 限制积分I
-    } else if (pid->change_i < -(pid->max_change_i)) {
-        pid->change_i = -(pid->max_change_i); // 限制积分I
-    }
-
-    // PID输出
-    pid->output = (pid->kp * pid->change_p) + (pid->ki * pid->change_i) + (pid->kd * pid->change_d);
-
-    if (pid->output > pid->max_output) {
-        pid->output = pid->max_output; // 限制输出
-    } else if (pid->output < -(pid->max_output)) {
-        pid->output = -(pid->max_output); // 限制输出
-    }
-
-    return pid->output;
-}
-```
-
-6. 按键对应的功能说明
+### 5. 按键对应的功能说明
 
 | 按键 | 短按功能          | 长按功能   |
 | ---- | ----------------- | ---------- |
@@ -373,10 +148,9 @@ float pid_calc(PID_Struct *pid, float target, float current)
 | 右键 | 进入下级菜单      | -          |
 | 中键 | 启动/停止电机     | -          |
 
-7. 大大小小的优化，官方的案例存在较多魔法数字和“Repeat Yourself”（尤其是在ui绘制中），因此我针对出现频率较高的，都单独抽象成了函数或者宏的表现形式，然后再去调用，由于改动较多，就不放出代码了。
+### 6. 大大小小的优化
 
-TODO: 不过加入PID绘图之后，整个界面比较卡顿，因此我做成可选的了。（记得使用DMA去搬运SPI数据，降低MCU资源占用）
-
+官方的案例存在较多魔法数字和“Repeat Yourself”（尤其是在ui绘制中），因此我针对出现频率较高的，都单独抽象成了函数或者宏的表现形式，然后再去调用，由于改动较多，就不放出代码了。
 
 ## 七、重要物料购买
 
