@@ -183,11 +183,11 @@ extern "C" {
 #define DEBUG_LED_PIN_22_PIN                                    (DL_GPIO_PIN_22)
 #define DEBUG_LED_PIN_22_IOMUX                                   (IOMUX_PINCM50)
 /* Port definition for Pin Group GPIO_STICK_Z */
-#define GPIO_STICK_Z_PORT                                                (GPIOA)
+#define GPIO_STICK_Z_PORT                                                (GPIOB)
 
-/* Defines for SWITCH: GPIOA.22 with pinCMx 47 on package pin 18 */
-#define GPIO_STICK_Z_SWITCH_PIN                                 (DL_GPIO_PIN_22)
-#define GPIO_STICK_Z_SWITCH_IOMUX                                (IOMUX_PINCM47)
+/* Defines for SWITCH: GPIOB.27 with pinCMx 58 on package pin 29 */
+#define GPIO_STICK_Z_SWITCH_PIN                                 (DL_GPIO_PIN_27)
+#define GPIO_STICK_Z_SWITCH_IOMUX                                (IOMUX_PINCM58)
 /* Port definition for Pin Group GPIO_LCD */
 #define GPIO_LCD_PORT                                                    (GPIOB)
 

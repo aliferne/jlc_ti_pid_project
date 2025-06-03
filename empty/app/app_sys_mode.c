@@ -8,9 +8,9 @@ static void motor_state_manager(SystemStatus *status);
 
 void sys_event_init(void)
 {
-    system_status.show_state        = DEFAULT_PAGE;
-    system_status.default_page_flag = 0;
-    system_status.set_page_flag     = 0;
+    system_status.show_state        = HOME_PAGE;  // 当前显示页面（首页）
+    system_status.default_page_flag = SPEED_PAGE; // （页面中）选项框选中选项
+    system_status.set_page_flag     = 0;          // PID参数调节时默认选中的选项（这里为P）
 }
 
 // 设置事件
@@ -24,11 +24,9 @@ void event_manager(SystemStatus *status, SystemEvent Event)
         case QUIT_EVENT: // 触发退出事件
             quit_event_handler(status);
             break;
-
         case MOTOR_EVENT: // 电机动作事件
             motor_state_manager(status);
             break;
-
         case LONG_PRESS_ADD_START_EVENT: // 触发长按加开始事件
             status->long_press_state = LONG_PRESS_ADD_START;
             break;
@@ -36,11 +34,9 @@ void event_manager(SystemStatus *status, SystemEvent Event)
         case LONG_PRESS_SUBTRACT_START_EVENT: // 触发长按减开始事件
             status->long_press_state = LONG_PRESS_SUBTRACT_START;
             break;
-
         case LONG_PRESS_END_EVENT: // 触发长按结束事件
             status->long_press_state = LONG_PRESS_END;
             break;
-
         default:
             break;
     }
@@ -97,9 +93,8 @@ void set_functional_mode(Function mode)
 
 static void enter_event_handler(SystemStatus *status)
 {
-    if (status->show_state == DEFAULT_PAGE) {
+    if (status->show_state == HOME_PAGE) {
         switch (status->default_page_flag) {
-            // FIXME: 需要修改这堆魔法数字
             case SPEED_PAGE:
                 status->show_state     = SPEED_PAGE;
                 status->function_state = SPEED_FUNCTION;
@@ -112,8 +107,8 @@ static void enter_event_handler(SystemStatus *status)
                 status->show_state     = MANUAL_PAGE;
                 status->function_state = NO_FUNCTION;
                 break;
-            case SET_PAGE:
-                status->show_state = SET_PAGE;
+            case SETTINGS_PAGE:
+                status->show_state = SETTINGS_PAGE;
                 // TODO: 后续会加入设置功能（包括启用手柄/启用PID绘制UI等）
                 status->function_state = NO_FUNCTION;
             default:
@@ -141,24 +136,24 @@ static void quit_event_handler(SystemStatus *status)
             else if (status->function_state == DISTANCE_FUNCTION)
                 status->show_state = DISTANCE_PAGE;
             break;
-        case DEFAULT_PAGE: // 从默认模式退出
+        case HOME_PAGE: // 从默认模式退出
             // Nowhere to go
             break;
         case SPEED_PAGE: // 从PID模式退出
-            status->show_state     = DEFAULT_PAGE;
+            status->show_state     = HOME_PAGE;
             status->motor_flag     = MOTOR_STATUS_OFF;
             status->function_state = NO_FUNCTION;
             break;
         case DISTANCE_PAGE: // 从距离模式退出
-            status->show_state     = DEFAULT_PAGE;
+            status->show_state     = HOME_PAGE;
             status->motor_flag     = MOTOR_STATUS_OFF;
             status->function_state = NO_FUNCTION;
             break;
         case MANUAL_PAGE: // 从手动模式退出
-            status->show_state = DEFAULT_PAGE;
+            status->show_state = HOME_PAGE;
             break;
         case SETTINGS_PAGE:
-            status->show_state = DEFAULT_PAGE;
+            status->show_state = HOME_PAGE;
             break;
         default:
             break;

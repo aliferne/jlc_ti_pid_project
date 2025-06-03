@@ -12,14 +12,22 @@
 
 // 定义页面
 typedef enum {
-    DEFAULT_PAGE = 0, // 默认首页
-    SPEED_PAGE,         // 定速页
-    DISTANCE_PAGE,    // 定距页
-    MANUAL_PAGE,      // 手册页
-    SETTINGS_PAGE,    // 设置页（在首页中的）
-    SET_PAGE,         // 设置页（在PID定速/定距中的）
-    PARAMETER_PAGE,   // 参数调整页
+    HOME_PAGE = 0,  // 默认首页
+    SPEED_PAGE,     // 定速页
+    DISTANCE_PAGE,  // 定距页
+    MANUAL_PAGE,    // 手册页
+    SETTINGS_PAGE,  // 设置页（在首页中的）
+    SET_PAGE,       // 设置页（在PID定速/定距中的）
+    PARAMETER_PAGE, // 参数调整页
 } SystemPageShow;
+
+typedef enum {
+    P_SELECTED = 0,  // 选中参数P
+    I_SELECTED,      // 选中参数I
+    D_SELECTED,      // 选中参数D
+    TARGET_SELECTED, // 选中目标值
+    ALL_CLEAN,       // 清除所有选中（TFT清除白框）
+} ParameterPageShow;
 
 // 定义功能
 typedef enum {
@@ -31,12 +39,12 @@ typedef enum {
 // 定义触发事件
 typedef enum {
     IDLE_EVENT = 0,
-    ENTER_EVENT,                // 进入事件
-    QUIT_EVENT,                 // 退出事件
-    MOTOR_EVENT,                // 按键事件
-    LONG_PRESS_ADD_START_EVENT, // 长按加开始事件
+    ENTER_EVENT,                     // 进入事件
+    QUIT_EVENT,                      // 退出事件
+    MOTOR_EVENT,                     // 按键事件
+    LONG_PRESS_ADD_START_EVENT,      // 长按加开始事件
     LONG_PRESS_SUBTRACT_START_EVENT, // 长按减停止事件
-    LONG_PRESS_END_EVENT,       // 长按结束事件
+    LONG_PRESS_END_EVENT,            // 长按结束事件
 } SystemEvent;
 
 // 电机状态

@@ -37,23 +37,10 @@
 #define PID_SETTINGS_SELECT_BOX_Y_START PID_DISTANCE_SELECT_BOX_Y_START // 起始y坐标
 #define PID_SETTINGS_SELECT_BOX_WIDTH   PID_DISTANCE_SELECT_BOX_WIDTH   // 宽度
 
-#define PID_MANUAL_STRINGS_X_START      180
-#define PID_MANUAL_STRINGS_Y_START      65
+#define PID_MANUAL_STRINGS_X_START      40
+#define PID_MANUAL_STRINGS_Y_START      40
 #define PID_MANUAL_STRINGS_Y_INTERVAL   25
 
-// 此处用于 `ui_select_page_show` 中
-// #define SPEED_PAGE   0 // 定速页
-// #define DIS_PAGE     1 // 定距页
-// #define MAN_PAGE     2 // 手册页
-// #define SETTING_PAGE 3 // 设置页
-// #define HOME_PAGE    4 // 首页
-
-// 此处用于 `ui_page_select_box()` 中
-#define P_SELECTED                         0
-#define I_SELECTED                         1
-#define D_SELECTED                         2
-#define TARGET_SELECTED                    3
-#define ALL_CLEAN                          4
 
 #define FONTSIZE                           16        // PID 字体大小
 #define DEFAULT_PID_TITLE_Y_POSITION       87        // 默认Y轴起始位置

@@ -8,6 +8,10 @@
 #include "hw_encoder.h"
 #include "mid_timer.h"
 
+/// @brief 这个变量由 `show_select_box` 和 `ui_settings_page` 共享
+/// @brief 表示是否需要给显示框加上PID算法
+static bool mode = false;
+
 /**
  * @file app_ui.c
  * @brief 用户界面绘制与更新
@@ -163,9 +167,9 @@ void show_select_box(
     target_y -= interval; // 向上偏移interval的距离
     h += interval * 2;    // 高度增加interval * 2的距离
 
-    int mode = 0;
+    // int mode = 0; // TODO: 做到设置页面去调整
 
-    if (mode == 0) {
+    if (mode == false) {
         ui_draw_lines_horizonal(target_x, w, target_y, h, line_length, interval, color);
         ui_draw_lines_vertical(target_x, w, target_y, h, line_length, interval, color);
     } else {
@@ -282,6 +286,25 @@ void ui_manual_page()
         PID_MANUAL_STRINGS_Y_START + PID_MANUAL_STRINGS_Y_INTERVAL * 3,
         (uint8_t *)"left key: Cancel",
         WHITE, BLACK, FONTSIZE, 0);
+
+    LCD_Show_String(
+        PID_MANUAL_STRINGS_X_START,
+        PID_MANUAL_STRINGS_Y_START + PID_MANUAL_STRINGS_Y_INTERVAL * 4,
+        (uint8_t *)"mid key: Set Motor",
+        WHITE, BLACK, FONTSIZE, 0);
+
+    LCD_BLK_Set();
+}
+
+void ui_settings_page()
+{
+    // 关闭背光
+    LCD_BLK_Clear();
+    LCD_Fill(0, 0, LCD_W, LCD_H, BLACK);
+
+    show_string_rect(40, 60, 40, 40, 3, FONTSIZE, (uint8_t *)"pid-on", BLUE);
+
+    // 开启背光
     LCD_BLK_Set();
 }
 
@@ -569,23 +592,31 @@ void ui_distance_page_value_set(
 
 void ui_select_page_show(int page) // 根据选择确定显示哪一个页面
 {
-    // FIXME: 这里的这堆依赖要改到同个文件
     switch (page) {
-        case DEFAULT_PAGE:
+        case HOME_PAGE:
             ui_home_page();
             break;
         case SPEED_PAGE:
             ui_speed_page();
+            // 绘制定速页面的各项参数
+            ui_speed_page_value_set(
+                get_speed_pid()->kp, get_speed_pid()->ki, get_speed_pid()->kd,
+                get_encoder_count(), get_speed_pid()->target, 0);
             break;
         case DISTANCE_PAGE:
             ui_distance_page();
+            // 绘制定距页面的各项参数
+            int current_angle = get_temp_encoder() * DEGREES_PER_PULSE;
+            ui_distance_page_value_set(
+                get_distance_pid()->kp, get_distance_pid()->ki, get_distance_pid()->kd,
+                current_angle, get_distance_pid()->target, 0);
             break;
         case MANUAL_PAGE:
             ui_manual_page();
             break;
         // TODO: 还有SETTINGS_PAGE需要完成
         case SETTINGS_PAGE:
-            ui_home_page(); // 暂未实现
+            ui_settings_page();
             break;
         default:
             break;
