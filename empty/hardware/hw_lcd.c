@@ -1,4 +1,5 @@
 #include "hw_lcd.h"
+#include "hw_dma.h"
 #include "lcdfont.h"
 
 /**
@@ -10,37 +11,33 @@
 
 #define delay_ms(X) delay_cycles(((CPUCLK_FREQ / 1000) * (X)))
 
-// TODO: 尝试使用DMA驱动TFT屏幕
-void spi_write_bus(unsigned char dat)
-{
-    // 发送数据
-    DL_SPI_transmitData8(SPI_LCD_INST, dat);
-    // 等待SPI总线空闲
-    while (DL_SPI_isBusy(SPI_LCD_INST));
-}
-
-void LCD_Writ_Bus(unsigned char dat)
+void LCD_Write_Bus(unsigned char dat, uint32_t config)
 {
     LCD_CS_Clear();
-    spi_write_bus(dat);
+    // 设置数据/命令模式
+    DL_SPI_setControllerCommandDataModeConfig(SPI_LCD_INST, config);
+    // 使用DMA传输数据
+    dma_transmit_lcd_data(dat);
+    // 以阻塞方式传输数据（CPU模式）
+    // DL_SPI_transmitDataBlocking8(SPI_LCD_INST, dat);
     LCD_CS_Set();
 }
 
 void LCD_Write_Data8(unsigned char dat)
 {
-    LCD_Writ_Bus(dat);
+    LCD_Write_Bus(dat, DL_SPI_CD_MODE_DATA);
 }
 
 void LCD_Write_Data32(unsigned int dat)
 {
-    LCD_Writ_Bus(dat >> 8);
-    LCD_Writ_Bus(dat);
+    LCD_Write_Bus(dat >> 8, DL_SPI_CD_MODE_DATA);
+    LCD_Write_Bus(dat, DL_SPI_CD_MODE_DATA);
 }
 
 void LCD_Write_Register(unsigned char dat)
 {
     LCD_DC_Clear(); // 写命令
-    LCD_Writ_Bus(dat);
+    LCD_Write_Bus(dat, DL_SPI_CD_MODE_COMMAND);
     LCD_DC_Set(); // 写数据
 }
 
@@ -427,7 +424,7 @@ void LCD_Show_Chinese12x12(unsigned int x, unsigned int y, unsigned char *s, uns
     unsigned int x0 = x;
     TypefaceNum     = (sizey / 8 + ((sizey % 8) ? 1 : 0)) * sizey;
 
-    HZnum = sizeof(tfont12) / sizeof(typFNT_GB12); // 统计汉字数目
+    HZnum = sizeof(tfont12) / sizeof(typFNT_UTF_12); // 统计汉字数目
     for (k = 0; k < HZnum; k++) {
         if ((tfont12[k].Index[0] == *(s)) && (tfont12[k].Index[1] == *(s + 1))) {
             LCD_Address_Set(x, y, x + sizey - 1, y + sizey - 1);
@@ -479,7 +476,7 @@ void LCD_Show_Chinese16x16(unsigned int x, unsigned int y, unsigned char *s, uns
     unsigned int TypefaceNum; // 一个字符所占字节大小
     unsigned int x0 = x;
     TypefaceNum     = (sizey / 8 + ((sizey % 8) ? 1 : 0)) * sizey; // 32
-    HZnum           = sizeof(tfont16) / sizeof(typFNT_GB16);       // 统计汉字数目
+    HZnum           = sizeof(tfont16) / sizeof(typFNT_UTF_16);       // 统计汉字数目
     for (k = 0; k < HZnum; k++) {
         if ((tfont16[k].Index[0] == *(s)) && (tfont16[k].Index[1] == *(s + 1))) {
             LCD_Address_Set(x, y, x + sizey - 1, y + sizey - 1);
@@ -531,7 +528,7 @@ void LCD_Show_Chinese24x24(unsigned int x, unsigned int y, unsigned char *s, uns
     unsigned int TypefaceNum; // 一个字符所占字节大小
     unsigned int x0 = x;
     TypefaceNum     = (sizey / 8 + ((sizey % 8) ? 1 : 0)) * sizey;
-    HZnum           = sizeof(tfont24) / sizeof(typFNT_GB24); // 统计汉字数目
+    HZnum           = sizeof(tfont24) / sizeof(typFNT_UTF_24); // 统计汉字数目
     for (k = 0; k < HZnum; k++) {
         if ((tfont24[k].Index[0] == *(s)) && (tfont24[k].Index[1] == *(s + 1))) {
             LCD_Address_Set(x, y, x + sizey - 1, y + sizey - 1);
@@ -583,7 +580,7 @@ void LCD_Show_Chinese32x32(unsigned int x, unsigned int y, unsigned char *s, uns
     unsigned int TypefaceNum; // 一个字符所占字节大小
     unsigned int x0 = x;
     TypefaceNum     = (sizey / 8 + ((sizey % 8) ? 1 : 0)) * sizey;
-    HZnum           = sizeof(tfont32) / sizeof(typFNT_GB32); // 统计汉字数目
+    HZnum           = sizeof(tfont32) / sizeof(typFNT_UTF_32); // 统计汉字数目
     for (k = 0; k < HZnum; k++) {
         if ((tfont32[k].Index[0] == *(s)) && (tfont32[k].Index[1] == *(s + 1))) {
             LCD_Address_Set(x, y, x + sizey - 1, y + sizey - 1);

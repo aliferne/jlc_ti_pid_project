@@ -8,6 +8,8 @@
 #include "hw_encoder.h"
 #include "hw_motor.h"
 
+// TODO: 可以配置DMA
+
 static float stickVoltage = 0; // 滑块电压值
 
 void user_stick_init(void)

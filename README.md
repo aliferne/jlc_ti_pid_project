@@ -7,7 +7,7 @@ PID（Proportional-Integral-Derivative）控制器是一种经典的控制系统
 学习PID控制器，可以让我们更好地理解控制系统的工作原理，提高我们的编程能力，并掌握通往电赛和其他类型的控制项目的关键秘诀。而这也是本项目的意义所在。
 
 演示视频如下：
-
+`
 1. [PID演示视频1](./img/PID项目视频1.mp4)
 2. [PID演示视频2](./img/PID项目视频2.mp4)
 
@@ -286,7 +286,35 @@ Cortex-Debug插件需要自己去设置一下，首先是在 `settings.json` 里
 | 右键 | 进入下级菜单      | -          |
 | 中键 | 启动/停止电机     | -          |
 
-### 6. 大大小小的优化
+### 6. 借助DMA搬运TFT彩屏SPI数据和摇杆ADC数据
+
+#### TFT彩屏（SPI）
+
+由于我发现CPU在处理TFT彩屏时偶尔会卡顿（此问题已经在四天前被解决，纯CPU方案处理TFT彩屏亦可），所以干脆写了一下DMA驱动TFT彩屏的代码，实现起来其实也不难：
+
+![DMA搬运TFT彩屏的应用层实现](./img/DMA搬运TFT彩屏的应用层实现.png)
+
+在应用层实现，由于我去网上搜索了别人的博客，发现了更好的替代方案，不再需要原来的 `spi_write_bus`，而只需要 `DL_SPI_setControllerCommandDataModeConfig(SPI_LCD_INST, config);` 和 `DL_SPI_transmitDataBlocking8(SPI_LCD_INST, dat);` 就可以传输数据/命令（通过配置`config = DL_SPI_CD_MODE_DATA / DL_SPI_CD_MODE_COMMAND` 来实现），所以索性换成了这段代码，这个是纯CPU实现的方案，如果使用DMA则需要注释掉 `DL_SPI_transmitDataBlocking8` 并换成我实现的 `dma_transmit_lcd_data` 函数。
+
+![DMA搬运TFT彩屏的硬件层实现](./img/DMA搬运TFT彩屏的硬件层实现.png)
+
+由于要搬运的数据的地址实际上就是该数据本身的地址，所以我们直接对 `data` 取址即可。
+
+对了，我需要说明一下配置方法：
+
+![在SYSCFG上如何配置DMA传输TFT彩屏](img/在SYSCFG上如何配置DMA传输TFT彩屏.png)
+
+单次传输，不开通道中断，每次传一块即可。
+
+#### 摇杆（ADC）
+
+TODO:
+
+### 7. 使用 天问ASRPro 实现基于UART的语音控制功能
+
+TODO:
+
+### 8. 大大小小的优化
 
 官方的案例存在较多魔法数字和“Repeat Yourself”（尤其是在ui绘制中），因此我针对出现频率较高的，都单独抽象成了函数或者宏的表现形式，然后再去调用，由于改动较多，就不放出代码了。
 

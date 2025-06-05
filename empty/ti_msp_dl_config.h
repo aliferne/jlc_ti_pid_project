@@ -174,6 +174,10 @@ extern "C" {
 
 
 
+/* Defines for DMA_LCD_TX */
+#define DMA_LCD_TX_CHAN_ID                                                   (0)
+#define SPI_LCD_INST_DMA_TRIGGER                              (DMA_SPI1_TX_TRIG)
+
 
 
 /* Port definition for Pin Group DEBUG_LED */

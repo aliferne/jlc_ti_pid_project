@@ -15,12 +15,12 @@
 #include "string.h"
 #include "stdio.h"
 #include "ti_msp_dl_config.h"
+#include "hw_dma.h"
 
 void ui_speed_or_distance_page_value_set_quick(LongPressStatus update_status)
 {
     if (update_status == LONG_PRESS_END)
         return;
-
     if (update_status == LONG_PRESS_ADD_START) {
         if (get_functional_mode() == SPEED_FUNCTION)
             set_speed_pid_parameter(get_speed_pid(), system_status.set_page_flag, 0);
@@ -31,17 +31,6 @@ void ui_speed_or_distance_page_value_set_quick(LongPressStatus update_status)
             set_speed_pid_parameter(get_speed_pid(), system_status.set_page_flag, 1);
         else
             set_distance_pid_parameter(get_distance_pid(), system_status.set_page_flag, 1);
-    }
-}
-
-void uart_debugger()
-{
-    debug_uart_init();
-    char sbuff[100];
-    while (1) {
-        sprintf(sbuff, "adc value: %.2f\n", (adc_getValue() / 40.95));
-        debug_uart_send_string(sbuff);
-        delay_cycles(1000000);
     }
 }
 
@@ -116,7 +105,7 @@ int main(void)
             ui_speed_page_value_set(temp_pid->kp, temp_pid->ki, temp_pid->kd, encoder_value, temp_pid->target, 1);
         }
     }
-    
+
     // NOTE: 此部分为天问ASRPro的扩展部分，暂时不用，先把项目完结
     // while (1) {
     //     recv_cmd(); // 接收串口指令
