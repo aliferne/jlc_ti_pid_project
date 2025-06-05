@@ -16,7 +16,9 @@
             "*.dbclient-js": "javascript",
             "mid_debug_uart.h": "c",
             "hw_lcd.h": "c",
-            "ti_msp_dl_config.h": "c"
+            "ti_msp_dl_config.h": "c",
+            "hw_dma.h": "c",
+            "mid_debug_led.h": "c"
         }
     },
     "extensions": {}

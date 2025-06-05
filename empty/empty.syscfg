@@ -5,13 +5,17 @@
  * @v2CliArgs --device "MSPM0G3507" --package "LQFP-64(PM)" --product "mspm0_sdk@2.02.00.05"
  * @versions {"tool":"1.21.1+3772"}
  */
+scripting.excludeFromBuild("device_linker.cmd");
+scripting.excludeFromBuild("device_linker.lds");
+scripting.excludeFromBuild("device.opt");
+scripting.excludeFromBuild("device.cmd.genlibs");
+scripting.excludeFromBuild("device.lds.genlibs");
 
 /**
  * Import the modules used in this configuration.
  */
 const ADC12  = scripting.addModule("/ti/driverlib/ADC12", {}, false);
 const ADC121 = ADC12.addInstance();
-const DMA    = scripting.addModule("/ti/driverlib/DMA");
 const GPIO   = scripting.addModule("/ti/driverlib/GPIO", {}, false);
 const GPIO1  = GPIO.addInstance();
 const GPIO2  = GPIO.addInstance();
@@ -159,22 +163,28 @@ PWM1.ccp1PinConfig.onlyInternalResistor = scripting.forceWrite(false);
 PWM1.ccp1PinConfig.passedPeripheralType = scripting.forceWrite("Digital");
 PWM1.ccp1PinConfig.$name                = "ti_driverlib_gpio_GPIOPinGeneric5";
 
-SPI1.$name                              = "SPI_LCD";
-SPI1.targetBitRate                      = 32000000;
-SPI1.frameFormat                        = "MOTO3";
-SPI1.direction                          = "PICO";
-SPI1.peripheral.$assign                 = "SPI1";
-SPI1.peripheral.sclkPin.$assign         = "PB9";
-SPI1.peripheral.mosiPin.$assign         = "PB8";
-SPI1.sclkPinConfig.direction            = scripting.forceWrite("OUTPUT");
-SPI1.sclkPinConfig.onlyInternalResistor = scripting.forceWrite(false);
-SPI1.sclkPinConfig.passedPeripheralType = scripting.forceWrite("Digital");
-SPI1.sclkPinConfig.$name                = "ti_driverlib_gpio_GPIOPinGeneric2";
-SPI1.mosiPinConfig.direction            = scripting.forceWrite("OUTPUT");
-SPI1.mosiPinConfig.hideOutputInversion  = scripting.forceWrite(false);
-SPI1.mosiPinConfig.onlyInternalResistor = scripting.forceWrite(false);
-SPI1.mosiPinConfig.passedPeripheralType = scripting.forceWrite("Digital");
-SPI1.mosiPinConfig.$name                = "ti_driverlib_gpio_GPIOPinGeneric3";
+SPI1.$name                                    = "SPI_LCD";
+SPI1.targetBitRate                            = 32000000;
+SPI1.frameFormat                              = "MOTO3";
+SPI1.direction                                = "PICO";
+SPI1.enabledDMAEvent2Triggers                 = "DL_SPI_DMA_INTERRUPT_TX";
+SPI1.peripheral.$assign                       = "SPI1";
+SPI1.peripheral.sclkPin.$assign               = "PB9";
+SPI1.peripheral.mosiPin.$assign               = "PB8";
+SPI1.sclkPinConfig.direction                  = scripting.forceWrite("OUTPUT");
+SPI1.sclkPinConfig.onlyInternalResistor       = scripting.forceWrite(false);
+SPI1.sclkPinConfig.passedPeripheralType       = scripting.forceWrite("Digital");
+SPI1.sclkPinConfig.$name                      = "ti_driverlib_gpio_GPIOPinGeneric2";
+SPI1.mosiPinConfig.direction                  = scripting.forceWrite("OUTPUT");
+SPI1.mosiPinConfig.hideOutputInversion        = scripting.forceWrite(false);
+SPI1.mosiPinConfig.onlyInternalResistor       = scripting.forceWrite(false);
+SPI1.mosiPinConfig.passedPeripheralType       = scripting.forceWrite("Digital");
+SPI1.mosiPinConfig.$name                      = "ti_driverlib_gpio_GPIOPinGeneric3";
+SPI1.DMA_CHANNEL_EVENT2.transferMode          = "FULL_CH_REPEAT_SINGLE";
+SPI1.DMA_CHANNEL_EVENT2.srcIncrement          = "INCREMENT";
+SPI1.DMA_CHANNEL_EVENT2.configureTransferSize = true;
+SPI1.DMA_CHANNEL_EVENT2.$name                 = "DMA_LCD_TX";
+SPI1.DMA_CHANNEL_EVENT2.peripheral.$assign    = "DMA_CH0";
 
 SYSCTL.forceDefaultClkConfig = true;
 SYSCTL.clockTreeEn           = true;

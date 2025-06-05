@@ -3,4 +3,8 @@
 
 #include "ti_msp_dl_config.h"
 
+void dma_init();
+void dma_start_transfer();
+void dma_verify_data(); 
+
 #endif

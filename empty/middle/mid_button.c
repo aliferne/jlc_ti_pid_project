@@ -33,15 +33,15 @@
 #include "app_key_task.h"
 #include "app_stick_task.h"
 
-// ÉèÖÃÄãÒª¿ØÖÆ¶àÉÙ¸ö°´¼ü
-// ×îºóÒ»Î»×ÜÊÇUSER_BUTTON_MAX
+// è®¾ç½®ä½ è¦æ§åˆ¶å¤šå°‘ä¸ªæŒ‰é”®
+// æœ€åä¸€ä½æ€»æ˜¯USER_BUTTON_MAX
 typedef enum {
     BUTTON_UP = 0,
     BUTTON_LEFT,
     BUTTON_RIGHT,
     BUTTON_DOWN,
-    BUTTON_MID, // ÖĞ¼ä°´¼ü ĞÂÔö¼ÓµÄ£¬ÓÃÀ´´úÌæ°¸ÀıÖĞ¿ªÆôµç»úµÄ·½°¸
-    STICK_Z,    // ĞÂÔö¼ÓµÄ£¬Ò¡¸ËÄ£¿éµÄzÖá£¬¶¨Òå¶Ë¿ÚÎªPA22
+    BUTTON_MID, // ä¸­é—´æŒ‰é”® æ–°å¢åŠ çš„ï¼Œç”¨æ¥ä»£æ›¿æ¡ˆä¾‹ä¸­å¼€å¯ç”µæœºçš„æ–¹æ¡ˆ
+    STICK_Z,    // æ–°å¢åŠ çš„ï¼Œæ‘‡æ†æ¨¡å—çš„zè½´ï¼Œå®šä¹‰ç«¯å£ä¸ºPA22
     USER_BUTTON_MAX
 } user_button_t;
 
@@ -59,7 +59,7 @@ static uint8_t button_cnt    = 0;
     if (button->cb) button->cb((flex_button_t *)button)
 #define MAX_BUTTON_CNT 16
 
-// ÅäÖÃÄã°´¼üµÄ·µ»ØÖµ
+// é…ç½®ä½ æŒ‰é”®çš„è¿”å›å€¼
 static uint8_t button_up_read(void)
 {
     return key_scan().up;
@@ -90,41 +90,41 @@ static uint8_t button_stick_z_read(void)
     return key_scan().stick_z;
 }
 
-// ÅäÖÃ°´¼ü³õÊ¼»¯
-// ÓÃ»§×ÔĞĞ¸ù¾İ°¸ÀıÅäÖÃ
+// é…ç½®æŒ‰é”®åˆå§‹åŒ–
+// ç”¨æˆ·è‡ªè¡Œæ ¹æ®æ¡ˆä¾‹é…ç½®
 void user_button_init(void)
 {
     int i;
 
-    /* ³õÊ¼»¯°´¼üÊı¾İ½á¹¹ */
+    /* åˆå§‹åŒ–æŒ‰é”®æ•°æ®ç»“æ„ */
     memset(&user_button[0], 0x0, sizeof(user_button));
 
-    user_button[BUTTON_UP].usr_button_read = button_up_read;                           // °´¼ü¶ÁÖµ»Øµ÷º¯Êı
-    user_button[BUTTON_UP].cb              = (flex_button_response_callback)btn_up_cb; // °´¼üÊÂ¼ş»Øµ÷º¯Êı
+    user_button[BUTTON_UP].usr_button_read = button_up_read;                           // æŒ‰é”®è¯»å€¼å›è°ƒå‡½æ•°
+    user_button[BUTTON_UP].cb              = (flex_button_response_callback)btn_up_cb; // æŒ‰é”®äº‹ä»¶å›è°ƒå‡½æ•°
 
-    user_button[BUTTON_LEFT].usr_button_read = button_left_read;                           // °´¼ü¶ÁÖµ»Øµ÷º¯Êı
-    user_button[BUTTON_LEFT].cb              = (flex_button_response_callback)btn_left_cb; // °´¼üÊÂ¼ş»Øµ÷º¯Êı
+    user_button[BUTTON_LEFT].usr_button_read = button_left_read;                           // æŒ‰é”®è¯»å€¼å›è°ƒå‡½æ•°
+    user_button[BUTTON_LEFT].cb              = (flex_button_response_callback)btn_left_cb; // æŒ‰é”®äº‹ä»¶å›è°ƒå‡½æ•°
 
-    user_button[BUTTON_RIGHT].usr_button_read = button_right_read;                           // °´¼ü¶ÁÖµ»Øµ÷º¯Êı
-    user_button[BUTTON_RIGHT].cb              = (flex_button_response_callback)btn_right_cb; // °´¼üÊÂ¼ş»Øµ÷º¯Êı
+    user_button[BUTTON_RIGHT].usr_button_read = button_right_read;                           // æŒ‰é”®è¯»å€¼å›è°ƒå‡½æ•°
+    user_button[BUTTON_RIGHT].cb              = (flex_button_response_callback)btn_right_cb; // æŒ‰é”®äº‹ä»¶å›è°ƒå‡½æ•°
 
-    user_button[BUTTON_DOWN].usr_button_read = button_down_read;                           // °´¼ü¶ÁÖµ»Øµ÷º¯Êı
-    user_button[BUTTON_DOWN].cb              = (flex_button_response_callback)btn_down_cb; // °´¼üÊÂ¼ş»Øµ÷º¯Êı
+    user_button[BUTTON_DOWN].usr_button_read = button_down_read;                           // æŒ‰é”®è¯»å€¼å›è°ƒå‡½æ•°
+    user_button[BUTTON_DOWN].cb              = (flex_button_response_callback)btn_down_cb; // æŒ‰é”®äº‹ä»¶å›è°ƒå‡½æ•°
 
     user_button[BUTTON_MID].usr_button_read = button_mid_read;
-    user_button[BUTTON_MID].cb              = (flex_button_response_callback)btn_mid_cb; // °´¼üÊÂ¼ş»Øµ÷º¯Êı
+    user_button[BUTTON_MID].cb              = (flex_button_response_callback)btn_mid_cb; // æŒ‰é”®äº‹ä»¶å›è°ƒå‡½æ•°
 
     user_button[STICK_Z].usr_button_read = button_stick_z_read;
-    user_button[STICK_Z].cb              = (flex_button_response_callback)btn_stick_z_cb; // °´¼üÊÂ¼ş»Øµ÷º¯Êı
+    user_button[STICK_Z].cb              = (flex_button_response_callback)btn_stick_z_cb; // æŒ‰é”®äº‹ä»¶å›è°ƒå‡½æ•°
 
-    /* ³õÊ¼»¯ °´¼üÒı½Å */
+    /* åˆå§‹åŒ– æŒ‰é”®å¼•è„š */
 
     for (i = 0; i < USER_BUTTON_MAX; i++) {
-        user_button[i].pressed_logic_level    = 0;  // °´¼ü°´ÏÂÊ±µÄÂß¼­µçÆ½
+        user_button[i].pressed_logic_level    = 0;  // æŒ‰é”®æŒ‰ä¸‹æ—¶çš„é€»è¾‘ç”µå¹³
         user_button[i].click_start_tick       = 7;  // 10;
-        user_button[i].short_press_start_tick = 12; // 20;//¶Ì°´ÆğÊ¼ tick
-        user_button[i].long_press_start_tick  = 27; // 40;//³¤°´ÆğÊ¼ tick
-        user_button[i].long_hold_start_tick   = 32; // 45;//³¤°´±£³ÖÆğÊ¼tick
+        user_button[i].short_press_start_tick = 12; // 20;//çŸ­æŒ‰èµ·å§‹ tick
+        user_button[i].long_press_start_tick  = 27; // 40;//é•¿æŒ‰èµ·å§‹ tick
+        user_button[i].long_hold_start_tick   = 32; // 45;//é•¿æŒ‰ä¿æŒèµ·å§‹tick
 
         flex_button_register(&user_button[i]);
     }
