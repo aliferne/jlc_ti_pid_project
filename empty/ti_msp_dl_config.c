@@ -469,7 +469,7 @@ SYSCONFIG_WEAK void SYSCFG_DL_ADC_STICK_Y_init(void)
 }
 
 static const DL_DMA_Config gDMA_LCD_TXConfig = {
-    .transferMode   = DL_DMA_FULL_CH_REPEAT_SINGLE_TRANSFER_MODE,
+    .transferMode   = DL_DMA_SINGLE_TRANSFER_MODE,
     .extendedMode   = DL_DMA_NORMAL_MODE,
     .destIncrement  = DL_DMA_ADDR_UNCHANGED,
     .srcIncrement   = DL_DMA_ADDR_UNCHANGED,

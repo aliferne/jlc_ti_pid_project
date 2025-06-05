@@ -180,7 +180,6 @@ SPI1.mosiPinConfig.hideOutputInversion        = scripting.forceWrite(false);
 SPI1.mosiPinConfig.onlyInternalResistor       = scripting.forceWrite(false);
 SPI1.mosiPinConfig.passedPeripheralType       = scripting.forceWrite("Digital");
 SPI1.mosiPinConfig.$name                      = "ti_driverlib_gpio_GPIOPinGeneric3";
-SPI1.DMA_CHANNEL_EVENT2.transferMode          = "FULL_CH_REPEAT_SINGLE";
 SPI1.DMA_CHANNEL_EVENT2.srcIncrement          = "INCREMENT";
 SPI1.DMA_CHANNEL_EVENT2.configureTransferSize = true;
 SPI1.DMA_CHANNEL_EVENT2.$name                 = "DMA_LCD_TX";

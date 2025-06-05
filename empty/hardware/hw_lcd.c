@@ -1,4 +1,5 @@
 #include "hw_lcd.h"
+#include "hw_dma.h"
 #include "lcdfont.h"
 
 /**
@@ -10,37 +11,33 @@
 
 #define delay_ms(X) delay_cycles(((CPUCLK_FREQ / 1000) * (X)))
 
-// TODO: 尝试使用DMA驱动TFT屏幕
-void spi_write_bus(unsigned char dat)
-{
-    // 发送数据
-    DL_SPI_transmitData8(SPI_LCD_INST, dat);
-    // 等待SPI总线空闲
-    while (DL_SPI_isBusy(SPI_LCD_INST));
-}
-
-void LCD_Writ_Bus(unsigned char dat)
+void LCD_Write_Bus(unsigned char dat, uint32_t config)
 {
     LCD_CS_Clear();
-    spi_write_bus(dat);
+    // 设置数据/命令模式
+    DL_SPI_setControllerCommandDataModeConfig(SPI_LCD_INST, config);
+    // 使用DMA传输数据
+    dma_transmit_lcd_data(dat);
+    // 以阻塞方式传输数据（CPU模式）
+    // DL_SPI_transmitDataBlocking8(SPI_LCD_INST, dat);
     LCD_CS_Set();
 }
 
 void LCD_Write_Data8(unsigned char dat)
 {
-    LCD_Writ_Bus(dat);
+    LCD_Write_Bus(dat, DL_SPI_CD_MODE_DATA);
 }
 
 void LCD_Write_Data32(unsigned int dat)
 {
-    LCD_Writ_Bus(dat >> 8);
-    LCD_Writ_Bus(dat);
+    LCD_Write_Bus(dat >> 8, DL_SPI_CD_MODE_DATA);
+    LCD_Write_Bus(dat, DL_SPI_CD_MODE_DATA);
 }
 
 void LCD_Write_Register(unsigned char dat)
 {
     LCD_DC_Clear(); // 写命令
-    LCD_Writ_Bus(dat);
+    LCD_Write_Bus(dat, DL_SPI_CD_MODE_COMMAND);
     LCD_DC_Set(); // 写数据
 }
 

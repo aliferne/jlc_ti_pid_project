@@ -11,6 +11,7 @@
 /// @brief 这个变量由 `show_select_box` 和 `ui_settings_page` 共享
 /// @brief 表示是否需要给显示框加上PID算法
 static bool mode = false;
+// static bool mode = true;
 
 /**
  * @file app_ui.c
