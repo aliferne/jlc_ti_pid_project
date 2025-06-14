@@ -1,6 +1,8 @@
 #ifndef __APP_SYS_MODE_H__
 #define __APP_SYS_MODE_H__
 
+#include "ti_msp_dl_config.h"
+
 /**
  * @file app_sys_mode.h
  * @brief 系统模式与事件管理头文件
@@ -10,24 +12,37 @@
  * 以及系统状态结构体和外部声明的事件管理相关函数。
  */
 
+/// @brief 表示是否需要给显示框加上PID算法，
+/// @brief 由 app_ui_settings 和 app_ui_public 两个文件共享
+/// @brief 初始定义为 false， 见 app_ui_public.c
+extern bool pid_on_ui_mode;
+
 // 定义页面
 typedef enum {
-    HOME_PAGE = 0,  // 默认首页
-    SPEED_PAGE,     // 定速页
-    DISTANCE_PAGE,  // 定距页
-    MANUAL_PAGE,    // 手册页
-    SETTINGS_PAGE,  // 设置页（在首页中的）
-    SET_PAGE,       // 设置页（在PID定速/定距中的）
-    PARAMETER_PAGE, // 参数调整页
+    HOME_PAGE = 0,      // 默认首页
+    SPEED_PAGE,         // 定速页
+    DISTANCE_PAGE,      // 定距页
+    MANUAL_PAGE,        // 手册页
+    SETTINGS_PAGE,      // 设置页（在首页中的）
+    SET_PAGE,           // 设置页（在PID定速/定距中的）
+    PID_PARAMETER_PAGE, // 参数调整页
+    // 负责控制是否启用 UI-ON-PID 和 天问ASRPro控制 等
+    SETTINGS_PARAMETER_PAGE, // 设置页参数调整页面（在首页中的）
 } SystemPageShow;
 
 typedef enum {
-    P_SELECTED = 0,  // 选中参数P
-    I_SELECTED,      // 选中参数I
-    D_SELECTED,      // 选中参数D
-    TARGET_SELECTED, // 选中目标值
-    ALL_CLEAN,       // 清除所有选中（TFT清除白框）
+    P_SELECTED = 0,          // 选中参数P
+    I_SELECTED,              // 选中参数I
+    D_SELECTED,              // 选中参数D
+    TARGET_SELECTED,         // 选中目标值
+    PID_PARAMETER_ALL_CLEAN, // PID清除所有选中（TFT清除白框）
 } ParameterPageShow;
+
+typedef enum {
+    UI_ON_PID_SELECTED = 0, // 选中 UI-ON-PID
+    // TODO: 在这里增加更多功能（控制是否打开摇杆/开启天问ASRPro的UART控制功能）
+    SETTINGS_PARAMETER_ALL_CLEAN, // 设置界面清除所有选中（TFT清除白框）
+} SettingsPageShow;
 
 // 定义功能
 typedef enum {
@@ -65,7 +80,8 @@ typedef struct {
     SystemPageShow show_state;        // 当前界面显示页
     LongPressStatus long_press_state; // 当前按键长按状态
     int default_page_flag;            // 当前首页（默认页）选择的内容
-    int set_page_flag;                // 当前设置页选择的内容
+    int set_page_flag;                // 当前设置页（PID界面的）选择的内容
+    int settings_page_flag;           // 当前设置页（首页的）选择的内容
     MotorStatus motor_flag;           // 当前电机状态
     Function function_state;          // 当前功能
 } SystemStatus;

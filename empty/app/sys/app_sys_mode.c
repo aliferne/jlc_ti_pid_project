@@ -1,5 +1,8 @@
 #include "app_sys_mode.h"
 
+/// @brief ui是否开启PID模式
+bool pid_on_ui_mode = false;
+
 SystemStatus system_status;
 
 static void enter_event_handler(SystemStatus *status);
@@ -8,9 +11,10 @@ static void motor_state_manager(SystemStatus *status);
 
 void sys_event_init(void)
 {
-    system_status.show_state        = HOME_PAGE;  // 当前显示页面（首页）
-    system_status.default_page_flag = SPEED_PAGE; // （页面中）选项框选中选项
-    system_status.set_page_flag     = 0;          // PID参数调节时默认选中的选项（这里为P）
+    system_status.show_state         = HOME_PAGE;          // 当前显示页面（首页）
+    system_status.default_page_flag  = SPEED_PAGE;         // （页面中）选项框选中选项
+    system_status.set_page_flag      = P_SELECTED;         // PID参数调节时默认选中的选项（这里为P）
+    system_status.settings_page_flag = UI_ON_PID_SELECTED; // 首页设置框参数调节时默认选中的选项（这里为PID-ON-UI）
 }
 
 // 设置事件
@@ -30,7 +34,6 @@ void event_manager(SystemStatus *status, SystemEvent Event)
         case LONG_PRESS_ADD_START_EVENT: // 触发长按加开始事件
             status->long_press_state = LONG_PRESS_ADD_START;
             break;
-
         case LONG_PRESS_SUBTRACT_START_EVENT: // 触发长按减开始事件
             status->long_press_state = LONG_PRESS_SUBTRACT_START;
             break;
@@ -108,27 +111,31 @@ static void enter_event_handler(SystemStatus *status)
                 status->function_state = NO_FUNCTION;
                 break;
             case SETTINGS_PAGE:
-                status->show_state = SETTINGS_PAGE;
-                // TODO: 后续会加入设置功能（包括启用手柄/启用PID绘制UI等）
+                status->show_state     = SETTINGS_PAGE;
                 status->function_state = NO_FUNCTION;
             default:
                 break;
         }
-
+    } else if (status->show_state == SETTINGS_PAGE) {
+        // 进入设置选项模式
+        status->show_state = SETTINGS_PARAMETER_PAGE;
     } else if (status->show_state == SPEED_PAGE || status->show_state == DISTANCE_PAGE) {
         // 进入设置模式
         status->show_state = SET_PAGE;
     } else if (status->show_state == SET_PAGE) {
         // 进入调参模式
-        status->show_state = PARAMETER_PAGE;
+        status->show_state = PID_PARAMETER_PAGE;
     }
 }
 
 static void quit_event_handler(SystemStatus *status)
 {
     switch (status->show_state) {
-        case PARAMETER_PAGE: // 从调参模式退出
+        case PID_PARAMETER_PAGE: // 从调参模式退出
             status->show_state = SET_PAGE;
+            break;
+        case SETTINGS_PARAMETER_PAGE: // 从设置选项退出
+            status->show_state = SETTINGS_PAGE;
             break;
         case SET_PAGE: // 从设置模式退出
             if (status->function_state == SPEED_FUNCTION)

@@ -18,7 +18,11 @@
             "hw_lcd.h": "c",
             "ti_msp_dl_config.h": "c",
             "hw_dma.h": "c",
-            "mid_debug_led.h": "c"
+            "mid_debug_led.h": "c",
+            "app_ui_pid.h": "c",
+            "app_ui_public.h": "c",
+            "mid_timer.h": "c",
+            "app_ui.h": "c"
         }
     },
     "extensions": {}

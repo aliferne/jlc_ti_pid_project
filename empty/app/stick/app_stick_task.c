@@ -59,17 +59,17 @@ void stick_scan()
                     // NOTE: 需要确保P_SELECTED是第一个，TARGET_SELECTED是最后一个会被选中的
                     system_status.set_page_flag = TARGET_SELECTED;
                 }
-                ui_page_select_box(system_status.set_page_flag);
+                ui_pid_page_select_box(system_status.set_page_flag);
             } else if (ABS(stickVoltage - STICK_MIN_OUTPUT) < TOLERANCE) {
                 system_status.set_page_flag++;
                 // NOTE: 需要确保P_SELECTED是第一个，TARGET_SELECTED是最后一个会被选中的
                 if (system_status.set_page_flag > TARGET_SELECTED) {
                     system_status.set_page_flag = P_SELECTED;
                 }
-                ui_page_select_box(system_status.set_page_flag);
+                ui_pid_page_select_box(system_status.set_page_flag);
             }
             break;
-        case PARAMETER_PAGE:
+        case PID_PARAMETER_PAGE:
             if (ABS(stickVoltage - STICK_MIN_OUTPUT) < TOLERANCE) {
                 if (get_functional_mode() == SPEED_FUNCTION) { // 如果之前是定速功能
                     // 定速参数更新

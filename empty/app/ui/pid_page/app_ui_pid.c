@@ -1,0 +1,366 @@
+#include "app_ui_pid.h"
+
+void ui_pid_page_draw_background_box(Motor_PID_Controller p, Motor_PID_Controller i, Motor_PID_Controller d)
+{
+    // 绘制纯黑色背景
+    LCD_Fill(0, 0, LCD_W, LCD_H, BLACK);
+    int str_center_x = (24 * 1) / 2;
+
+    // 显示静态的PID标题
+    LCD_Show_Char(
+        screen_center_x - str_center_x - DEFAULT_CENTER_X_OFFSET,
+        DEFAULT_PID_TITLE_Y_POSITION, 'P', WHITE, BLUE, FONTSIZE, 1);
+    LCD_Show_Char(
+        screen_center_x - str_center_x,
+        DEFAULT_PID_TITLE_Y_POSITION, 'I', WHITE, BLUE, FONTSIZE, 1);
+    LCD_Show_Char(
+        screen_center_x - str_center_x + DEFAULT_CENTER_X_OFFSET,
+        DEFAULT_PID_TITLE_Y_POSITION, 'D', WHITE, BLUE, FONTSIZE, 1);
+
+    // 显示P参数的圆角矩形背景
+    p.start_x = screen_center_x - str_center_x - DEFAULT_CENTER_X_OFFSET - 30;
+    p.start_y = PID_NEXT_Y_START_POSITION;
+    p.end_x   = screen_center_x - str_center_x - DEFAULT_CENTER_X_OFFSET + 40;
+    p.end_y   = PID_NEXT_Y_START_POSITION + 24;
+    LCD_Draw_ArcRect(p.start_x, p.start_y, p.end_x, p.end_y, BLUE);
+
+    // 显示I参数的圆角矩形背景
+    i.start_x = screen_center_x - str_center_x - 30;
+    i.start_y = PID_NEXT_Y_START_POSITION;
+    i.end_x   = screen_center_x - str_center_x + 40;
+    i.end_y   = PID_NEXT_Y_START_POSITION + 24;
+    LCD_Draw_ArcRect(i.start_x, i.start_y, i.end_x, i.end_y, BLUE);
+
+    // 显示D参数的圆角矩形背景
+    d.start_x = screen_center_x - str_center_x + DEFAULT_CENTER_X_OFFSET - 30;
+    d.start_y = PID_NEXT_Y_START_POSITION;
+    d.end_x   = screen_center_x - str_center_x + DEFAULT_CENTER_X_OFFSET + 40;
+    d.end_y   = PID_NEXT_Y_START_POSITION + 24;
+    LCD_Draw_ArcRect(d.start_x, d.start_y, d.end_x, d.end_y, BLUE);
+
+    // 显示 Target 参数的圆角矩形背景
+    LCD_Show_String(320 - 150, 170 - 34, (uint8_t *)"Target: ", WHITE, BLUE, 24, 1);
+}
+
+// 绘制定速页静态UI
+void ui_speed_page(void)
+{
+    Motor_PID_Controller p = {0}, i = {0}, d = {0};
+
+    // 关闭背光
+    LCD_BLK_Clear();
+
+    ui_pid_page_draw_background_box(p, i, d);
+    // 显示静态的Speed Target 标题
+    LCD_Show_String(20, 170 - 34, (uint8_t *)"Speed: ", WHITE, BLUE, 24, 1);
+
+    LCD_BLK_Set(); // 打开背光
+}
+
+void ui_pid_page_update_value(
+    float *last_p, float *last_i, float *last_d, int *last_current, int *last_target,
+    float p, float i, float d, int current, int target, int quick_update)
+{
+    char show_buff[50] = {0};
+    Motor_PID_Controller txt_p = {0}, txt_i = {0}, txt_d = {0};
+    int txt_size         = 0;  // 一整个字符串的像素
+    int char_width_pixel = 8;  // 16x16大小的英文字符实际大小是8x16
+    int rect_w           = 70; // 矩形的宽度
+    int rect_h           = 24; // 矩形的高度
+    int rect_start_x     = 34; // 第一个矩形的起始X轴位置
+    int rect_apart_x     = 84; // 矩形与矩形间的间隔
+
+    if (quick_update != 1) // 没有开启快速更新
+    {
+        *last_p       = 65535.0; // 设置一个不可能的值
+        *last_i       = 65535.0; // 设置一个不可能的值
+        *last_d       = 65535.0; // 设置一个不可能的值
+        *last_current = 65535;   // 设置一个不可能的值
+        *last_target  = 65535;   // 设置一个不可能的值
+    }
+    // 更新 P 参数
+    if (*last_p != p) {
+        *last_p = p;
+        sprintf(show_buff, " %.2f ", p);
+        txt_size      = strlen(show_buff) * char_width_pixel;
+        txt_p.start_x = rect_start_x + ((rect_w - txt_size) / 2);
+        txt_p.start_y = 104 + ((rect_h - FONTSIZE) / 2);
+        LCD_Show_String(txt_p.start_x, txt_p.start_y, (uint8_t *)show_buff, WHITE, BLUE, FONTSIZE, 0);
+    }
+    // 更新 I 参数
+    if (*last_i != i) {
+        *last_i = i;
+        sprintf(show_buff, " %.2f ", i);
+        txt_size      = strlen(show_buff) * char_width_pixel;
+        txt_i.start_x = (rect_start_x + rect_apart_x) + ((rect_w - txt_size) / 2);
+        txt_i.start_y = 104 + ((rect_h - FONTSIZE) / 2);
+        LCD_Show_String(txt_i.start_x, txt_i.start_y, (uint8_t *)show_buff, WHITE, BLUE, FONTSIZE, 0);
+    }
+    // 更新 D 参数
+    if (*last_d != d) {
+        *last_d = d;
+        sprintf(show_buff, " %.2f ", d);
+        txt_size      = strlen(show_buff) * char_width_pixel;
+        txt_d.start_x = (rect_start_x + rect_apart_x + rect_apart_x) + ((rect_w - txt_size) / 2);
+        txt_d.start_y = 104 + ((rect_h - FONTSIZE) / 2);
+        LCD_Show_String(txt_d.start_x, txt_d.start_y, (uint8_t *)show_buff, WHITE, BLUE, FONTSIZE, 0);
+    }
+    // 更新当前 （速度/距离） 参数
+    if (*last_current != current) {
+        *last_current = current;
+        sprintf(show_buff, "%d ", current);
+        LCD_Show_String(12 * 6 + 20, 170 - 34, (uint8_t *)show_buff, WHITE, BLACK, 24, 0);
+    }
+    // 更新目标参数
+    if (*last_target != target) {
+        *last_target = target;
+        sprintf(show_buff, "%d ", target);
+        LCD_Show_String(320 - 150 + 12 * 7, 170 - 34, (uint8_t *)show_buff,
+                        WHITE, BLACK, 24, 0);
+    }
+}
+
+void ui_speed_page_value_set(
+    float p, float i, float d, int speed,
+    int target, int quick_update) // 绘制定速页参数值的变化
+{
+    static float last_p, last_i, last_d;
+    static int last_speed, last_target;
+
+    ui_pid_page_update_value(
+        &last_p, &last_i, &last_d, &last_speed, &last_target,
+        p, i, d, speed, target, quick_update);
+}
+
+static void ui_page_draw_box(int p_color, int i_color, int d_color, int target_color)
+{
+    char select_box_interval = 3;
+    // P
+    show_select_box(34, 104 - 34, 104, 128 - 104, 10, select_box_interval, p_color);
+    // I
+    show_select_box(118, 188 - 118, 104, 128 - 104, 10, select_box_interval, i_color);
+    // D
+    show_select_box(202, 272 - 202, 104, 128 - 104, 10, select_box_interval, d_color);
+    // Target
+    show_select_box(320 - 150, 316 - (320 - 150), 170 - 34, 166 - (170 - 34), 10, select_box_interval, target_color);
+}
+
+// 绘制定速页选择框
+// 参数选择框
+void ui_pid_page_select_box(int mode)
+{
+    switch (mode) {
+        case P_SELECTED: // P
+            ui_page_draw_box(WHITE, BLACK, BLACK, BLACK);
+            break;
+        case I_SELECTED: // I
+            ui_page_draw_box(BLACK, WHITE, BLACK, BLACK);
+            break;
+        case D_SELECTED: // D
+            ui_page_draw_box(BLACK, BLACK, WHITE, BLACK);
+            break;
+        case TARGET_SELECTED: // target
+            ui_page_draw_box(BLACK, BLACK, BLACK, WHITE);
+            break;
+        case PID_PARAMETER_ALL_CLEAN: // all clean
+            ui_page_draw_box(BLACK, BLACK, BLACK, BLACK);
+            break;
+    }
+}
+
+void ui_distance_page(void) // 绘制定距页静态UI
+{
+    Motor_PID_Controller p = {0}, i = {0}, d = {0};
+
+    // 关闭背光
+    LCD_BLK_Clear();
+
+    ui_pid_page_draw_background_box(p, i, d);
+    // 显示静态的Angle Target 标题
+    LCD_Show_String(20, 170 - 34, (uint8_t *)"Angle: ", WHITE, BLUE, 24, 1);
+
+    // 开启背光
+    LCD_BLK_Set();
+}
+
+void ui_distance_page_value_set(
+    float p, float i, float d, int distance,
+    int target, int quick_update) // 绘制定距页参数值的变化
+{
+    static float last_p, last_i, last_d;
+    static int last_distance, last_target;
+
+    ui_pid_page_update_value(
+        &last_p, &last_i, &last_d, &last_distance, &last_target,
+        p, i, d, distance, target, quick_update);
+}
+
+static void ui_parameter_select_draw_bold_box(int p_color, int i_color, int d_color, int target_color)
+{
+    char select_box_size = 3;
+
+    LCD_Draw_Rectangle(
+        34 - select_box_size + 1,
+        104 - select_box_size + 1,
+        104 + select_box_size - 1, 128 + select_box_size - 1,
+        p_color);
+    LCD_Draw_Rectangle(
+        118 - select_box_size + 1,
+        104 - select_box_size + 1,
+        188 + select_box_size - 1, 128 + select_box_size - 1,
+        i_color);
+    LCD_Draw_Rectangle(
+        202 - select_box_size + 1,
+        104 - select_box_size + 1, 272 + select_box_size - 1,
+        128 + select_box_size - 1, d_color);
+    LCD_Draw_Rectangle(
+        320 - 150 - select_box_size + 1,
+        170 - 34 - select_box_size + 1,
+        316 + select_box_size - 1, 166 + select_box_size - 1,
+        target_color);
+}
+
+void ui_pid_parameter_select_box_bold(int mode) // 参数选择框加粗，即选中框
+{
+    switch (mode) {
+        case P_SELECTED: // P
+            ui_parameter_select_draw_bold_box(WHITE, BLACK, BLACK, BLACK);
+            break;
+        case I_SELECTED: // I
+            ui_parameter_select_draw_bold_box(BLACK, WHITE, BLACK, BLACK);
+            break;
+        case D_SELECTED: // D
+            ui_parameter_select_draw_bold_box(BLACK, BLACK, WHITE, BLACK);
+            break;
+        case TARGET_SELECTED: // target
+            ui_parameter_select_draw_bold_box(BLACK, BLACK, BLACK, WHITE);
+            break;
+        case PID_PARAMETER_ALL_CLEAN: // all clean
+            ui_parameter_select_draw_bold_box(BLACK, BLACK, BLACK, BLACK);
+            break;
+    }
+}
+
+uint16_t draw_motor_pid_curve(
+    int window_start_x, int window_start_y,
+    int window_w, int window_h, int curve_color,
+    int background_color, short int rawValue)
+{
+    uint16_t x = 0, y = 0, i = 0;
+    static char firstDraw  = 1; // 判断是否第一次画
+    static uint16_t last_x = 0, last_y = 0;
+
+    if (rawValue >= window_h) // 限制最大值
+        rawValue = window_h;
+    if (rawValue <= 0) // 限制最小值
+        rawValue = 0;
+
+    // 基于波形框 底部Y轴点 计算显示数据的偏移量
+    y = (window_start_y + window_h) - rawValue;
+
+    if (firstDraw) { // 第一次描点，则无需连线，直接描点即可
+        LCD_Draw_Point(window_start_x, y, curve_color);
+        last_x    = window_start_x;
+        last_y    = y;
+        firstDraw = 0;
+        return 0;
+    }
+
+    x = last_x + 1; // 更新x轴时间线
+
+    if (x < window_w) { // 不超过屏幕宽度
+        LCD_Draw_VerrticalLine(x, window_start_y, window_start_y + window_h, background_color);
+        LCD_Draw_Line(last_x, last_y, x, y, curve_color);
+        LCD_Draw_VerrticalLine(x + 1, window_start_y, window_start_y + window_h, background_color);
+        last_x = x;
+        last_y = y;
+    } else { // 超过屏幕宽度，清屏重新画
+        // 清除第一列中之前的点
+        LCD_Draw_VerrticalLine(window_start_x, window_start_y, window_start_y + window_h, background_color);
+        // 显示当前的点
+        LCD_Draw_Point(window_start_x, y, curve_color);
+        // 更新之前的坐标为当前坐标
+        last_x = window_start_x;
+        last_y = y;
+    }
+    return x;
+}
+
+uint16_t draw_speed_curve(
+    int window_start_x, int window_start_y,
+    int window_w, int window_h, int curve_color,
+    int background_color, short int rawValue)
+{
+    return draw_motor_pid_curve(
+        window_start_x, window_start_y,
+        window_w, window_h,
+        curve_color, background_color, rawValue);
+}
+
+uint16_t draw_distance_curve(
+    int window_start_x, int window_start_y,
+    int window_w, int window_h, int curve_color,
+    int background_color, short int rawValue)
+{
+    return draw_motor_pid_curve(
+        window_start_x, window_start_y,
+        window_w, window_h,
+        curve_color, background_color, rawValue);
+}
+
+void ui_speed_curve()
+{
+    disable_task_interrupt(); // 禁止任务调度
+
+    PID_Struct *pid = get_speed_pid();
+    ui_speed_page_value_set(
+        pid->kp, pid->ki, pid->kd,
+        get_encoder_count(), pid->target, 1);
+
+    // “+ SPEED_ENCODER_VALUE_MAX” 将编码器数值放大，去除负数
+    // “/ SPEED_WAVEFORM_REDUCTION_FACTOR 因为屏幕小放不下编码器最大值和最小值，因此做除法衰减数值
+    // 绘制当前编码器数值曲线
+    int curve_x = 0;
+    curve_x     = draw_speed_curve(
+        0, 0, 319, 88, GREEN, BLACK,
+        (get_encoder_count() + SPEED_ENCODER_VALUE_MAX) /
+            SPEED_WAVEFORM_REDUCTION_FACTOR);
+
+    // 绘制目标速度的波形点
+    LCD_Draw_Point(
+        curve_x,
+        88 - ((get_speed_pid_target() + SPEED_ENCODER_VALUE_MAX) / SPEED_WAVEFORM_REDUCTION_FACTOR),
+        RED);
+
+    enable_task_interrupt(); // 允许任务调度
+}
+
+void ui_distance_curve()
+{
+    int current_angle = 0;
+
+    disable_task_interrupt(); // 禁止任务调度
+
+    current_angle   = get_temp_encoder() * DEGREES_PER_PULSE;
+    PID_Struct *pid = get_distance_pid();
+    ui_distance_page_value_set(
+        pid->kp, pid->ki,
+        pid->kd, current_angle, pid->target, 1);
+
+    int curve_x = 0;
+    // “+ DISTANCE_ENCODER_VALUE_MAX” 将编码器数值放大，去除负数
+    // “/ DISTANCE_WAVEFORM_REDUCTION_FACTOR 因为屏幕小放不下编码器最大值和最小值，因此做除法衰减数值
+    // 绘制当前编码器数值曲线
+    curve_x = draw_distance_curve(
+        0, 0, 319, 88, GREEN, BLACK,
+        (current_angle + DISTANCE_ENCODER_VALUE_MAX) /
+            DISTANCE_WAVEFORM_REDUCTION_FACTOR);
+
+    // 绘制目标速度的波形点
+    LCD_Draw_Point(
+        curve_x,
+        88 - ((get_distance_pid_target() + DISTANCE_ENCODER_VALUE_MAX) / DISTANCE_WAVEFORM_REDUCTION_FACTOR),
+        RED);
+
+    enable_task_interrupt(); // 允许任务调度
+}

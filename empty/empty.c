@@ -96,7 +96,7 @@ int main(void)
                     break;
             }
         }
-        if (get_show_state() == PARAMETER_PAGE) {
+        if (get_show_state() == PID_PARAMETER_PAGE) {
             // 数值的快速加减
             ui_speed_or_distance_page_value_set_quick(get_long_press_state());
             // 屏幕显示参数变化
