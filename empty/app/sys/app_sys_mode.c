@@ -14,7 +14,7 @@ void sys_event_init(void)
     system_status.show_state         = HOME_PAGE;          // 当前显示页面（首页）
     system_status.default_page_flag  = SPEED_PAGE;         // （页面中）选项框选中选项
     system_status.set_page_flag      = P_SELECTED;         // PID参数调节时默认选中的选项（这里为P）
-    system_status.settings_page_flag = UI_ON_PID_SELECTED; // 首页设置框参数调节时默认选中的选项（这里为PID-ON-UI）
+    system_status.settings_page_flag = PID_ON_UI_SELECTED; // 首页设置框参数调节时默认选中的选项（这里为PID-ON-UI）
 }
 
 // 设置事件

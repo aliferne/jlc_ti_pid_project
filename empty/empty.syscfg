@@ -215,6 +215,7 @@ UART1.rxPinConfig.$name                = "ti_driverlib_gpio_GPIOPinGeneric1";
 UART2.$name                            = "UART_CMD";
 UART2.enabledInterrupts                = ["RX"];
 UART2.interruptPriority                = "2";
+UART2.targetBaudRate                   = 115200;
 UART2.peripheral.$assign               = "UART1";
 UART2.txPinConfig.direction            = scripting.forceWrite("OUTPUT");
 UART2.txPinConfig.hideOutputInversion  = scripting.forceWrite(false);

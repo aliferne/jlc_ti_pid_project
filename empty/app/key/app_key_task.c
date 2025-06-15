@@ -34,10 +34,20 @@ void btn_up_cb(flex_button_t *btn)
                 ui_home_page_select(system_status.default_page_flag); // 选择首页选项框
             }
             if (get_show_state() == SETTINGS_PAGE) {
-                // TODO: 设置页面目前只有一个选项，后续功能支持将增加到三个选项
-                // system_status.settings_page_flag; // TODO: Operating on this one
+                system_status.settings_page_flag++;
+                /// @note 此处要求 PID_ON_UI_SELECTED 是第一个
+                /// @note ASRPRO_SELECTED 是最后一个
+                if (system_status.settings_page_flag > ASRPRO_SELECTED) {
+                    system_status.settings_page_flag = PID_ON_UI_SELECTED;
+                }
                 ui_settings_parameter_page_select_box(system_status.settings_page_flag);
             }
+
+            // 改变 PID-ON-UI
+            if (get_show_state() == SETTINGS_PARAMETER_PAGE) {
+                ui_settings_page_change_pid_on_ui();
+            }
+
             if (get_show_state() == SET_PAGE) {
                 system_status.set_page_flag--;
                 if (system_status.set_page_flag < P_SELECTED) {
@@ -83,14 +93,19 @@ void btn_down_cb(flex_button_t *btn)
                 ui_home_page_select(system_status.default_page_flag); // 选择首页选项框
             }
             if (get_show_state() == SETTINGS_PAGE) {
-                // TODO: 设置页面目前只有一个选项，后续功能支持将增加到三个选项
-                // system_status.settings_page_flag; // TODO: Operating on this one
+                system_status.settings_page_flag--;
+                /// @note 此处要求 PID_ON_UI_SELECTED 是第一个
+                /// @note ASRPRO_SELECTED 是最后一个
+                if (system_status.settings_page_flag < PID_ON_UI_SELECTED) {
+                    system_status.settings_page_flag = ASRPRO_SELECTED;
+                }
                 ui_settings_parameter_page_select_box(system_status.settings_page_flag);
             }
+            // 改变 PID-ON-UI
             if (get_show_state() == SETTINGS_PARAMETER_PAGE) {
-                // 
                 ui_settings_page_change_pid_on_ui();
             }
+
             if (get_show_state() == SET_PAGE) {
                 system_status.set_page_flag++;
                 // NOTE: 需要确保P_SELECTED是第一个，TARGET_SELECTED是最后一个会被选中的
@@ -176,7 +191,6 @@ void btn_mid_cb(flex_button_t *btn)
     }
 }
 
-// FIXME: 摇杆Z轴无法正常工作
 void btn_stick_z_cb(flex_button_t *btn)
 {
     switch (btn->event) {

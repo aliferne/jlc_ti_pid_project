@@ -25,7 +25,6 @@ void ui_home_select_page_show(int page)
         case MANUAL_PAGE:
             ui_manual_page();
             break;
-        // TODO: 还有SETTINGS_PAGE需要完成
         case SETTINGS_PAGE:
             ui_settings_page_show();
             break;

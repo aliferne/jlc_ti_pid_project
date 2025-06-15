@@ -39,8 +39,9 @@ typedef enum {
 } ParameterPageShow;
 
 typedef enum {
-    UI_ON_PID_SELECTED = 0, // 选中 UI-ON-PID
-    // TODO: 在这里增加更多功能（控制是否打开摇杆/开启天问ASRPro的UART控制功能）
+    PID_ON_UI_SELECTED = 0,       // 选中 PID-ON-UI
+    STICK_SELECTED,               // 选中 摇杆控制
+    ASRPRO_SELECTED,              // 选中 天问ASRPro控制
     SETTINGS_PARAMETER_ALL_CLEAN, // 设置界面清除所有选中（TFT清除白框）
 } SettingsPageShow;
 
