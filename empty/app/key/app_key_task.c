@@ -15,7 +15,7 @@
  * 根据不同的按键和事件类型，执行相应的逻辑，如页面切换、参数调整、电机控制等。
  */
 
-// TODO: 这里可能能解耦，可以考虑将内部的处理方法做成API
+// TODO: 可以尝试将这里所有过多的if else 使用 switch case 或查表优化
 
 static void enter_event_manager();
 static void quit_event_manager();
@@ -36,7 +36,7 @@ void btn_up_cb(flex_button_t *btn)
             if (get_show_state() == SETTINGS_PAGE) {
                 // TODO: 设置页面目前只有一个选项，后续功能支持将增加到三个选项
                 // system_status.settings_page_flag; // TODO: Operating on this one
-                ui_settings_page_select_box(system_status.settings_page_flag);
+                ui_settings_parameter_page_select_box(system_status.settings_page_flag);
             }
             if (get_show_state() == SET_PAGE) {
                 system_status.set_page_flag--;
@@ -85,7 +85,11 @@ void btn_down_cb(flex_button_t *btn)
             if (get_show_state() == SETTINGS_PAGE) {
                 // TODO: 设置页面目前只有一个选项，后续功能支持将增加到三个选项
                 // system_status.settings_page_flag; // TODO: Operating on this one
-                ui_settings_page_select_box(system_status.settings_page_flag);
+                ui_settings_parameter_page_select_box(system_status.settings_page_flag);
+            }
+            if (get_show_state() == SETTINGS_PARAMETER_PAGE) {
+                // 
+                ui_settings_page_change_pid_on_ui();
             }
             if (get_show_state() == SET_PAGE) {
                 system_status.set_page_flag++;
@@ -203,14 +207,14 @@ static void enter_event_manager()
         // 触发进入事件
         event_manager(&system_status, ENTER_EVENT);
         // 显示框
-        ui_settings_page_select_box(system_status.settings_page_flag);
+        ui_settings_parameter_page_select_box(system_status.settings_page_flag);
     }
     // 如果是首页设置界面内部
     else if (get_show_state() == SETTINGS_PARAMETER_PAGE) {
         // 触发进入事件
         event_manager(&system_status, ENTER_EVENT);
         // 显示选中框
-        ui_settings_parameter_select_box_bold(system_status.set_page_flag);
+        ui_settings_parameter_page_select_box_bold(system_status.settings_page_flag);
     }
     // 如果是定速页或者定距页
     else if (get_show_state() == SPEED_PAGE || get_show_state() == DISTANCE_PAGE) {
@@ -250,8 +254,8 @@ static void quit_event_manager()
     // 如果是首页的设置页面内部，调参页面
     else if (get_show_state() == SETTINGS_PARAMETER_PAGE) {
         // TODO:
-        // ui_home_select_page_show(SETTINGS_PARAMETER_PAGE); // 显示设置页
         event_manager(&system_status, QUIT_EVENT);
+        ui_settings_parameter_page_select_box_bold(SETTINGS_PARAMETER_ALL_CLEAN);
     }
     // 如果是PID设置页面
     else if (get_show_state() == SET_PAGE) {
@@ -261,7 +265,7 @@ static void quit_event_manager()
         ui_pid_page_select_box(PID_PARAMETER_ALL_CLEAN);
     }
     // 如果当前是调参页
-    if (get_show_state() == PID_PARAMETER_PAGE) {
+    else if (get_show_state() == PID_PARAMETER_PAGE) {
         // 触发退出事件
         event_manager(&system_status, QUIT_EVENT);
         // 显示设置页的选择框，退出界面之后擦除所有粗框框
